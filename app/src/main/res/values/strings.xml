@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Journey</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_patient_list">PatientListActivity</string>
+    <string name="title_activity_patient_page">PatientPageActivity</string>
+
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+
+    <string-array name="assessments_array">
+        <item>GAIT</item>
+        <item>TUG</item>
+        <item>BALANCE</item>
+        <item>Picture</item>
+        <item>Video</item>
+        <item>Comment</item>
+    </string-array>
+</resources>
