@@ -28,8 +28,6 @@ public class AddNewAssessmentActivity extends AppCompatActivity implements Adapt
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
 
-        // Specify the interface implementation? Same as above?
-        spinner.setOnItemSelectedListener(this);
     }
 
 
