@@ -1,16 +1,32 @@
 package com.uoft.journey.models;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by jenna on 16-01-19.
  */
 public class Patient {
 
     private String mName;
-    private int mDaySinceStart;
+    private Date mDateAdmitted;
+    private String mDateAdmittedString;
+    private int mID;
 
-    public Patient(String name, int daySinceStart) {
+    public Patient(int id, String name, Date dateAdmitted) {
+        mID = id;
         mName = name;
-        mDaySinceStart = daySinceStart;
+        mDateAdmitted = dateAdmitted;
+    }
+
+
+    public int getID() {
+        return mID;
+    }
+
+    public void setID(int ID) {
+        mID = ID;
     }
 
     public String getName() {
@@ -21,12 +37,18 @@ public class Patient {
         mName = name;
     }
 
-    public int getDaySinceStart() {
-        return mDaySinceStart;
+    public Date getDateAdmitted() {
+        return mDateAdmitted;
     }
 
-    public void setDaySinceStart (int daySinceStart) {
-        mDaySinceStart = daySinceStart;
+    public void setDateAdmitted (Date dateAdmitted) {
+        mDateAdmitted = dateAdmitted;
+    }
+
+    public String getDateAdmittedString() {
+        DateFormat mDateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        String mDateAdmittedString = mDateFormat.format(mDateAdmitted);
+        return mDateAdmittedString;
     }
 
 }

@@ -25,7 +25,9 @@ public class PatientPageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patient_page);
-        setTitle("Arnold Palmer");
+
+        //set title of patient page to patient's name
+        setTitle(getIntent().getExtras().getString("name"));
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 

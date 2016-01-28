@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Intent intent = new Intent(MainActivity.this, com.uoft.journey.ui.PatientListActivity.class);
+                Intent intent = new Intent(MainActivity.this, com.uoft.journey.ui.LoginActivity.class);
                 startActivity(intent);
             }
         });

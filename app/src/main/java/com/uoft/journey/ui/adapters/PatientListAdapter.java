@@ -23,7 +23,8 @@ public class PatientListAdapter extends RecyclerView.Adapter<PatientListAdapter.
     private static final String TAG = "PatientListDebug";
     private Context context;
 
-    private List<Patient> mPatientList;
+    //TODO: fix static field once we implement database
+    private static List<Patient> mPatientList;
 
     public PatientListAdapter(Context context, List<Patient> mPatientList) {
         this.mPatientList = mPatientList;
@@ -48,7 +49,7 @@ public class PatientListAdapter extends RecyclerView.Adapter<PatientListAdapter.
         Patient patient = mPatientList.get(i);
 
         patientListViewHolder.vName.setText(patient.getName());
-        patientListViewHolder.vDateStarted.setText(String.valueOf(patient.getDaySinceStart()));
+        patientListViewHolder.vDateStarted.setText(String.valueOf(patient.getDateAdmittedString()));
 
 
     }
@@ -76,6 +77,7 @@ public class PatientListAdapter extends RecyclerView.Adapter<PatientListAdapter.
             Log.d(TAG, "Clicked" + getAdapterPosition());
 
             Intent intent= new Intent(view.getContext(), PatientPageActivity.class);
+            intent.putExtra("name", mPatientList.get(getAdapterPosition()).getName());
             view.getContext().startActivity(intent);
         }
 

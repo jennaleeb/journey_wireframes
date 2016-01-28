@@ -10,6 +10,7 @@ import com.uoft.journey.models.Patient;
 import com.uoft.journey.ui.adapters.PatientListAdapter;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class PatientListActivity extends AppCompatActivity {
@@ -32,11 +33,11 @@ public class PatientListActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // for now hard code patients
-        Patient patient1 = new Patient("Arnold Palmer", 0);
-        Patient patient2 = new Patient("Jane Smith", 5);
-        Patient patient3 = new Patient("Kate Bishop", 13);
-        Patient patient4 = new Patient("Marco Polo", 7);
-        Patient patient5 = new Patient("Patrick McGilvery", 10);
+        Patient patient1 = new Patient(193192, "Arnold Palmer", new Date(12/1/2016));
+        Patient patient2 = new Patient(193192, "Jane Smith", new Date(21/12/2015));
+        Patient patient3 = new Patient(193192, "Kate Bishop", new Date(15/1/2016));
+        Patient patient4 = new Patient(193192, "Marco Polo", new Date(28/1/2016));
+        Patient patient5 = new Patient(193192, "Patrick Mackelmore", new Date(1/25/2016));
 
         mPatientList.add(patient1);
         mPatientList.add(patient2);
