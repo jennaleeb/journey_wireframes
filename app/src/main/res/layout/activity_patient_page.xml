@@ -1,141 +1,32 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin"
-                android:paddingTop="@dimen/activity_vertical_margin"
-                android:paddingBottom="@dimen/activity_vertical_margin"
-                tools:context="com.uoft.journey.ui.PatientPageActivity$PlaceholderFragment">
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/section_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/add_assess_button"
-        android:layout_width="wrap_content"
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
-        android:layout_margin="10dp"
-        android:src="@drawable/add"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"/>
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:background="#ffffff"
-        android:elevation="2dp"
-        android:id="@+id/linearLayout"
-        android:layout_marginBottom="30dp">
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-        <TextView
-            android:layout_width="wrap_content"
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tabs"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Day: 13"
-            android:id="@+id/textView4"
-            android:layout_gravity="right"
-            android:textSize="16sp"
-            android:layout_margin="5sp"/>
+            app:tabMode="fixed"
+            app:tabGravity="fill"/>
+    </android.support.design.widget.AppBarLayout>
 
-        <View
-            android:id="@+id/SplitLine_hor1"
-            android:layout_width="match_parent"
-            android:layout_height= "2dp"
-            android:background="#e0e0e0"/>
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="20dp">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="ASSESSMENT: GAIT"
-                android:id="@+id/textView5"
-                android:textColor="#03A9F4"
-                android:layout_marginBottom="5dp"
-                android:textSize="18dp"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="AVG STRIDE TIME: 1.1 s"
-                android:id="@+id/textView6"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="10dp"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="STRIDE TIME VARIABILITY: 0.5 s"
-                android:id="@+id/textView7"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="10dp"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="SYMMETRY: 1.1"
-                android:id="@+id/textView8"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"/>
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="vertical"
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager"
         android:layout_width="match_parent"
-        android:layout_height="600dp"
-        android:background="#ffffff"
-        android:elevation="2dp"
-        android:layout_below="@+id/linearLayout"
-        android:id="@+id/linearLayout2">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Day: 12"
-            android:layout_gravity="right"
-            android:textSize="16sp"
-            android:layout_margin="5dp"/>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height= "2dp"
-            android:background="#e0e0e0"/>
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="20dp">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="ASSESSMENT: TIMED UP AND GO"
-                android:textColor="#F44336"
-                android:layout_marginBottom="5dp"
-                android:textSize="18sp"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="TIME TO COMPLETE: 20 s"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="10dp"
-                />
-            <VideoView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:id="@+id/videoView"
-                android:layout_gravity="center_horizontal"/>
-        </LinearLayout>
-
-    </LinearLayout>
-
-</RelativeLayout>
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"  />
+</android.support.design.widget.CoordinatorLayout>

@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.uoft.journey.R;
 import com.uoft.journey.models.Patient;
+import com.uoft.journey.ui.PatientPageActivity;
 
 import java.util.List;
 
@@ -74,7 +75,7 @@ public class PatientListAdapter extends RecyclerView.Adapter<PatientListAdapter.
         public void onClick(View view) {
             Log.d(TAG, "Clicked" + getAdapterPosition());
 
-            Intent intent= new Intent(view.getContext(), com.uoft.journey.ui.PatientPageActivity.class);
+            Intent intent= new Intent(view.getContext(), PatientPageActivity.class);
             view.getContext().startActivity(intent);
         }
 

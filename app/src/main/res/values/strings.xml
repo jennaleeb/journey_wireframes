@@ -12,11 +12,12 @@
     <string name="title_activity_add_new_assessment">add_new_assessment</string>
 
     <string-array name="assessments_array">
-        <item>GAIT ASSESSMENT</item>
+        <item>STRIDE ANALYSIS</item>
         <item>TIMED UP AND GO</item>
         <item>BERG BALANCE SCORE</item>
         <item>Picture</item>
         <item>Video</item>
         <item>Comment</item>
     </string-array>
+    <string name="title_activity_patient_page2">PatientPageActivity2</string>
 </resources>

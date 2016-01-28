@@ -21,12 +21,12 @@
             android:label="@string/title_activity_patient_list" >
         </activity>
         <activity
-            android:name=".ui.PatientPageActivity"
-            android:label="@string/title_activity_patient_page" >
-        </activity>
-        <activity
             android:name=".ui.AddNewAssessmentActivity"
             android:label="@string/title_activity_add_new_assessment" >
+        </activity>
+        <activity
+            android:name=".ui.PatientPageActivity"
+            android:label="@string/title_activity_patient_page2" >
         </activity>
     </application>
 
