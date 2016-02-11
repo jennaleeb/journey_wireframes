@@ -1,4 +1,4 @@
-package com.uoft.journey.ui;
+package com.uoft.journey.ui.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -6,8 +6,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.uoft.journey.R;
-import com.uoft.journey.models.Patient;
-import com.uoft.journey.ui.adapters.PatientListAdapter;
+import com.uoft.journey.entity.Patient;
+import com.uoft.journey.ui.adapter.PatientListAdapter;
 
 import java.util.ArrayList;
 import java.util.Date;

@@ -1,4 +1,4 @@
-package com.uoft.journey.ui;
+package com.uoft.journey.ui.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.uoft.journey.R;
+import com.uoft.journey.ui.activity.AddNewAssessmentActivity;
 
 /**
  * Created by jenna on 16-01-27.
@@ -37,7 +38,7 @@ public class PatientNewsfeedFragment extends Fragment {
         addAssessButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(), com.uoft.journey.ui.AddNewAssessmentActivity.class);
+                Intent intent = new Intent(getContext(), AddNewAssessmentActivity.class);
                 startActivity(intent);
             }
         });

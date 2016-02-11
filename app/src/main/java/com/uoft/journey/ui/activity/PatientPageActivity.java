@@ -1,4 +1,4 @@
-package com.uoft.journey.ui;
+package com.uoft.journey.ui.activity;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -11,6 +11,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.uoft.journey.R;
+import com.uoft.journey.ui.fragment.PatientHistoryFragment;
+import com.uoft.journey.ui.fragment.PatientNewsfeedFragment;
+import com.uoft.journey.ui.fragment.PatientProfileFragment;
 
 import java.util.ArrayList;
 import java.util.List;

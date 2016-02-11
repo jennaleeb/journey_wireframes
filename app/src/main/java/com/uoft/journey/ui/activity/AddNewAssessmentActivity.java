@@ -1,4 +1,4 @@
-package com.uoft.journey.ui;
+package com.uoft.journey.ui.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;

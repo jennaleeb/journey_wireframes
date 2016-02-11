@@ -1,4 +1,4 @@
-package com.uoft.journey.ui.adapters;
+package com.uoft.journey.ui.adapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,8 +10,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.uoft.journey.R;
-import com.uoft.journey.models.Patient;
-import com.uoft.journey.ui.PatientPageActivity;
+import com.uoft.journey.entity.Patient;
+import com.uoft.journey.ui.activity.PatientPageActivity;
 
 import java.util.List;
 

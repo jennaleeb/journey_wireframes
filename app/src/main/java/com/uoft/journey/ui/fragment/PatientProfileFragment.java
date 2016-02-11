@@ -1,4 +1,4 @@
-package com.uoft.journey.ui;
+package com.uoft.journey.ui.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,9 +11,9 @@ import com.uoft.journey.R;
 /**
  * Created by jenna on 16-01-27.
  */
-public class PatientHistoryFragment extends Fragment {
+public class PatientProfileFragment extends Fragment {
 
-    public PatientHistoryFragment() {
+    public PatientProfileFragment() {
 
     }
 
@@ -26,6 +26,6 @@ public class PatientHistoryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_patient_history, container, false);
+        return inflater.inflate(R.layout.fragment_patient_profile, container, false);
     }
 }

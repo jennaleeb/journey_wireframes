@@ -1,11 +1,11 @@
-package com.uoft.journey.models;
+package com.uoft.journey.entity;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * Created by jenna on 16-01-19.
+ * Created by Charlie on 11/02/2016.
  */
 public class Patient {
 
