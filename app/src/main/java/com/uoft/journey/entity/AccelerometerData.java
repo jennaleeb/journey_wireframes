@@ -32,6 +32,16 @@ public class AccelerometerData implements Parcelable {
         mStartTimestamp = startTime;
     }
 
+    public AccelerometerData(long[] timeVals, int[] elapsedVals, float[] xVals, float[] yVals, float[] zVals) {
+        mAccX = xVals;
+        mAccY = yVals;
+        mAccZ = zVals;
+        mElapsedTimestamp = elapsedVals;
+        mTimestamp = timeVals;
+        mStartTimestamp = timeVals[0];
+        mIndex = timeVals.length;
+    }
+
     private AccelerometerData(Parcel parcel) {
         readFromParcel(parcel);
     }

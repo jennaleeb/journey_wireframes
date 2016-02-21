@@ -25,7 +25,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class SensorService extends Service implements SensorEventListener {
     public static final String TAG = SensorService.class.getSimpleName();
 
-    public static final String  ACTION_ACCELEROMETER_DATA = "ca.mywalk.app.action.ACCELEROMETER_DATA";
+    public static final String  ACTION_ACCELEROMETER_DATA = "com.uoft.journey.action.ACCELEROMETER_DATA";
 
     public static boolean isRunning = false;
 
@@ -72,10 +72,10 @@ public class SensorService extends Service implements SensorEventListener {
                     intent.putExtra(AccelerometerData.ACCELEROMETER_DATA_KEY, data_tx);
 
                     String output = "";
-                    for(int i=0; i< mData[1].getDataCount(); i++) {
+                    for(int i=0; i< data_tx.getDataCount(); i++) {
                         // Add line for file output
-                        output += String.format("%s, %f, %f, %f\n", Long.toString(mData[1].getTimestamps()[i]),
-                                mData[1].getAccelDataX()[i], mData[1].getAccelDataY()[i], mData[1].getAccelDataZ()[i]);
+                        output += String.format("%d,%s,%f,%f,%f\n", data_tx.getElapsedTimestamps()[i], Long.toString(data_tx.getTimestamps()[i]),
+                                data_tx.getAccelDataX()[i], data_tx.getAccelDataY()[i],data_tx.getAccelDataZ()[i]);
                     }
 
                     try {
@@ -114,8 +114,9 @@ public class SensorService extends Service implements SensorEventListener {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        File file = new File("data.csv");
-        file.delete();
+        File dir = getFilesDir();
+        File file = new File(dir, "data.csv");
+        boolean deleted = file.delete();
 
         mData = new AccelerometerData[2];
         mData[0] = new AccelerometerData(DATA_SIZE, -1);

@@ -18,14 +18,17 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.uoft.journey.R;
 import com.uoft.journey.entity.AccelerometerData;
+import com.uoft.journey.service.DataProcessingService;
 import com.uoft.journey.service.SensorService;
 
 public class MeasureActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Button mBtnStart;
     private Button mBtnStop;
+    private Button mBtnProcess;
     private LineChart mGraph;
     private IntentFilter mIntentFilter;
+    private IntentFilter mProcessIntentFilter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,9 +42,12 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
             mBtnStop.setVisibility(View.INVISIBLE);
         }
         mBtnStop.setOnClickListener(this);
+        mBtnProcess = (Button)findViewById(R.id.button_process);
+        mBtnProcess.setOnClickListener(this);
         mGraph = (LineChart)findViewById(R.id.graph);
         setupGraph();
         mIntentFilter = new IntentFilter(SensorService.ACTION_ACCELEROMETER_DATA);
+        mProcessIntentFilter = new IntentFilter(DataProcessingService.ACTION_PROCESSED_DATA);
     }
 
     private void setupGraph() {
@@ -86,6 +92,13 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
         catch (Exception e) {
             e.printStackTrace();
         }
+
+        try {
+            getApplicationContext().unregisterReceiver(mProcessReceiver);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -95,6 +108,14 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
         if(SensorService.isRunning) {
             try {
                 getApplicationContext().registerReceiver(mReceiver, mIntentFilter);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        if(DataProcessingService.isRunning) {
+            try {
+                getApplicationContext().registerReceiver(mProcessReceiver, mProcessIntentFilter);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -120,11 +141,14 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
                 mBtnStart.setEnabled(true);
                 stopCollecting();
                 break;
+            case R.id.button_process:
+                startProcessing();
+                break;
         }
     }
 
     private void startCollecting() {
-        if(!SensorService.isRunning) {
+        if(!SensorService.isRunning && !DataProcessingService.isRunning) {
 
             // Call the service to start collecting accelerometer data
             Intent intent = new Intent(this, SensorService.class);
@@ -145,26 +169,56 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
-//    private void showResults() {
-//        try {
-//            FileInputStream fis = openFileInput("log.csv");
-//            FileReader fr = new FileReader(fis.getFD());
-//            BufferedReader br = new BufferedReader(fr);
-//            String line = null;
-//            while ((line = br.readLine()) != null) {
-//                //mTxtResult.append(line);
-//                //mTxtResult.append("\n");
-//            }
-//        }catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
+    private void startProcessing() {
+        if(!SensorService.isRunning && !DataProcessingService.isRunning) {
+            Intent intent = new Intent(this, DataProcessingService.class);
+            startService(intent);
+            getApplicationContext().registerReceiver(mProcessReceiver, mProcessIntentFilter);
+        }
+    }
+
+    private void stopProcessing() {
+        try {
+            stopService(new Intent(this, DataProcessingService.class));
+            getApplicationContext().unregisterReceiver(mProcessReceiver);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     private void outputResults(AccelerometerData data) {
         try {
 
             LineData graphData = mGraph.getData();
             int startPoint = graphData.getXValCount();
+
+            for(int i=0; i< data.getDataCount(); i++) {
+                // Add timestamp to X-axis and X,Y,Z line series values
+                graphData.addXValue(data.getElapsedTimestamps()[i] + "");
+                graphData.addEntry(new Entry(data.getAccelDataX()[i], i + startPoint), 0);
+                graphData.addEntry(new Entry(data.getAccelDataY()[i], i + startPoint), 1);
+                graphData.addEntry(new Entry(data.getAccelDataZ()[i], i + startPoint), 2);
+            }
+
+            mGraph.notifyDataSetChanged();
+            mGraph.invalidate();
+
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void outputProcessedResults(AccelerometerData data) {
+        try {
+
+            stopProcessing();
+            mGraph.clear();
+            setupGraph();
+            LineData graphData = mGraph.getData();
+            int startPoint = graphData.getXValCount();
+            //graphData.clearValues();
+
 
             for(int i=0; i< data.getDataCount(); i++) {
                 // Add timestamp to X-axis and X,Y,Z line series values
@@ -197,6 +251,25 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
             @Override
             protected void onPostExecute(AccelerometerData result) {
                 outputResults(result);
+            }
+        }
+    };
+
+    BroadcastReceiver mProcessReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            new HandleUpdate().execute(intent);
+        }
+
+        class HandleUpdate extends AsyncTask<Intent, Void, AccelerometerData> {
+            @Override
+            protected AccelerometerData doInBackground(Intent ... params) {
+                return params[0].getParcelableExtra(AccelerometerData.ACCELEROMETER_DATA_KEY);
+            }
+
+            @Override
+            protected void onPostExecute(AccelerometerData result) {
+                outputProcessedResults(result);
             }
         }
     };
