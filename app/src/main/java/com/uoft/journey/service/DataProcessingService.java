@@ -86,29 +86,27 @@ public class DataProcessingService extends Service {
 
                 isr.close();
 
-                //int maxElapsed = elapsedVals.get(elapsedVals.size() - 1);
-                //boolean isFinished = false;
-
-                float[] xArray = new float[xVals.size()];
-                for(int i=0; i<xVals.size(); i++) {
-                    xArray[i] = xVals.get(i);
-                }
-
-                xArray = Gait.simpleLowPassFilter(xArray, 20.0f);
+                  float[] xArray = new float[xVals.size()];
+//                for(int i=0; i<xVals.size(); i++) {
+//                    xArray[i] = xVals.get(i);
+//                }
+//
+//                xArray = Gait.simpleLowPassFilter(xArray, 20.0f);
 
                 float[] yArray = new float[yVals.size()];
                 for(int i=0; i<yVals.size(); i++) {
                     yArray[i] = yVals.get(i);
+                    xArray[i] = yVals.get(i); // For testing
                 }
 
-                yArray = Gait.simpleLowPassFilter(yArray, 20.0f);
+                yArray = Gait.simpleLowPassFilter(yArray, 50.0f);
 
                 float[] zArray = new float[zVals.size()];
                 for(int i=0; i<zVals.size(); i++) {
                     zArray[i] = zVals.get(i);
                 }
 
-                zArray = Gait.simpleLowPassFilter(zArray, 20.0f);
+                zArray = Gait.simpleLowPassFilter(zArray, 30.0f);
 
                 int[] elArray = new int[elapsedVals.size()];
                 for(int i=0; i<elapsedVals.size(); i++) {

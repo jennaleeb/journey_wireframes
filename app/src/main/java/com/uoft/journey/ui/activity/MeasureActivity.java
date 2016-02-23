@@ -19,6 +19,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.uoft.journey.R;
 import com.uoft.journey.entity.AccelerometerData;
 import com.uoft.journey.service.DataProcessingService;
+import com.uoft.journey.service.Gait;
 import com.uoft.journey.service.SensorService;
 
 public class MeasureActivity extends AppCompatActivity implements View.OnClickListener {
@@ -217,15 +218,18 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
             setupGraph();
             LineData graphData = mGraph.getData();
             int startPoint = graphData.getXValCount();
-            //graphData.clearValues();
 
+            Integer[] steps = Gait.binaryLocalMaxima(data.getAccelDataY()); // Will need moving to DataProcessingService
 
             for(int i=0; i< data.getDataCount(); i++) {
                 // Add timestamp to X-axis and X,Y,Z line series values
                 graphData.addXValue(data.getElapsedTimestamps()[i] + "");
-                graphData.addEntry(new Entry(data.getAccelDataX()[i], i + startPoint), 0);
-                graphData.addEntry(new Entry(data.getAccelDataY()[i], i + startPoint), 1);
-                graphData.addEntry(new Entry(data.getAccelDataZ()[i], i + startPoint), 2);
+                graphData.addEntry(new Entry(data.getAccelDataX()[i], i + startPoint), 0); // This is the original Y data for testing
+                graphData.addEntry(new Entry(data.getAccelDataY()[i], i + startPoint), 1); // The processed Y data
+                //graphData.addEntry(new Entry(data.getAccelDataZ()[i], i + startPoint), 2);
+
+                // Show the calculated maxima points
+                graphData.addEntry(new Entry(steps[i], i + startPoint), 2);
             }
 
             mGraph.notifyDataSetChanged();
