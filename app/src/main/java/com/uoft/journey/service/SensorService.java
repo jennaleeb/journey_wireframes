@@ -7,11 +7,15 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 
+import com.uoft.journey.data.LocalDatabaseAccess;
+import com.uoft.journey.data.LocalDatabaseHelper;
 import com.uoft.journey.entity.AccelerometerData;
+import com.uoft.journey.entity.Trial;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -38,6 +42,7 @@ public class SensorService extends Service implements SensorEventListener {
     private ReentrantLock mLock;
     private SensorManager mSensorManager;
     private Sensor mAccelerometer;
+    private int mTrialId;
 
     private Handler mHandler = new Handler() {
 
@@ -71,23 +76,25 @@ public class SensorService extends Service implements SensorEventListener {
                     intent.setAction(ACTION_ACCELEROMETER_DATA);
                     intent.putExtra(AccelerometerData.ACCELEROMETER_DATA_KEY, data_tx);
 
-                    String output = "";
-                    for(int i=0; i< data_tx.getDataCount(); i++) {
-                        // Add line for file output
-                        output += String.format("%d,%s,%f,%f,%f\n", data_tx.getElapsedTimestamps()[i], Long.toString(data_tx.getTimestamps()[i]),
-                                data_tx.getAccelDataX()[i], data_tx.getAccelDataY()[i],data_tx.getAccelDataZ()[i]);
-                    }
+//                    String output = "";
+//                    for(int i=0; i< data_tx.getDataCount(); i++) {
+//                        // Add line for file output
+//                        output += String.format("%d,%s,%f,%f,%f\n", data_tx.getElapsedTimestamps()[i], Long.toString(data_tx.getTimestamps()[i]),
+//                                data_tx.getAccelDataX()[i], data_tx.getAccelDataY()[i],data_tx.getAccelDataZ()[i]);
+//                    }
+//
+//                    try {
+//                        // Save to file
+//                        FileOutputStream fos = openFileOutput("data.csv", MODE_APPEND);
+//                        fos.write(output.getBytes());
+//                        fos.close();
+//                    }
+//                    catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
 
-                    try {
-                        // Save to file
-                        FileOutputStream fos = openFileOutput("data.csv", MODE_APPEND);
-                        fos.write(output.getBytes());
-                        fos.close();
-                    }
-                    catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
+                    // Save entries to DB
+                    LocalDatabaseAccess.addTrialData(mContext, mTrialId, data_tx);
 
                     mContext.sendBroadcast(intent);
                 }
@@ -114,6 +121,9 @@ public class SensorService extends Service implements SensorEventListener {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Bundle extras = intent.getExtras();
+        mTrialId = extras.getInt("trialId");
+
         File dir = getFilesDir();
         File file = new File(dir, "data.csv");
         boolean deleted = file.delete();

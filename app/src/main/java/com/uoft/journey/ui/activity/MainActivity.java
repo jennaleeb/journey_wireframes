@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View v) {
 
                     //Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                    Intent intent = new Intent(MainActivity.this, MeasureActivity.class);
+                    Intent intent = new Intent(MainActivity.this, PatientMainActivity.class);
                     startActivity(intent);
                 }
             });

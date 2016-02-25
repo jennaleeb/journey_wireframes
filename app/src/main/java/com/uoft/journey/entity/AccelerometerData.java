@@ -20,6 +20,10 @@ public class AccelerometerData implements Parcelable {
     private float[] mAccX;
     private float[] mAccY;
     private float[] mAccZ;
+    private float[] mProcessedX;
+    private float[] mProcessedY;
+    private float[] mProcessedZ;
+    private int[] mTrialDataIds;
     private int mIndex;
 
     public AccelerometerData(int size, long startTime) {
@@ -32,14 +36,15 @@ public class AccelerometerData implements Parcelable {
         mStartTimestamp = startTime;
     }
 
-    public AccelerometerData(long[] timeVals, int[] elapsedVals, float[] xVals, float[] yVals, float[] zVals) {
+    public AccelerometerData(int[] trailDataIds, int[] elapsedVals, float[] xVals, float[] yVals, float[] zVals) {
+        mTrialDataIds = trailDataIds;
         mAccX = xVals;
         mAccY = yVals;
         mAccZ = zVals;
         mElapsedTimestamp = elapsedVals;
-        mTimestamp = timeVals;
-        mStartTimestamp = timeVals[0];
-        mIndex = timeVals.length;
+//        mTimestamp = timeVals;
+//        mStartTimestamp = timeVals[0];
+        mIndex = elapsedVals.length;
     }
 
     private AccelerometerData(Parcel parcel) {
@@ -53,12 +58,34 @@ public class AccelerometerData implements Parcelable {
         mAccX = new float[mIndex];
         mAccY = new float[mIndex];
         mAccZ = new float[mIndex];
-        parcel.readLongArray(mTimestamp);
+
+        if(parcel.readByte() == 1) {
+            parcel.readLongArray(mTimestamp);
+        }
         parcel.readIntArray(mElapsedTimestamp);
         parcel.readFloatArray(mAccX);
         parcel.readFloatArray(mAccY);
         parcel.readFloatArray(mAccZ);
         mStartTimestamp = parcel.readLong();
+        if(parcel.readByte() == 1) {
+            mProcessedX = new float[mIndex];
+            mProcessedY = new float[mIndex];
+            mProcessedZ = new float[mIndex];
+            parcel.readFloatArray(mProcessedX);
+            parcel.readFloatArray(mProcessedY);
+            parcel.readFloatArray(mProcessedZ);
+        }
+
+        if(parcel.readByte() == 1) {
+            mTrialDataIds = new int[mIndex];
+            parcel.readIntArray(mTrialDataIds);
+        }
+    }
+
+    public void addProcessedData(float[] processedX, float[] processedY, float[] processedZ) {
+        mProcessedX = processedX;
+        mProcessedY = processedY;
+        mProcessedZ = processedZ;
     }
 
     public void addData(long timestamp, float x, float y, float z) {
@@ -77,12 +104,24 @@ public class AccelerometerData implements Parcelable {
         return mAccX;
     }
 
+    public final float[] getProcessedX() { return mProcessedX; }
+
+    public final float[] getProcessedY() { return mProcessedY; }
+
+    public final float[] getProcessedZ() {
+        return mProcessedZ;
+    }
+
     public final float[] getAccelDataY() {
         return mAccY;
     }
 
     public final float[] getAccelDataZ() {
         return mAccZ;
+    }
+
+    public final int[] getTrialDataIds() {
+        return mTrialDataIds;
     }
 
     public final long[] getTimestamps() {
@@ -113,17 +152,47 @@ public class AccelerometerData implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(mIndex);
-        long[] timestamp = Arrays.copyOfRange(mTimestamp, 0, mIndex);
+
+        if(mTimestamp != null) {
+            dest.writeByte((byte)1);
+            long[] timestamp = Arrays.copyOfRange(mTimestamp, 0, mIndex);
+            dest.writeLongArray(timestamp);
+        }
+        else {
+            dest.writeByte((byte)0);
+        }
         int[] elapsed = Arrays.copyOfRange(mElapsedTimestamp, 0, mIndex);
         float[] x = Arrays.copyOfRange(mAccX, 0, mIndex);
         float[] y = Arrays.copyOfRange(mAccY, 0, mIndex);
         float[] z = Arrays.copyOfRange(mAccZ, 0, mIndex);
-        dest.writeLongArray(timestamp);
+
         dest.writeIntArray(elapsed);
         dest.writeFloatArray(x);
         dest.writeFloatArray(y);
         dest.writeFloatArray(z);
         dest.writeLong(mStartTimestamp);
+
+        if(mProcessedX != null) {
+            dest.writeByte((byte) 1);
+            float[] procX = Arrays.copyOfRange(mProcessedX, 0, mIndex);
+            float[] procY = Arrays.copyOfRange(mProcessedY, 0, mIndex);
+            float[] procZ = Arrays.copyOfRange(mProcessedZ, 0, mIndex);
+            dest.writeFloatArray(procX);
+            dest.writeFloatArray(procY);
+            dest.writeFloatArray(procZ);
+        }
+        else {
+            dest.writeByte((byte)0);
+        }
+
+        if(mTrialDataIds != null) {
+            dest.writeByte((byte) 1);
+            int[] ids = Arrays.copyOfRange(mTrialDataIds, 0, mIndex);
+            dest.writeIntArray(ids);
+        }
+        else {
+            dest.writeByte((byte)0);
+        }
     }
 
     public static final Parcelable.Creator<AccelerometerData> CREATOR

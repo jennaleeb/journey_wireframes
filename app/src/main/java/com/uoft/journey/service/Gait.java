@@ -114,6 +114,27 @@ public class Gait {
         return indexes.toArray(new Integer[indexes.size()]);
     }
 
+    // Locate where the local maximas are and return the step times
+    // This will always take the first maxima, which may be fine in most cases
+    public static Integer[] localMaximaTimes(float[] data, int[] times) {
+        ArrayList<Integer> stepTimes = new ArrayList<>();
+        Boolean isUp = false;
+
+        for(int i=0; i<data.length-1; i++) {
+            if(!isUp) {
+                if (data[i] < data[i + 1] && data[i] < minThreshold) {
+                    isUp = true;
+                }
+            }
+            else if(data[i] > data[i+1] && data[i] > minThreshold) {
+                isUp = false;
+                stepTimes.add(times[i]);
+            }
+        }
+
+        return stepTimes.toArray(new Integer[stepTimes.size()]);
+    }
+
     // As above. Locate where the local maximas but return the data as zeros, with 10s for the maxima points
     public static Integer[] binaryLocalMaxima(float[] data) {
         Integer[] vals = new Integer[data.length];

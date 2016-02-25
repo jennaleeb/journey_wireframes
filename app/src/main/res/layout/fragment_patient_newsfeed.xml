@@ -60,7 +60,7 @@
                 android:layout_height="wrap_content"
                 android:text="ASSESSMENT: STRIDE ANALYSIS"
                 android:id="@+id/textView5"
-                android:textColor="#03A9F4"
+                android:textColor="@color/textColorHeading"
                 android:layout_marginBottom="5dp"
                 android:textSize="18dp"/>
             <TextView

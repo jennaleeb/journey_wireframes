@@ -17,10 +17,16 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.uoft.journey.R;
+import com.uoft.journey.data.LocalDatabaseAccess;
 import com.uoft.journey.entity.AccelerometerData;
+import com.uoft.journey.entity.Trial;
 import com.uoft.journey.service.DataProcessingService;
 import com.uoft.journey.service.Gait;
 import com.uoft.journey.service.SensorService;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 
 public class MeasureActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -30,11 +36,21 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
     private LineChart mGraph;
     private IntentFilter mIntentFilter;
     private IntentFilter mProcessIntentFilter;
+    private Trial mTrial;
+    private int mUserId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_measure);
+
+        Bundle extras = getIntent().getExtras();
+        mUserId = extras.getInt("userId");
+
+        if(savedInstanceState != null) {
+            mTrial = savedInstanceState.getParcelable("trial");
+        }
+
         mBtnStart = (Button)findViewById(R.id.button_start);
         mBtnStart.setOnClickListener(this);
         mBtnStop = (Button)findViewById(R.id.button_stop);
@@ -124,6 +140,13 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        // Save the current trial
+        savedInstanceState.putParcelable("trial", mTrial);
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
     public void onClick(View v) {
         switch(v.getId()){
             case R.id.button_start:
@@ -150,9 +173,17 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
 
     private void startCollecting() {
         if(!SensorService.isRunning && !DataProcessingService.isRunning) {
+            // Create the trial
+            Calendar cal = Calendar.getInstance(TimeZone.getDefault());
+            Date start = cal.getTime();
+            int trialId = LocalDatabaseAccess.addTrial(this, mUserId, start);
+            mTrial = new Trial(trialId, start, null);
 
             // Call the service to start collecting accelerometer data
             Intent intent = new Intent(this, SensorService.class);
+            Bundle bundle = new Bundle();
+            bundle.putInt("trialId", trialId);
+            intent.putExtras(bundle);
             startService(intent);
             getApplicationContext().registerReceiver(mReceiver, mIntentFilter);
         }
@@ -161,6 +192,7 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
     private void stopCollecting() {
         if (SensorService.isRunning) {
             stopService(new Intent(this, SensorService.class));
+            mTrial.setTrialData(LocalDatabaseAccess.getTrialData(this, mTrial.getTrialId()));
             try {
                 getApplicationContext().unregisterReceiver(mReceiver);
             }
@@ -173,6 +205,9 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
     private void startProcessing() {
         if(!SensorService.isRunning && !DataProcessingService.isRunning) {
             Intent intent = new Intent(this, DataProcessingService.class);
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("trial", mTrial);
+            intent.putExtras(bundle);
             startService(intent);
             getApplicationContext().registerReceiver(mProcessReceiver, mProcessIntentFilter);
         }
@@ -210,26 +245,48 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
-    private void outputProcessedResults(AccelerometerData data) {
+    private void outputProcessedResults(Trial trial) {
         try {
 
             stopProcessing();
+            mTrial = trial;
+            AccelerometerData data = mTrial.getTrialData();
             mGraph.clear();
             setupGraph();
             LineData graphData = mGraph.getData();
             int startPoint = graphData.getXValCount();
 
-            Integer[] steps = Gait.binaryLocalMaxima(data.getAccelDataY()); // Will need moving to DataProcessingService
-
+            //Integer[] steps = Gait.binaryLocalMaxima(data.getAccelDataY()); // Will need moving to DataProcessingService
+            int nextStep = 0;
             for(int i=0; i< data.getDataCount(); i++) {
                 // Add timestamp to X-axis and X,Y,Z line series values
                 graphData.addXValue(data.getElapsedTimestamps()[i] + "");
-                graphData.addEntry(new Entry(data.getAccelDataX()[i], i + startPoint), 0); // This is the original Y data for testing
-                graphData.addEntry(new Entry(data.getAccelDataY()[i], i + startPoint), 1); // The processed Y data
+                graphData.addEntry(new Entry(data.getAccelDataY()[i], i + startPoint), 0); // This is the original Y data for testing
+                graphData.addEntry(new Entry(data.getProcessedY()[i], i + startPoint), 1); // The processed Y data
                 //graphData.addEntry(new Entry(data.getAccelDataZ()[i], i + startPoint), 2);
 
                 // Show the calculated maxima points
-                graphData.addEntry(new Entry(steps[i], i + startPoint), 2);
+                boolean added = false;
+                while(nextStep < trial.getStepTimes().length) {
+                    if(trial.getStepTimes()[nextStep] == data.getElapsedTimestamps()[i]) {
+                        // Step found, add a 10 point
+                        graphData.addEntry(new Entry(10, i + startPoint), 2);
+                        nextStep++;
+                        added = true;
+                        break;
+                    }
+
+                    if(trial.getStepTimes()[nextStep] > data.getElapsedTimestamps()[i]) {
+                        break;
+                    }
+
+                    nextStep++;
+                }
+
+                // Not a step so add zero point
+                if(!added) {
+                    graphData.addEntry(new Entry(0, i + startPoint), 2);
+                }
             }
 
             mGraph.notifyDataSetChanged();
@@ -265,14 +322,14 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
             new HandleUpdate().execute(intent);
         }
 
-        class HandleUpdate extends AsyncTask<Intent, Void, AccelerometerData> {
+        class HandleUpdate extends AsyncTask<Intent, Void, Trial> {
             @Override
-            protected AccelerometerData doInBackground(Intent ... params) {
-                return params[0].getParcelableExtra(AccelerometerData.ACCELEROMETER_DATA_KEY);
+            protected Trial doInBackground(Intent ... params) {
+                return params[0].getParcelableExtra(Trial.TRIAL_DATA_KEY);
             }
 
             @Override
-            protected void onPostExecute(AccelerometerData result) {
+            protected void onPostExecute(Trial result) {
                 outputProcessedResults(result);
             }
         }

@@ -186,7 +186,7 @@ public class LoginActivity extends AppCompatActivity {
         else {
             Toast.makeText(getBaseContext(), "Login Successful", Toast.LENGTH_LONG).show();
         }
-        Intent intent = new Intent(LoginActivity.this, PatientListActivity.class);
+        Intent intent = new Intent(LoginActivity.this, PatientMainActivity.class);
         _auth.dismiss();
 
         startActivity(intent);
