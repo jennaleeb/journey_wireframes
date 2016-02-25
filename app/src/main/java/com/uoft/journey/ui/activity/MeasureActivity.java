@@ -265,24 +265,25 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
                 graphData.addEntry(new Entry(data.getProcessedY()[i], i + startPoint), 1); // The processed Y data
                 //graphData.addEntry(new Entry(data.getAccelDataZ()[i], i + startPoint), 2);
 
-                // Show the calculated maxima points
                 boolean added = false;
-                while(nextStep < trial.getStepTimes().length) {
-                    if(trial.getStepTimes()[nextStep] == data.getElapsedTimestamps()[i]) {
-                        // Step found, add a 10 point
-                        graphData.addEntry(new Entry(10, i + startPoint), 2);
+                if(trial.getStepTimes() != null) {
+                    // Show the calculated maxima points
+                    while (nextStep < trial.getStepTimes().length) {
+                        if (trial.getStepTimes()[nextStep] == data.getElapsedTimestamps()[i]) {
+                            // Step found, add a 10 point
+                            graphData.addEntry(new Entry(10, i + startPoint), 2);
+                            nextStep++;
+                            added = true;
+                            break;
+                        }
+
+                        if (trial.getStepTimes()[nextStep] > data.getElapsedTimestamps()[i]) {
+                            break;
+                        }
+
                         nextStep++;
-                        added = true;
-                        break;
                     }
-
-                    if(trial.getStepTimes()[nextStep] > data.getElapsedTimestamps()[i]) {
-                        break;
-                    }
-
-                    nextStep++;
                 }
-
                 // Not a step so add zero point
                 if(!added) {
                     graphData.addEntry(new Entry(0, i + startPoint), 2);
