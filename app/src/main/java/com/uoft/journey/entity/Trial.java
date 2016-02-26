@@ -14,21 +14,24 @@ public class Trial implements Parcelable {
     private Date mStartTime;
     private AccelerometerData mTrialData;
     private int[] mStepTimes;
+    private float mMeanStrideTime;
+    private float mStandardDev;
+    private float mCoeffOfVar;
 
     public Trial(int trialId, Date startTime, AccelerometerData data) {
         mTrialId = trialId;
         mStartTime = startTime;
         mTrialData = data;
+        mMeanStrideTime = 0.0f;
+        mStandardDev = 0.0f;
+        mCoeffOfVar = 0.0f;
     }
 
     private Trial(Parcel parcel) {
         mTrialId = parcel.readInt();
         mStartTime = (Date)parcel.readSerializable();
-        try {
+        if(parcel.readByte() == 1) {
             mTrialData = parcel.readParcelable(AccelerometerData.class.getClassLoader());
-        }
-        catch (Exception e) {
-            mTrialData = null;
         }
 
         int steps = parcel.readInt();
@@ -36,6 +39,10 @@ public class Trial implements Parcelable {
             mStepTimes = new int[steps];
             parcel.readIntArray(mStepTimes);
         }
+
+        mMeanStrideTime = parcel.readFloat();
+        mStandardDev = parcel.readFloat();
+        mCoeffOfVar = parcel.readFloat();
     }
 
     public int getTrialId() {
@@ -54,12 +61,30 @@ public class Trial implements Parcelable {
         return mStepTimes;
     }
 
+    public float getMeanStrideTime() {
+        return mMeanStrideTime;
+    }
+
+    public float getStandardDev() {
+        return mStandardDev;
+    }
+
+    public float getCoeffOfVar() {
+        return mCoeffOfVar;
+    }
+
     public void setTrialData(AccelerometerData data) {
         mTrialData = data;
     }
 
     public void setStepTimes(int[] steps) {
         mStepTimes = steps;
+    }
+
+    public void setStepAnalysis(float mean, float standardDev, float coeffOfVar) {
+        mMeanStrideTime = mean;
+        mStandardDev = standardDev;
+        mCoeffOfVar = coeffOfVar;
     }
 
     @Override
@@ -71,7 +96,14 @@ public class Trial implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(mTrialId);
         dest.writeSerializable(mStartTime);
-        dest.writeParcelable(mTrialData, flags);
+
+        if(mTrialData != null) {
+            dest.writeByte((byte)1);
+            dest.writeParcelable(mTrialData, flags);
+        }
+        else {
+            dest.writeByte((byte)0);
+        }
 
         if(mStepTimes != null) {
             dest.writeInt(mStepTimes.length);
@@ -80,6 +112,10 @@ public class Trial implements Parcelable {
         else {
             dest.writeInt(-1);
         }
+
+        dest.writeFloat(mMeanStrideTime);
+        dest.writeFloat(mStandardDev);
+        dest.writeFloat(mCoeffOfVar);
     }
 
     public static final Parcelable.Creator<Trial> CREATOR

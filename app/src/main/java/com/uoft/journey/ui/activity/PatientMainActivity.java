@@ -49,4 +49,15 @@ public class PatientMainActivity extends AppCompatActivity implements View.OnCli
                 break;
         }
     }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        // Reload the trial list fragment
+        PatientTrialsFragment fragment = PatientTrialsFragment.newInstance(mPatient.getID());
+        FragmentTransaction trans = getSupportFragmentManager().beginTransaction();
+        trans.replace(R.id.feed_container, fragment);
+        trans.commit();
+    }
 }

@@ -5,7 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 /**
- * Created by Charlie on 24/02/2016.
+ * Creates the local DB and holds all column/table information
  */
 public class LocalDatabaseHelper extends SQLiteOpenHelper {
     private static LocalDatabaseHelper mInstance = null;
@@ -24,6 +24,9 @@ public class LocalDatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_TRIAL_ID = "id";
     public static final String COLUMN_TRIAL_USER_ID = "userId";
     public static final String COLUMN_TRIAL_START_TIME = "startTime";
+    public static final String COLUMN_TRIAL_MEAN_STRIDE_TIME = "meanStrideTime";
+    public static final String COLUMN_TRIAL_STANDARD_DEV = "standardDev";
+    public static final String COLUMN_TRIAL_COEFF_OF_VAR = "coeffOfVar";
     // Columns - TrialData
     public static final String COLUMN_TRIAL_DATA_TRIAL_ID = "trialId";
     public static final String COLUMN_TRIAL_DATA_ELAPSED_TIME = "elapsedTime";
@@ -53,8 +56,9 @@ public class LocalDatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        // Create the tables
         db.execSQL("CREATE TABLE user (id INTEGER PRIMARY KEY, name TEXT);");
-        db.execSQL("CREATE TABLE trial (id INTEGER PRIMARY KEY, userId INTEGER, startTime TEXT, FOREIGN KEY(userId) REFERENCES user(id));");
+        db.execSQL("CREATE TABLE trial (id INTEGER PRIMARY KEY, userId INTEGER, startTime TEXT, meanStrideTime REAL, standardDev REAL, coeffOfVar REAL);");
         db.execSQL("CREATE TABLE trialData (trialId INTEGER, elapsedTime INTEGER, xVal REAL, yVal REAL, zVal REAL, xProcessed REAL, yProcessed REAL, zProcessed REAL, FOREIGN KEY(trialId) REFERENCES trial(id));");
         db.execSQL("CREATE TABLE trialStep (trialId INTEGER, stepNum INTEGER, elapsedTime INTEGER, FOREIGN KEY(trialId) REFERENCES trial(id));");
     }

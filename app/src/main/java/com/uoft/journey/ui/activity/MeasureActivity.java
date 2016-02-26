@@ -54,13 +54,18 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
         mBtnStart = (Button)findViewById(R.id.button_start);
         mBtnStart.setOnClickListener(this);
         mBtnStop = (Button)findViewById(R.id.button_stop);
-        if(!SensorService.isRunning) {
-            mBtnStop.setEnabled(false);
-            mBtnStop.setVisibility(View.INVISIBLE);
-        }
         mBtnStop.setOnClickListener(this);
         mBtnProcess = (Button)findViewById(R.id.button_process);
         mBtnProcess.setOnClickListener(this);
+        if(!SensorService.isRunning) {
+            mBtnStop.setEnabled(false);
+        }
+        if(!SensorService.isRunning && !DataProcessingService.isRunning && mTrial != null) {
+            mBtnProcess.setEnabled(true);
+        }
+        else {
+            mBtnProcess.setEnabled(false);
+        }
         mGraph = (LineChart)findViewById(R.id.graph);
         setupGraph();
         mIntentFilter = new IntentFilter(SensorService.ACTION_ACCELEROMETER_DATA);
@@ -150,19 +155,11 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
     public void onClick(View v) {
         switch(v.getId()){
             case R.id.button_start:
-                mBtnStop.setVisibility(View.VISIBLE);
-                mBtnStop.setEnabled(true);
-                mBtnStart.setVisibility(View.INVISIBLE);
-                mBtnStart.setEnabled(false);
                 mGraph.clear();
                 setupGraph();
                 startCollecting();
                 break;
             case R.id.button_stop:
-                mBtnStop.setVisibility(View.INVISIBLE);
-                mBtnStop.setEnabled(false);
-                mBtnStart.setVisibility(View.VISIBLE);
-                mBtnStart.setEnabled(true);
                 stopCollecting();
                 break;
             case R.id.button_process:
@@ -173,6 +170,10 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
 
     private void startCollecting() {
         if(!SensorService.isRunning && !DataProcessingService.isRunning) {
+            mBtnStop.setEnabled(true);
+            mBtnStart.setEnabled(false);
+            mBtnProcess.setEnabled(false);
+
             // Create the trial
             Calendar cal = Calendar.getInstance(TimeZone.getDefault());
             Date start = cal.getTime();
@@ -191,6 +192,9 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
 
     private void stopCollecting() {
         if (SensorService.isRunning) {
+            mBtnStop.setEnabled(false);
+            mBtnStart.setEnabled(true);
+            mBtnProcess.setEnabled(true);
             stopService(new Intent(this, SensorService.class));
             mTrial.setTrialData(LocalDatabaseAccess.getTrialData(this, mTrial.getTrialId()));
             try {
@@ -204,6 +208,9 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
 
     private void startProcessing() {
         if(!SensorService.isRunning && !DataProcessingService.isRunning) {
+            mBtnStop.setEnabled(false);
+            mBtnStart.setEnabled(false);
+            mBtnProcess.setEnabled(false);
             Intent intent = new Intent(this, DataProcessingService.class);
             Bundle bundle = new Bundle();
             bundle.putParcelable("trial", mTrial);
@@ -215,6 +222,9 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
 
     private void stopProcessing() {
         try {
+            mBtnStop.setEnabled(false);
+            mBtnStart.setEnabled(true);
+            mBtnProcess.setEnabled(true);
             stopService(new Intent(this, DataProcessingService.class));
             getApplicationContext().unregisterReceiver(mProcessReceiver);
         }

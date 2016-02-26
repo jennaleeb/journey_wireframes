@@ -9,4 +9,6 @@
     <color name="windowBackground">#FFFFFF</color>
     <color name="navigationBarColor">#000000</color>
     <color name="colorAccent">#009688</color>
+    <color name="colorPressed">#000000</color>
+    <color name="colorDisabled">#E0E0E0</color>
 </resources>

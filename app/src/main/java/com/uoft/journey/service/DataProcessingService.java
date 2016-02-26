@@ -68,78 +68,30 @@ public class DataProcessingService extends Service {
 
         @Override
         protected Trial doInBackground(Trial... params) {
-            //String filename = params[0];
+
             Trial trial = params[0];
-            ArrayList<Integer> elapsedVals = new ArrayList<>();
-            ArrayList<Long> timeVals = new ArrayList<>();
-            ArrayList<Float> xVals = new ArrayList<>();
-            ArrayList<Float> yVals = new ArrayList<>();
-            ArrayList<Float> zVals = new ArrayList<>();
-
-            try {
-//                FileInputStream fis = openFileInput(filename);
-//                InputStreamReader isr = new InputStreamReader(fis);
-//                BufferedReader br = new BufferedReader(isr);
-//                String line;
-//                while ((line = br.readLine()) != null) {
-//                    elapsedVals.add(Integer.parseInt(line.substring(0, line.indexOf(","))));
-//                    line = line.substring(line.indexOf(",") + 1);
-//                    timeVals.add(Long.parseLong(line.substring(0, line.indexOf(","))));
-//                    line = line.substring(line.indexOf(",") + 1);
-//                    xVals.add(Float.parseFloat(line.substring(0, line.indexOf(","))));
-//                    line = line.substring(line.indexOf(",") + 1);
-//                    yVals.add(Float.parseFloat(line.substring(0, line.indexOf(","))));
-//                    zVals.add(Float.parseFloat(line.substring(line.indexOf(",") + 1)));
-//                }
-//
-//                isr.close();
-//
-//                  float[] xArray = new float[xVals.size()];
-////                for(int i=0; i<xVals.size(); i++) {
-////                    xArray[i] = xVals.get(i);
-////                }
-////
-////                xArray = Gait.simpleLowPassFilter(xArray, 20.0f);
-//
-//                float[] yArray = new float[yVals.size()];
-//                for(int i=0; i<yVals.size(); i++) {
-//                    yArray[i] = yVals.get(i);
-//                    xArray[i] = yVals.get(i); // For testing
-//                }
-//
-//                yArray = Gait.simpleLowPassFilter(yArray, 50.0f);
-//
-//                float[] zArray = new float[zVals.size()];
-//                for(int i=0; i<zVals.size(); i++) {
-//                    zArray[i] = zVals.get(i);
-//                }
-//
-//                zArray = Gait.simpleLowPassFilter(zArray, 30.0f);
-//
-//                int[] elArray = new int[elapsedVals.size()];
-//                for(int i=0; i<elapsedVals.size(); i++) {
-//                    elArray[i] = elapsedVals.get(i);
-//                }
-//                long[] timeArray = new long[timeVals.size()];
-//                for(int i=0; i<timeVals.size(); i++) {
-//                    timeArray[i] = timeVals.get(i);
-//                }
-
-                // Get trials from DB and perform smoothing on X,Y,Z
-                //AccelerometerData data = LocalDatabaseAccess.getTrialData(mContext, trialId);
+            try{
+                // Perform smoothing on X,Y,Z
                 trial.getTrialData().addProcessedData(Gait.simpleLowPassFilter(trial.getTrialData().getAccelDataX(), 50.0f),
                         Gait.simpleLowPassFilter(trial.getTrialData().getAccelDataY(), 50.0f),
                         Gait.simpleLowPassFilter(trial.getTrialData().getAccelDataZ(), 50.0f));
 
+                // Identify steps
                 Integer[] steps = Gait.localMaximaTimes(trial.getTrialData().getProcessedY(), trial.getTrialData().getElapsedTimestamps());
                 int[] stepTimes = new int[steps.length];
                 for(int i=0; i<steps.length; i++) {
                     stepTimes[i] = steps[i];
                 }
                 trial.setStepTimes(stepTimes);
+                float mean = Gait.getMeanStepTime(stepTimes);
+                float sd = Gait.getStandardDeviation(stepTimes, mean);
+                float var = Gait.getCoefficientOfVariation(sd, mean);
+                trial.setStepAnalysis(mean, sd, var);
 
                 // Save the processed data
+                LocalDatabaseAccess.updateTrial(mContext, trial);
                 LocalDatabaseAccess.updateProcessedTrialData(mContext, trial.getTrialData());
+                LocalDatabaseAccess.addTrialSteps(mContext, trial.getTrialId(), trial.getStepTimes());
 
                 return trial;
 

@@ -33,6 +33,7 @@ public class PatientTrialsListAdapter extends RecyclerView.Adapter<PatientTrials
         TextView line1;
         TextView line2;
         TextView line3;
+        TextView line4;
 
         // Show each trial as a card
         ViewHolder(View itemView) {
@@ -43,6 +44,7 @@ public class PatientTrialsListAdapter extends RecyclerView.Adapter<PatientTrials
             line1 = (TextView)itemView.findViewById(R.id.card_line_1);
             line2 = (TextView)itemView.findViewById(R.id.card_line_2);
             line3 = (TextView)itemView.findViewById(R.id.card_line_3);
+            line4 = (TextView)itemView.findViewById(R.id.card_line_4);
         }
     }
 
@@ -58,9 +60,11 @@ public class PatientTrialsListAdapter extends RecyclerView.Adapter<PatientTrials
         DateFormat df = new SimpleDateFormat("dd MMM", Locale.CANADA);
         DateFormat df2 = new SimpleDateFormat("dd-MM-yyyy hh:mm a", Locale.CANADA);
         holder.day.setText(df.format(mTrials.get(position).getStartTime()));
-        holder.title.setText("Assessment");
-        holder.line1.setText(String.format("Trial: %d", mTrials.get(position).getTrialId()));
-        holder.line2.setText(df2.format(mTrials.get(position).getStartTime()));
+        holder.title.setText(String.format("Assessment %d",mTrials.get(position).getTrialId()));
+        holder.line1.setText(df2.format(mTrials.get(position).getStartTime()));
+        holder.line2.setText(String.format("Mean Stride Time: %.2fms", mTrials.get(position).getMeanStrideTime()));
+        holder.line3.setText(String.format("Standard Deviation: %.2fms", mTrials.get(position).getStandardDev()));
+        holder.line4.setText(String.format("Coefficient of Variation: %.2f", mTrials.get(position).getCoeffOfVar()));
     }
 
     @Override

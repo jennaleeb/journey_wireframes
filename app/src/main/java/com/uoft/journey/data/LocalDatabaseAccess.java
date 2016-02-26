@@ -93,6 +93,24 @@ public class LocalDatabaseAccess {
         }
     }
 
+    public static Boolean updateTrial(Context ctx, Trial trial) {
+        try {
+            LocalDatabaseHelper db = LocalDatabaseHelper.getInstance(ctx.getApplicationContext());
+            ContentValues cv = new ContentValues();
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
+            cv.put(LocalDatabaseHelper.COLUMN_TRIAL_START_TIME, df.format(trial.getStartTime()));
+            cv.put(LocalDatabaseHelper.COLUMN_TRIAL_MEAN_STRIDE_TIME, trial.getMeanStrideTime());
+            cv.put(LocalDatabaseHelper.COLUMN_TRIAL_STANDARD_DEV, trial.getStandardDev());
+            cv.put(LocalDatabaseHelper.COLUMN_TRIAL_COEFF_OF_VAR, trial.getCoeffOfVar());
+            db.getWritableDatabase().update(LocalDatabaseHelper.TABLE_TRIAL, cv, LocalDatabaseHelper.COLUMN_TRIAL_ID + "=" + trial.getTrialId(), null);
+            return true;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     // Insert trial data
     public static Boolean addTrialData(Context ctx, int trialId, AccelerometerData data) {
         try {
@@ -165,8 +183,9 @@ public class LocalDatabaseAccess {
     public static ArrayList<Trial> getTrialsForUser(Context ctx, int userId) {
         try {
             LocalDatabaseHelper db = LocalDatabaseHelper.getInstance(ctx.getApplicationContext());
-            Cursor data = db.getReadableDatabase().rawQuery(String.format("SELECT %s, %s FROM %s WHERE userId=%d ORDER BY %s DESC", LocalDatabaseHelper.COLUMN_TRIAL_ID,
-                    LocalDatabaseHelper.COLUMN_TRIAL_START_TIME, LocalDatabaseHelper.TABLE_TRIAL, userId, LocalDatabaseHelper.COLUMN_TRIAL_START_TIME), null);
+            Cursor data = db.getReadableDatabase().rawQuery(String.format("SELECT %s, %s, %s, %s, %s FROM %s WHERE userId=%d ORDER BY %s DESC", LocalDatabaseHelper.COLUMN_TRIAL_ID,
+                    LocalDatabaseHelper.COLUMN_TRIAL_START_TIME, LocalDatabaseHelper.COLUMN_TRIAL_MEAN_STRIDE_TIME, LocalDatabaseHelper.COLUMN_TRIAL_STANDARD_DEV,
+                    LocalDatabaseHelper.COLUMN_TRIAL_COEFF_OF_VAR, LocalDatabaseHelper.TABLE_TRIAL, userId, LocalDatabaseHelper.COLUMN_TRIAL_START_TIME), null);
 
             ArrayList<Trial> trials = new ArrayList<>();
             DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
@@ -175,8 +194,13 @@ public class LocalDatabaseAccess {
                 if(!data.isNull(1)) {
                     startTime = df.parse(data.getString(1));
                 }
+                Trial trial = new Trial(data.getInt(0), startTime, null);
 
-                trials.add(new Trial(data.getInt(0), startTime, null));
+                if(!data.isNull(2)) {
+                    trial.setStepAnalysis(data.getFloat(2), data.getFloat(3), data.getFloat(4));
+                }
+                trials.add(trial);
+
             }
             data.close();
 
