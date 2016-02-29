@@ -59,12 +59,14 @@ public class PatientTrialsListAdapter extends RecyclerView.Adapter<PatientTrials
     public void onBindViewHolder(ViewHolder holder, int position) {
         DateFormat df = new SimpleDateFormat("dd MMM", Locale.CANADA);
         DateFormat df2 = new SimpleDateFormat("dd-MM-yyyy hh:mm a", Locale.CANADA);
-        holder.day.setText(df.format(mTrials.get(position).getStartTime()));
-        holder.title.setText(String.format("Assessment %d",mTrials.get(position).getTrialId()));
-        holder.line1.setText(df2.format(mTrials.get(position).getStartTime()));
-        holder.line2.setText(String.format("Mean Stride Time: %.2fms", mTrials.get(position).getMeanStrideTime()));
-        holder.line3.setText(String.format("Standard Deviation: %.2fms", mTrials.get(position).getStandardDev()));
-        holder.line4.setText(String.format("Coefficient of Variation: %.2f", mTrials.get(position).getCoeffOfVar()));
+        if(mTrials != null && mTrials.size() > position) {
+            holder.day.setText(df.format(mTrials.get(position).getStartTime()));
+            holder.title.setText(String.format("Assessment %d", mTrials.get(position).getTrialId()));
+            holder.line1.setText(df2.format(mTrials.get(position).getStartTime()));
+            holder.line2.setText(String.format("Mean Stride Time: %.2fms", mTrials.get(position).getMeanStrideTime()));
+            holder.line3.setText(String.format("Standard Deviation: %.2fms", mTrials.get(position).getStandardDev()));
+            holder.line4.setText(String.format("Coefficient of Variation: %.2f", mTrials.get(position).getCoeffOfVar()));
+        }
     }
 
     @Override
