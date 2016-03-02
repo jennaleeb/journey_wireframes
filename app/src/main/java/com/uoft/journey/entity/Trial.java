@@ -73,6 +73,20 @@ public class Trial implements Parcelable {
         return mCoeffOfVar;
     }
 
+    public int getDuration() {
+        if(mStepTimes != null && mStepTimes.length > 1)
+            return mStepTimes[mStepTimes.length - 1] - mStepTimes[0];
+
+        return 0;
+    }
+
+    public int getNumberOfSteps() {
+        if(mStepTimes != null)
+            return mStepTimes.length;
+
+        return 0;
+    }
+
     public void setTrialData(AccelerometerData data) {
         mTrialData = data;
     }

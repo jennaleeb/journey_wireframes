@@ -63,7 +63,7 @@ public class PatientTrialsListAdapter extends RecyclerView.Adapter<PatientTrials
             holder.day.setText(df.format(mTrials.get(position).getStartTime()));
             holder.title.setText(String.format("Assessment %d", mTrials.get(position).getTrialId()));
             holder.line1.setText(df2.format(mTrials.get(position).getStartTime()));
-            holder.line2.setText(String.format("Mean Stride Time: %.2fms", mTrials.get(position).getMeanStrideTime()));
+            holder.line2.setText(String.format("Average Stride Time: %.2fms", mTrials.get(position).getMeanStrideTime()));
             holder.line3.setText(String.format("Standard Deviation: %.2fms", mTrials.get(position).getStandardDev()));
             holder.line4.setText(String.format("Coefficient of Variation: %.2f", mTrials.get(position).getCoeffOfVar()));
         }

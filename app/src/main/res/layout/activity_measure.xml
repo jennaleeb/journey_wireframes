@@ -10,40 +10,130 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.uoft.journey.ui.activity.MeasureActivity">
 
-    <Button
-        android:id="@+id/button_start"
+    <TextView
+        android:id="@+id/text_new_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Start"
-        android:background="@drawable/button"
+        android:text="@string/new_title"
+        android:textSize="24sp"
+        android:layout_marginTop="5dp"
+        android:layout_gravity="start"
+        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginBottom="10dp"
+        android:textColor="@color/textColorHeading"
+        />
+
+    <TextView
+        android:id="@+id/text_instructions"
+        android:layout_below="@+id/text_new_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="@string/instructions"
+        android:textSize="20sp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
+        />
+
+    <Button
+        android:id="@+id/button_start"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:text="@string/start"
+        android:background="@drawable/round_button"
         android:textColor="@color/textColorPrimary"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
+        android:layout_centerInParent="true"
         />
 
     <Button
         android:id="@+id/button_stop"
-        android:layout_width="wrap_content"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:background="@drawable/button"
         android:textColor="@color/textColorPrimary"
-        android:text="Stop"
+        android:text="@string/stop"
         android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
         />
 
-    <Button
-        android:id="@+id/button_process"
+    <TextView
+        android:id="@+id/text_countdown"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/button"
-        android:textColor="@color/textColorPrimary"
-        android:text="Process"
-        android:layout_alignParentRight="true" />
+        android:layout_centerInParent="true"
+        android:textSize="50sp"/>
 
-    <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/graph"
+    <ImageView
+        android:id="@+id/image_walk"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/walk"
+        android:layout_centerInParent="true"
+        android:visibility="invisible"/>
+
+    <ProgressBar
+        android:id="@+id/pb_spinner"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/text_processing"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/pb_spinner"
+        android:layout_centerHorizontal="true"
+        android:text="@string/processing"
+        android:visibility="invisible"/>
+
+    <LinearLayout
+        android:id="@+id/layout_output"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/button_stop"/>
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:padding="5dp"
+        android:visibility="invisible"
+        android:gravity="center"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/text_output_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:layout_marginBottom="10dp"
+            />
+        <TextView
+            android:id="@+id/text_output_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:layout_marginBottom="10dp"
+            />
+        <TextView
+            android:id="@+id/text_output_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:layout_marginBottom="10dp"
+            />
+        <TextView
+            android:id="@+id/text_output_4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:layout_marginBottom="10dp"
+            />
+        <TextView
+            android:id="@+id/text_output_5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:layout_marginBottom="10dp"
+            />
+    </LinearLayout>
 
 </RelativeLayout>

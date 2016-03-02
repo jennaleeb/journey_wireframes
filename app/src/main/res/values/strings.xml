@@ -1,6 +1,11 @@
 <resources>
     <string name="app_name">Journey</string>
     <string name="start_new">New Assessment</string>
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+    <string name="processing">Processing..,</string>
+    <string name="instructions">Place the phone in the harness and press START when you are ready to begin</string>
+    <string name="new_title">New Assessment</string>
 
 
     <string name="hello_world">Hello world!</string>
@@ -23,6 +28,4 @@
     </string-array>
     <string name="title_activity_patient_page2">PatientPageActivity2</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

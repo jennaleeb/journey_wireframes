@@ -41,7 +41,8 @@ public class PatientMainActivity extends AppCompatActivity implements View.OnCli
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.button_new:
-                Intent intent = new Intent(PatientMainActivity.this, MeasureActivity.class);
+                Intent intent = new Intent(PatientMainActivity.this, MeasureActivity.class); // **** Standard Version ****
+                //Intent intent = new Intent(PatientMainActivity.this, DebugMeasureActivity.class); // **** For Debug Version ****
                 Bundle bundle = new Bundle();
                 bundle.putInt("userId", mPatient.getID());
                 intent.putExtras(bundle);
