@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.uoft.journey.R;
 import com.uoft.journey.data.LocalDatabaseAccess;
 import com.uoft.journey.entity.Patient;
+import com.uoft.journey.ui.adapter.PatientTrialsListAdapter;
 import com.uoft.journey.ui.fragment.PatientTrialsFragment;
 
 public class PatientMainActivity extends AppCompatActivity implements View.OnClickListener {

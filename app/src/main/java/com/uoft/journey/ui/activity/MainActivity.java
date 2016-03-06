@@ -2,6 +2,7 @@ package com.uoft.journey.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
@@ -25,13 +26,25 @@ public class MainActivity extends AppCompatActivity {
             iconArrow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-                    //Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                    Intent intent = new Intent(MainActivity.this, PatientMainActivity.class);
-                    startActivity(intent);
+                    startUserHomeScreen();
                 }
             });
+
+            new CountDownTimer(2000, 1000) {
+
+                public void onTick(long millisUntilFinished) {
+                }
+
+                public void onFinish() {
+                    startUserHomeScreen();
+                }
+            }.start();
         }
+    }
+
+    private void startUserHomeScreen() {
+        Intent intent = new Intent(MainActivity.this, PatientMainActivity.class);
+        startActivity(intent);
     }
 
     private void startLoginScreen(){

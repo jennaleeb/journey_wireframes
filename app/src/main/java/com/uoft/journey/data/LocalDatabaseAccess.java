@@ -271,10 +271,78 @@ public class LocalDatabaseAccess {
                 float[] yProc = new float[yProcessed.size()];
                 float[] zProc = new float[zProcessed.size()];
 
+                for(int i=0; i<xProcessed.size(); i++) {
+                    xProc[i] = xProcessed.get(i);
+                    yProc[i] = yProcessed.get(i);
+                    zProc[i] = zProcessed.get(i);
+                }
+
                 acc.addProcessedData(xProc, yProc, zProc);
             }
 
             return acc;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static Trial getTrial(Context ctx, int trialId) {
+        try {
+            LocalDatabaseHelper db = LocalDatabaseHelper.getInstance(ctx.getApplicationContext());
+            Cursor data = db.getReadableDatabase().rawQuery(String.format("SELECT %s, %s, %s, %s, %s FROM %s WHERE id=%d", LocalDatabaseHelper.COLUMN_TRIAL_USER_ID,
+                    LocalDatabaseHelper.COLUMN_TRIAL_START_TIME, LocalDatabaseHelper.COLUMN_TRIAL_MEAN_STRIDE_TIME, LocalDatabaseHelper.COLUMN_TRIAL_STANDARD_DEV,
+                    LocalDatabaseHelper.COLUMN_TRIAL_COEFF_OF_VAR, LocalDatabaseHelper.TABLE_TRIAL, trialId), null);
+
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
+            data.moveToNext();
+            Date startTime = null;
+            if(!data.isNull(1)) {
+                startTime = df.parse(data.getString(1));
+            }
+            Trial trial = new Trial(trialId, startTime, null);
+
+            if(!data.isNull(2)) {
+                trial.setStepAnalysis(data.getFloat(2), data.getFloat(3), data.getFloat(4));
+            }
+
+            AccelerometerData accData = getTrialData(ctx, trialId);
+            if(accData != null)
+                trial.setTrialData(accData);
+
+            int[] steps = getTrialStepTimes(ctx, trialId);
+            if(steps != null)
+                trial.setStepTimes(steps);
+
+            data.close();
+            return trial;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static int[] getTrialStepTimes(Context ctx, int trialId) {
+        try {
+            LocalDatabaseHelper db = LocalDatabaseHelper.getInstance(ctx.getApplicationContext());
+            Cursor data = db.getReadableDatabase().rawQuery(String.format("SELECT %s FROM %s WHERE %s=%d ORDER BY %s ASC", LocalDatabaseHelper.COLUMN_TRIAL_STEP_ELAPSED_TIME,
+                    LocalDatabaseHelper.TABLE_TRIAL_STEP, LocalDatabaseHelper.COLUMN_TRIAL_STEP_TRIAL_ID, trialId, LocalDatabaseHelper.COLUMN_TRIAL_STEP_ELAPSED_TIME), null);
+
+            ArrayList<Integer> times = new ArrayList<>();
+            while(data.moveToNext()) {
+                times.add(data.getInt(0));
+            }
+
+            data.close();
+
+            int[] timesArray = new int[times.size()];
+            for(int i=0; i<times.size(); i++) {
+                timesArray[i] = times.get(i);
+            }
+
+            return timesArray;
         }
         catch (Exception e) {
             e.printStackTrace();

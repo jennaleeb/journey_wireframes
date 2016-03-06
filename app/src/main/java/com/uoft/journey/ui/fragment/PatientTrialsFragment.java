@@ -1,6 +1,7 @@
 package com.uoft.journey.ui.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,24 +14,22 @@ import android.view.ViewGroup;
 import com.uoft.journey.R;
 import com.uoft.journey.data.LocalDatabaseAccess;
 import com.uoft.journey.entity.Trial;
+import com.uoft.journey.ui.activity.AssessmentDetailActivity;
+import com.uoft.journey.ui.activity.PatientMainActivity;
 import com.uoft.journey.ui.adapter.PatientTrialsListAdapter;
 
 import java.util.ArrayList;
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link PatientTrialsFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link PatientTrialsFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Fragment for displaying list of assessments
  */
-public class PatientTrialsFragment extends Fragment {
+public class PatientTrialsFragment extends Fragment implements PatientTrialsListAdapter.OnItemClickListener {
     private static final String ARG_USER_ID = "userId";
     private int mUserId;
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+    private Context mContext;
 
     //private OnFragmentInteractionListener mListener;
 
@@ -59,13 +58,14 @@ public class PatientTrialsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_patient_trials, container, false);
+        mContext = view.getContext();
 
         // List contained in RecyclerView
         mRecyclerView = (RecyclerView) view.findViewById(R.id.trial_list_view);
         mLayoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
         ArrayList<Trial> trials = LocalDatabaseAccess.getTrialsForUser(getContext(), mUserId);
-        mAdapter = new PatientTrialsListAdapter(trials);
+        mAdapter = new PatientTrialsListAdapter(trials, this);
         mRecyclerView.setAdapter(mAdapter);
 
         return view;
@@ -91,5 +91,15 @@ public class PatientTrialsFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    // When a trial is clicked
+    @Override
+    public void onItemClick(int trialId) {
+        Intent intent = new Intent(mContext, AssessmentDetailActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt("trialId", trialId);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 }

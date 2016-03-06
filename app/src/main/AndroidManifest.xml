@@ -39,9 +39,6 @@
             android:name=".ui.activity.PatientListActivity"
             android:label="@string/title_activity_patient_list" />
         <activity
-            android:name=".ui.activity.AddNewAssessmentActivity"
-            android:label="@string/title_activity_add_new_assessment" />
-        <activity
             android:name=".ui.activity.PatientPageActivity"
             android:label="@string/title_activity_patient_page2" />
         <activity
@@ -63,7 +60,8 @@
         <service android:name=".service.DataProcessingService" />
 
         <activity android:name=".ui.activity.PatientMainActivity" />
-        <activity android:name=".ui.activity.DebugMeasureActivity"></activity>
+        <activity android:name=".ui.activity.DebugMeasureActivity" />
+        <activity android:name=".ui.activity.AssessmentDetailActivity"></activity>
     </application>
 
 </manifest>

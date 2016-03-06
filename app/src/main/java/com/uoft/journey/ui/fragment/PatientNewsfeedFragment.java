@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.uoft.journey.R;
-import com.uoft.journey.ui.activity.AddNewAssessmentActivity;
 
 /**
  * Created by jenna on 16-01-27.
@@ -34,14 +33,14 @@ public class PatientNewsfeedFragment extends Fragment {
 
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_patient_newsfeed, container, false);
-        addAssessButton = (FloatingActionButton)view.findViewById(R.id.add_assess_button);
-        addAssessButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getContext(), AddNewAssessmentActivity.class);
-                startActivity(intent);
-            }
-        });
+//        addAssessButton = (FloatingActionButton)view.findViewById(R.id.add_assess_button);
+//        addAssessButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(getContext(), AddNewAssessmentActivity.class);
+//                startActivity(intent);
+//            }
+//        });
         return view;
 
 

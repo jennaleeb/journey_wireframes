@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.TextView;
 
 import com.uoft.journey.R;
@@ -20,20 +21,26 @@ import java.util.Locale;
  */
 public class PatientTrialsListAdapter extends RecyclerView.Adapter<PatientTrialsListAdapter.ViewHolder>  {
 
-    private List<Trial> mTrials;
-
-    public PatientTrialsListAdapter(List<Trial> trials) {
-        mTrials = trials;
+    public interface OnItemClickListener {
+        void onItemClick(int trialId);
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    private List<Trial> mTrials;
+    private final OnItemClickListener mListener;
+
+    public PatientTrialsListAdapter(List<Trial> trials, OnItemClickListener listener)
+    {
+        mTrials = trials;
+        mListener = listener;
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder{
         CardView cv;
         TextView day;
         TextView title;
         TextView line1;
         TextView line2;
         TextView line3;
-        TextView line4;
 
         // Show each trial as a card
         ViewHolder(View itemView) {
@@ -44,7 +51,6 @@ public class PatientTrialsListAdapter extends RecyclerView.Adapter<PatientTrials
             line1 = (TextView)itemView.findViewById(R.id.card_line_1);
             line2 = (TextView)itemView.findViewById(R.id.card_line_2);
             line3 = (TextView)itemView.findViewById(R.id.card_line_3);
-            line4 = (TextView)itemView.findViewById(R.id.card_line_4);
         }
     }
 
@@ -56,16 +62,21 @@ public class PatientTrialsListAdapter extends RecyclerView.Adapter<PatientTrials
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
         DateFormat df = new SimpleDateFormat("dd MMM", Locale.CANADA);
-        DateFormat df2 = new SimpleDateFormat("dd-MM-yyyy hh:mm a", Locale.CANADA);
+        DateFormat df2 = new SimpleDateFormat("dd MMM yyyy hh:mm a", Locale.CANADA);
         if(mTrials != null && mTrials.size() > position) {
             holder.day.setText(df.format(mTrials.get(position).getStartTime()));
             holder.title.setText(String.format("Assessment %d", mTrials.get(position).getTrialId()));
             holder.line1.setText(df2.format(mTrials.get(position).getStartTime()));
-            holder.line2.setText(String.format("Average Stride Time: %.2fms", mTrials.get(position).getMeanStrideTime()));
-            holder.line3.setText(String.format("Standard Deviation: %.2fms", mTrials.get(position).getStandardDev()));
-            holder.line4.setText(String.format("Coefficient of Variation: %.2f", mTrials.get(position).getCoeffOfVar()));
+            holder.line2.setText(String.format("Number of Steps: %d", mTrials.get(position).getNumberOfSteps()));
+            holder.line3.setText(String.format("Stride Variation: %.2f", mTrials.get(position).getCoeffOfVar()));
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mListener.onItemClick(mTrials.get(position).getTrialId());
+                }
+            });
         }
     }
 

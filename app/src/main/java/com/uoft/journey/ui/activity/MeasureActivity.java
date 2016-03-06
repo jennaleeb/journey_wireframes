@@ -17,10 +17,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.uoft.journey.R;
-import com.uoft.journey.data.LocalDatabaseAccess;
 import com.uoft.journey.entity.AccelerometerData;
 import com.uoft.journey.entity.Trial;
 import com.uoft.journey.service.DataProcessingService;
+import com.uoft.journey.service.DataService;
 import com.uoft.journey.service.SensorService;
 
 import java.util.Calendar;
@@ -237,7 +237,7 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
             // Create the trial
             Calendar cal = Calendar.getInstance(TimeZone.getDefault());
             Date start = cal.getTime();
-            int trialId = LocalDatabaseAccess.addTrial(this, mUserId, start);
+            int trialId = DataService.addNewTrial(this, mUserId, start);
             mTrial = new Trial(trialId, start, null);
 
             // Call the service to start collecting accelerometer data
@@ -260,7 +260,7 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
 
             stopService(new Intent(this, SensorService.class));
             SensorService.isRunning = false;
-            mTrial.setTrialData(LocalDatabaseAccess.getTrialData(this, mTrial.getTrialId()));
+            mTrial.setTrialData(DataService.getTrialData(this, mTrial.getTrialId()));
             try {
                 getApplicationContext().unregisterReceiver(mReceiver);
             }
@@ -273,8 +273,6 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
 
     private void startProcessing() {
         if(!SensorService.isRunning && !DataProcessingService.isRunning) {
-//            mBtnStop.setEnabled(false);
-//            mBtnStart.setEnabled(false);
             mProgress.setVisibility(View.VISIBLE);
             mProcessingText.setVisibility(View.VISIBLE);
             Intent intent = new Intent(this, DataProcessingService.class);
