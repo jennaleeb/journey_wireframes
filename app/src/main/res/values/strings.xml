@@ -12,6 +12,8 @@
     <string name="average_time">Average stride time</string>
     <string name="standard_dev">Standard deviation</string>
     <string name="variation">Coefficient of Variation</string>
+    <string name="start_walking">Start walking</string>
+    <string name="keep_walking">Keep walking</string>
 
 
     <string name="hello_world">Hello world!</string>

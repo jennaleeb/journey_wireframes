@@ -64,7 +64,7 @@ public class PatientTrialsListAdapter extends RecyclerView.Adapter<PatientTrials
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         DateFormat df = new SimpleDateFormat("dd MMM", Locale.CANADA);
-        DateFormat df2 = new SimpleDateFormat("dd MMM yyyy hh:mm a", Locale.CANADA);
+        DateFormat df2 = new SimpleDateFormat("dd MMM yyyy - hh:mm a", Locale.CANADA);
         if(mTrials != null && mTrials.size() > position) {
             holder.day.setText(df.format(mTrials.get(position).getStartTime()));
             holder.title.setText(String.format("Assessment %d", mTrials.get(position).getTrialId()));

@@ -76,23 +76,6 @@ public class SensorService extends Service implements SensorEventListener {
                     intent.setAction(ACTION_ACCELEROMETER_DATA);
                     intent.putExtra(AccelerometerData.ACCELEROMETER_DATA_KEY, data_tx);
 
-//                    String output = "";
-//                    for(int i=0; i< data_tx.getDataCount(); i++) {
-//                        // Add line for file output
-//                        output += String.format("%d,%s,%f,%f,%f\n", data_tx.getElapsedTimestamps()[i], Long.toString(data_tx.getTimestamps()[i]),
-//                                data_tx.getAccelDataX()[i], data_tx.getAccelDataY()[i],data_tx.getAccelDataZ()[i]);
-//                    }
-//
-//                    try {
-//                        // Save to file
-//                        FileOutputStream fos = openFileOutput("data.csv", MODE_APPEND);
-//                        fos.write(output.getBytes());
-//                        fos.close();
-//                    }
-//                    catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
-
                     // Save entries to DB
                     LocalDatabaseAccess.addTrialData(mContext, mTrialId, data_tx);
 

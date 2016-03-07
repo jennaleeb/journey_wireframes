@@ -12,10 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.uoft.journey.R;
-import com.uoft.journey.data.LocalDatabaseAccess;
 import com.uoft.journey.entity.Trial;
+import com.uoft.journey.service.DataService;
 import com.uoft.journey.ui.activity.AssessmentDetailActivity;
-import com.uoft.journey.ui.activity.PatientMainActivity;
 import com.uoft.journey.ui.adapter.PatientTrialsListAdapter;
 
 import java.util.ArrayList;
@@ -64,7 +63,7 @@ public class PatientTrialsFragment extends Fragment implements PatientTrialsList
         mRecyclerView = (RecyclerView) view.findViewById(R.id.trial_list_view);
         mLayoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
-        ArrayList<Trial> trials = LocalDatabaseAccess.getTrialsForUser(getContext(), mUserId);
+        ArrayList<Trial> trials = DataService.getTrialsForUser(view.getContext(), mUserId);
         mAdapter = new PatientTrialsListAdapter(trials, this);
         mRecyclerView.setAdapter(mAdapter);
 

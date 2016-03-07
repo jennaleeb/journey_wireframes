@@ -199,6 +199,8 @@ public class LocalDatabaseAccess {
                 if(!data.isNull(2)) {
                     trial.setStepAnalysis(data.getFloat(2), data.getFloat(3), data.getFloat(4));
                 }
+
+                trial.setStepTimes(getTrialStepTimes(ctx, trial.getTrialId()));
                 trials.add(trial);
 
             }
@@ -266,7 +268,7 @@ public class LocalDatabaseAccess {
 
             AccelerometerData acc = new AccelerometerData(idArray, elapsedArray, xArray, yArray, zArray);
 
-            if(isProcessed) {
+            if(isProcessed || (yProcessed.size() > yVals.size() - 20 && yProcessed.size() > 0)) {
                 float[] xProc = new float[xProcessed.size()];
                 float[] yProc = new float[yProcessed.size()];
                 float[] zProc = new float[zProcessed.size()];

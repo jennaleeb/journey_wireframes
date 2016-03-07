@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -44,6 +45,7 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
     private CountDownTimer mCountdownTimer;
     private long mCountdownTimeRemaining = -1;
     private boolean mFinished = false;
+    private TextView mStartWalking;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +71,7 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
         mProcessingText = (TextView)findViewById(R.id.text_processing);
         mCountdown = (TextView)findViewById(R.id.text_countdown);
         mInstructions = (TextView)findViewById(R.id.text_instructions);
+        mStartWalking = (TextView)findViewById(R.id.text_walk_instructions);
 
         // Assessment complete, so just show results
         if(mFinished) {
@@ -77,6 +80,7 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
             mBtnStart.setEnabled(false);
             mBtnStart.setVisibility(View.INVISIBLE);
             mInstructions.setVisibility(View.INVISIBLE);
+            mStartWalking.setVisibility(View.INVISIBLE);
             showResults();
             return;
         }
@@ -93,10 +97,13 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
             if(SensorService.isRunning) {
                 mWalkImage.setVisibility(View.VISIBLE);
                 mWalkImage.startAnimation(mWalkAnim);
+                mStartWalking.setText(R.string.keep_walking);
+                mStartWalking.setVisibility(View.VISIBLE);
             }
             else {
                 mProgress.setVisibility(View.VISIBLE);
                 mProcessingText.setVisibility(View.VISIBLE);
+                mStartWalking.setVisibility(View.INVISIBLE);
             }
         }
 
@@ -220,6 +227,8 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
         if(!SensorService.isRunning && !DataProcessingService.isRunning) {
             mBtnStart.setEnabled(false);
             mBtnStart.setVisibility(View.INVISIBLE);
+            mStartWalking.setText(R.string.start_walking);
+            mStartWalking.setVisibility(View.VISIBLE);
             mCountdownTimer.start();
         }
     }
@@ -233,6 +242,8 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
             mWalkImage.setVisibility(View.VISIBLE);
             mWalkImage.startAnimation(mWalkAnim);
             mInstructions.setVisibility(View.INVISIBLE);
+            mStartWalking.setText(R.string.keep_walking);
+            mStartWalking.setVisibility(View.VISIBLE);
 
             // Create the trial
             Calendar cal = Calendar.getInstance(TimeZone.getDefault());
@@ -257,17 +268,26 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
             mBtnStop.setVisibility(View.INVISIBLE);
             mWalkImage.clearAnimation();
             mWalkImage.setVisibility(View.INVISIBLE);
+            mStartWalking.setVisibility(View.INVISIBLE);
 
             stopService(new Intent(this, SensorService.class));
             SensorService.isRunning = false;
-            mTrial.setTrialData(DataService.getTrialData(this, mTrial.getTrialId()));
             try {
                 getApplicationContext().unregisterReceiver(mReceiver);
             }
             catch (Exception e) {
                 e.printStackTrace();
             }
-            startProcessing();
+
+            // Wait for final data to save before processing
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mTrial.setTrialData(DataService.getTrialData(getApplicationContext(), mTrial.getTrialId()));
+                    startProcessing();
+                }
+            }, 500);
         }
     }
 
@@ -311,11 +331,11 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void showResults() {
-        ((TextView)findViewById(R.id.text_output_1)).setText(String.format("Assessment duration: %ds", mTrial.getDuration() / 1000));
-        ((TextView)findViewById(R.id.text_output_2)).setText(String.format("Number of steps: %d", mTrial.getNumberOfSteps()));
-        ((TextView)findViewById(R.id.text_output_3)).setText(String.format("Average stride time: %.2fms", mTrial.getMeanStrideTime()));
-        ((TextView)findViewById(R.id.text_output_4)).setText(String.format("Standard deviation: %.2fms", mTrial.getStandardDev()));
-        ((TextView)findViewById(R.id.text_output_5)).setText(String.format("Coefficient of Variation: %.2f", mTrial.getCoeffOfVar()));
+        ((TextView)findViewById(R.id.text_output_1_val)).setText(String.format("%ds", mTrial.getDuration() / 1000));
+        ((TextView)findViewById(R.id.text_output_2_val)).setText(String.format("%d", mTrial.getNumberOfSteps()));
+        ((TextView)findViewById(R.id.text_output_3_val)).setText(String.format("%.2fms", mTrial.getMeanStrideTime()));
+        ((TextView)findViewById(R.id.text_output_4_val)).setText(String.format("%.2fms", mTrial.getStandardDev()));
+        ((TextView)findViewById(R.id.text_output_5_val)).setText(String.format("%.2f", mTrial.getCoeffOfVar()));
         findViewById(R.id.layout_output).setVisibility(View.VISIBLE);
     }
 

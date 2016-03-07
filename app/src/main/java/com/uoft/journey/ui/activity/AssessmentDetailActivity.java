@@ -16,6 +16,10 @@ import com.uoft.journey.entity.AccelerometerData;
 import com.uoft.journey.entity.Trial;
 import com.uoft.journey.service.DataService;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 public class AssessmentDetailActivity extends AppCompatActivity {
 
     private Trial mTrial;
@@ -43,10 +47,13 @@ public class AssessmentDetailActivity extends AppCompatActivity {
     }
 
     private void populateTrial() {
+        DateFormat df = new SimpleDateFormat("dd MMM yyyy - hh:mm a", Locale.CANADA);
+        ((TextView)findViewById(R.id.text_detail_title)).setText(String.format("Assessment %d Details", mTrial.getTrialId()));
+        ((TextView)findViewById(R.id.text_detail_date)).setText(df.format(mTrial.getStartTime()));
         ((TextView)findViewById(R.id.text_detail_1_val)).setText(String.format("%ds", mTrial.getDuration() / 1000));
         ((TextView)findViewById(R.id.text_detail_2_val)).setText(String.format("%d", mTrial.getNumberOfSteps()));
-        ((TextView)findViewById(R.id.text_detail_3_val)).setText(String.format("%.2fms", mTrial.getMeanStrideTime()));
-        ((TextView)findViewById(R.id.text_detail_4_val)).setText(String.format("%.2fms", mTrial.getStandardDev()));
+        ((TextView)findViewById(R.id.text_detail_3_val)).setText(String.format("%.1fms", mTrial.getMeanStrideTime()));
+        ((TextView)findViewById(R.id.text_detail_4_val)).setText(String.format("%.1fms", mTrial.getStandardDev()));
         ((TextView)findViewById(R.id.text_detail_5_val)).setText(String.format("%.2f", mTrial.getCoeffOfVar()));
     }
 
@@ -85,7 +92,7 @@ public class AssessmentDetailActivity extends AppCompatActivity {
             LineData graphData = mGraph.getData();
 
             int nextStep = 0;
-            for(int i=0; i< data.getDataCount(); i++) {
+            for(int i=0; i< data.getProcessedY().length; i++) {
                 // Add timestamp to X-axis and line series values
                 graphData.addXValue(data.getElapsedTimestamps()[i] + "");
                 graphData.addEntry(new Entry(data.getProcessedY()[i], i), 0); // The processed Y data

@@ -6,6 +6,7 @@ import com.uoft.journey.data.LocalDatabaseAccess;
 import com.uoft.journey.entity.AccelerometerData;
 import com.uoft.journey.entity.Trial;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -23,5 +24,9 @@ public class DataService {
 
     public static Trial getTrial(Context ctx, int trialId) {
         return LocalDatabaseAccess.getTrial(ctx, trialId);
+    }
+
+    public static ArrayList<Trial> getTrialsForUser(Context ctx, int userId) {
+        return LocalDatabaseAccess.getTrialsForUser(ctx, userId);
     }
 }
