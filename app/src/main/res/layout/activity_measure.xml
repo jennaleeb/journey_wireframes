@@ -24,9 +24,40 @@
         android:textColor="@color/textColorHeading"
         />
 
+    <RelativeLayout
+        android:id="@+id/layout_timed"
+        android:layout_below="@id/text_new_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:background="@color/colorDivider"
+        android:layout_marginBottom="5dp">
+
+        <CheckBox
+            android:id="@+id/check_timed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/timed_assessment"
+            android:layout_centerVertical="true"/>
+
+        <Spinner
+            android:id="@+id/spin_time"
+            android:layout_toLeftOf="@+id/check_timed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:entries="@array/timed_intervals"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_centerVertical="true"
+             />
+
+    </RelativeLayout>
+
     <TextView
         android:id="@+id/text_instructions"
-        android:layout_below="@+id/text_new_title"
+        android:layout_below="@+id/layout_timed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
@@ -44,6 +75,7 @@
         android:background="@drawable/round_button"
         android:textColor="@color/textColorPrimary"
         android:layout_centerInParent="true"
+        android:layout_below="@+id/text_instructions"
         />
 
     <Button

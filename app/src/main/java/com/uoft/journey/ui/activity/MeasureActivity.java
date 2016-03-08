@@ -13,8 +13,12 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.uoft.journey.R;
@@ -28,7 +32,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
-public class MeasureActivity extends AppCompatActivity implements View.OnClickListener {
+public class MeasureActivity extends AppCompatActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
     private Button mBtnStart;
     private Button mBtnStop;
@@ -46,6 +50,11 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
     private long mCountdownTimeRemaining = -1;
     private boolean mFinished = false;
     private TextView mStartWalking;
+    private CheckBox mTimedCheck;
+    private Spinner mTimeSpinner;
+    private RelativeLayout mTimedLayout;
+    private long mTimedSecs = 0;
+    private long mStartTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +68,8 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
             mTrial = savedInstanceState.getParcelable("trial");
             mCountdownTimeRemaining = savedInstanceState.getLong("countdown");
             mFinished = savedInstanceState.getBoolean("finished");
+            mStartTime = savedInstanceState.getLong("startTime");
+            mTimedSecs = savedInstanceState.getLong("timedSecs");
         }
 
         mWalkImage = (ImageView)findViewById(R.id.image_walk);
@@ -72,6 +83,11 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
         mCountdown = (TextView)findViewById(R.id.text_countdown);
         mInstructions = (TextView)findViewById(R.id.text_instructions);
         mStartWalking = (TextView)findViewById(R.id.text_walk_instructions);
+        mTimedCheck = (CheckBox)findViewById(R.id.check_timed);
+        mTimedCheck.setOnCheckedChangeListener(this);
+        mTimeSpinner = (Spinner)findViewById(R.id.spin_time);
+        mTimeSpinner.setEnabled(false);
+        mTimedLayout = (RelativeLayout)findViewById(R.id.layout_timed);
 
         // Assessment complete, so just show results
         if(mFinished) {
@@ -80,6 +96,7 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
             mBtnStart.setEnabled(false);
             mBtnStart.setVisibility(View.INVISIBLE);
             mInstructions.setVisibility(View.INVISIBLE);
+            mTimedLayout.setVisibility(View.INVISIBLE);
             mStartWalking.setVisibility(View.INVISIBLE);
             showResults();
             return;
@@ -94,6 +111,7 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
             mBtnStart.setEnabled(false);
             mBtnStart.setVisibility(View.INVISIBLE);
             mInstructions.setVisibility(View.INVISIBLE);
+            mTimedLayout.setVisibility(View.INVISIBLE);
             if(SensorService.isRunning) {
                 mWalkImage.setVisibility(View.VISIBLE);
                 mWalkImage.startAnimation(mWalkAnim);
@@ -208,6 +226,8 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
         savedInstanceState.putParcelable("trial", mTrial);
         savedInstanceState.putLong("countdown", mCountdownTimeRemaining);
         savedInstanceState.putBoolean("finished", mFinished);
+        savedInstanceState.putLong("startTime", mStartTime);
+        savedInstanceState.putLong("timedSecs", mTimedSecs);
         super.onSaveInstanceState(savedInstanceState);
     }
 
@@ -242,6 +262,7 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
             mWalkImage.setVisibility(View.VISIBLE);
             mWalkImage.startAnimation(mWalkAnim);
             mInstructions.setVisibility(View.INVISIBLE);
+            mTimedLayout.setVisibility(View.INVISIBLE);
             mStartWalking.setText(R.string.keep_walking);
             mStartWalking.setVisibility(View.VISIBLE);
 
@@ -250,6 +271,35 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
             Date start = cal.getTime();
             int trialId = DataService.addNewTrial(this, mUserId, start);
             mTrial = new Trial(trialId, start, null);
+
+            // If it's a timed trial
+            mStartTime = System.currentTimeMillis();
+            mTimedSecs = 0;
+            if(mTimedCheck.isChecked()) {
+                switch(mTimeSpinner.getSelectedItemPosition()) {
+                    case 0:
+                        mTimedSecs = 5000;
+                        break;
+                    case 1:
+                        mTimedSecs = 10000;
+                        break;
+                    case 2:
+                        mTimedSecs = 20000;
+                        break;
+                    case 3:
+                        mTimedSecs = 30000;
+                        break;
+                    case 4:
+                        mTimedSecs = 60000;
+                        break;
+                    case 5:
+                        mTimedSecs = 90000;
+                        break;
+                    case 6:
+                        mTimedSecs = 120000;
+                        break;
+                }
+            }
 
             // Call the service to start collecting accelerometer data
             Intent intent = new Intent(this, SensorService.class);
@@ -353,7 +403,10 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
 
             @Override
             protected void onPostExecute(AccelerometerData result) {
-                // If we want to output any data as it's being collected
+                // If it's a timed trial check if it should finish
+                if(mTimedSecs > 0 && System.currentTimeMillis() >= mStartTime + mTimedSecs) {
+                    stopCollecting();
+                }
             }
         }
     };
@@ -376,4 +429,11 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
             }
         }
     };
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if(buttonView.getId() == R.id.check_timed) {
+            mTimeSpinner.setEnabled(isChecked);
+        }
+    }
 }
