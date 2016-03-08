@@ -12,6 +12,8 @@ import com.uoft.journey.R;
 
 public class MainActivity extends AppCompatActivity {
 
+    CountDownTimer mTimer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -19,7 +21,6 @@ public class MainActivity extends AppCompatActivity {
 
         if (BaasUser.current() == null){
             startLoginScreen();
-            return;
         }
         else {
             ImageView iconArrow = (ImageView) findViewById(R.id.icon_arrow);
@@ -30,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
-            new CountDownTimer(2000, 1000) {
+            mTimer = new CountDownTimer(2000, 1000) {
 
                 public void onTick(long millisUntilFinished) {
                 }
@@ -38,11 +39,14 @@ public class MainActivity extends AppCompatActivity {
                 public void onFinish() {
                     startUserHomeScreen();
                 }
-            }.start();
+            };
+
+            mTimer.start();
         }
     }
 
     private void startUserHomeScreen() {
+        mTimer.cancel();
         Intent intent = new Intent(MainActivity.this, PatientMainActivity.class);
         startActivity(intent);
     }
