@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="true"
+    tools:context="com.uoft.journey.ui.fragment.TrendsFragment">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:layout_marginBottom="100dp">
+
+            <TextView
+                android:id="@+id/text_var_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:textColor="@color/textColorHeading"
+                android:textSize="18sp"
+                android:text="@string/variation_title"/>
+
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/chart_variation"
+                android:layout_below="@+id/text_var_title"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginTop="20dp"
+                />
+
+            <TextView
+                android:id="@+id/text_mean_title"
+                android:layout_below="@+id/chart_variation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:textColor="@color/textColorHeading"
+                android:textSize="18sp"
+                android:text="@string/mean_title"/>
+
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/chart_mean"
+                android:layout_below="@+id/text_mean_title"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginTop="20dp"
+                />
+
+            <!-- Dummy required for scrolling -->
+            <TextView
+                android:layout_below="@+id/chart_mean"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="200dp"
+                android:textColor="@color/textColorHeading"
+                android:textSize="18sp"
+                />
+
+        </RelativeLayout>
+
+</ScrollView>

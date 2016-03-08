@@ -1,65 +1,67 @@
 package com.uoft.journey.ui.activity;
 
-import android.content.Intent;
-import android.support.v4.app.FragmentTransaction;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
+import android.support.v7.widget.Toolbar;
 
 import com.uoft.journey.R;
 import com.uoft.journey.data.LocalDatabaseAccess;
 import com.uoft.journey.entity.Patient;
-import com.uoft.journey.ui.adapter.PatientTrialsListAdapter;
-import com.uoft.journey.ui.fragment.PatientTrialsFragment;
+import com.uoft.journey.ui.adapter.MainPagerAdapter;
 
-public class PatientMainActivity extends AppCompatActivity implements View.OnClickListener {
+public class PatientMainActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener {
 
-    Patient mPatient;
+    private Patient mPatient;
+    private MainPagerAdapter mPagerAdapter;
+    private Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patient_main);
 
-        Button btnNew = (Button)findViewById(R.id.button_new);
-        btnNew.setOnClickListener(this);
-
         // Show test user
         mPatient = LocalDatabaseAccess.getTestUser(this, "Joe Bloggs");
-        TextView name = (TextView)findViewById(R.id.patient_name);
-        name.setText(mPatient.getName());
 
-        // Create the trial list fragment
-        PatientTrialsFragment fragment = PatientTrialsFragment.newInstance(mPatient.getID());
-        FragmentTransaction trans = getSupportFragmentManager().beginTransaction();
-        trans.replace(R.id.feed_container, fragment);
-        trans.commit();
-    }
+        //set title of patient page to patient's name
+        setTitle(mPatient.getName());
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.button_new:
-                Intent intent = new Intent(PatientMainActivity.this, MeasureActivity.class); // **** Standard Version ****
-                //Intent intent = new Intent(PatientMainActivity.this, DebugMeasureActivity.class); // **** For Debug Version ****
-                Bundle bundle = new Bundle();
-                bundle.putInt("userId", mPatient.getID());
-                intent.putExtras(bundle);
-                startActivity(intent);
-                break;
-        }
+        // Set up the viewpager which shows the tabs
+        ViewPager viewPager = (ViewPager)findViewById(R.id.viewpager);
+        viewPager.addOnPageChangeListener(this);
+        mPagerAdapter = new MainPagerAdapter(getSupportFragmentManager(), this, mPatient.getID());
+        viewPager.setAdapter(mPagerAdapter);
+        TabLayout tab = (TabLayout)findViewById(R.id.tabs);
+        tab.setTabGravity(TabLayout.GRAVITY_FILL);
+        tab.setTabMode(TabLayout.MODE_FIXED);
+        tab.setupWithViewPager(viewPager);
     }
 
     @Override
     public void onResume()
     {
         super.onResume();
-        // Reload the trial list fragment
-        PatientTrialsFragment fragment = PatientTrialsFragment.newInstance(mPatient.getID());
-        FragmentTransaction trans = getSupportFragmentManager().beginTransaction();
-        trans.replace(R.id.feed_container, fragment);
-        trans.commit();
+        // Reload the trial data in fragments
+        mPagerAdapter.pageChange(0);
+        mPagerAdapter.pageChange(1);
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        // Do nothing
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+        // WHen tab changed
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+        // Do nothing
     }
 }

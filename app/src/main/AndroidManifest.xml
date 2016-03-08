@@ -39,9 +39,6 @@
             android:name=".ui.activity.PatientListActivity"
             android:label="@string/title_activity_patient_list" />
         <activity
-            android:name=".ui.activity.PatientPageActivity"
-            android:label="@string/title_activity_patient_page2" />
-        <activity
             android:name=".ui.activity.LoginActivity"
             android:label="@string/title_activity_login"
             android:windowSoftInputMode="adjustResize|stateHidden" />

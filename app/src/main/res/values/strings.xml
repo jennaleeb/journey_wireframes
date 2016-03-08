@@ -14,6 +14,10 @@
     <string name="variation">Coefficient of Variation</string>
     <string name="start_walking">Start walking</string>
     <string name="keep_walking">Keep walking</string>
+    <string name="assessments">Assessments</string>
+    <string name="trends">Trends</string>
+    <string name="variation_title">Stride Variation</string>
+    <string name="mean_title">Average Stride Time</string>
 
 
     <string name="hello_world">Hello world!</string>
@@ -35,5 +39,8 @@
         <item>Comment</item>
     </string-array>
     <string name="title_activity_patient_page2">PatientPageActivity2</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
