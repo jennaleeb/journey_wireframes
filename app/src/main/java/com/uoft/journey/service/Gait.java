@@ -93,7 +93,10 @@ public class Gait {
     }
 
     public static float getMeanStepTime(int[] stepTimes) {
-        return ((float)stepTimes[stepTimes.length - 1] - (float)stepTimes[0]) / ((float)stepTimes.length - 1);
+        if (stepTimes.length > 0) {
+            return ((float) stepTimes[stepTimes.length - 1] - (float) stepTimes[0]) / ((float) stepTimes.length - 1);
+        }
+        return 0;
     }
 
     // Get the standard deviation of the steps

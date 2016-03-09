@@ -22,6 +22,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.uoft.journey.R;
+import com.uoft.journey.data.ServerAccess;
 import com.uoft.journey.entity.AccelerometerData;
 import com.uoft.journey.entity.Trial;
 import com.uoft.journey.service.DataProcessingService;
@@ -374,6 +375,8 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
             stopProcessing();
             mTrial = trial;
             showResults();
+            ServerAccess.addTrial(getApplicationContext(), mTrial.getTrialId());
+
 
         }catch (Exception e) {
             e.printStackTrace();
