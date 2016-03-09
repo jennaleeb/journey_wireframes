@@ -4,9 +4,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.MediaPlayer;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -256,6 +261,17 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
 
     private void startDataCollect() {
         if(!SensorService.isRunning && !DataProcessingService.isRunning) {
+            // Play alert sound and vibrate for 500 milliseconds
+            try {
+                Vibrator v = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+                v.vibrate(500);
+
+                MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.notification0);
+                mp.start();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             mBtnStop.setEnabled(true);
             mBtnStop.setVisibility(View.VISIBLE);
             mBtnStart.setEnabled(false);
@@ -315,6 +331,17 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
 
     private void stopCollecting() {
         if (SensorService.isRunning) {
+            // Play alert sound and vibrate for 500 milliseconds
+            try {
+                Vibrator v = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+                v.vibrate(500);
+
+                MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.notification0);
+                mp.start();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             mBtnStop.setEnabled(false);
             mBtnStop.setVisibility(View.INVISIBLE);
             mWalkImage.clearAnimation();
