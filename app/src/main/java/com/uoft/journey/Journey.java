@@ -9,8 +9,10 @@ import com.baasbox.android.*;
 public class Journey extends Application {
 
         private BaasBox box;
+        private int UserId;
 
-        @Override
+
+    @Override
         public void onCreate() {
             super.onCreate();
            /* BaasBox.Config config = new BaasBox.Config();
@@ -29,5 +31,12 @@ public class Journey extends Application {
                     .init();
         }
 
+    public void setUserID(int userID) {
+        this.UserId = userID;
+    }
+
+    public int getUserID() {
+        return UserId;
+    }
 }
 

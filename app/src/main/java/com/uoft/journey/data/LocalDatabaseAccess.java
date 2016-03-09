@@ -3,6 +3,7 @@ package com.uoft.journey.data;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 
 import com.uoft.journey.entity.AccelerometerData;
 import com.uoft.journey.entity.Patient;
@@ -90,6 +91,29 @@ public class LocalDatabaseAccess {
         catch (Exception e) {
             e.printStackTrace();
             return -1;
+        }
+    }
+
+    // Insert a trial retreived from fromserver
+    public static Boolean insertTrial(Context ctx, int userId, Trial trial) {
+        try {
+            LocalDatabaseHelper db = LocalDatabaseHelper.getInstance(ctx.getApplicationContext());
+            ContentValues cv=new ContentValues();
+
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
+
+            cv.put(LocalDatabaseHelper.COLUMN_TRIAL_ID, trial.getTrialId());
+            cv.put(LocalDatabaseHelper.COLUMN_TRIAL_USER_ID, userId);
+            cv.put(LocalDatabaseHelper.COLUMN_TRIAL_START_TIME, df.format(trial.getStartTime()));
+            cv.put(LocalDatabaseHelper.COLUMN_TRIAL_MEAN_STRIDE_TIME, trial.getMeanStrideTime());
+            cv.put(LocalDatabaseHelper.COLUMN_TRIAL_STANDARD_DEV, trial.getCoeffOfVar());
+            cv.put(LocalDatabaseHelper.COLUMN_TRIAL_COEFF_OF_VAR, trial.getCoeffOfVar());
+            db.getWritableDatabase().insertWithOnConflict(LocalDatabaseHelper.TABLE_TRIAL, null, cv, SQLiteDatabase.CONFLICT_IGNORE);
+            return true;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
     }
 

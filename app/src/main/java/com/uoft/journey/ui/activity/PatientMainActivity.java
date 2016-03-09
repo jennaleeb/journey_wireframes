@@ -1,14 +1,19 @@
 package com.uoft.journey.ui.activity;
 
+import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
+import com.uoft.journey.Journey;
 import com.uoft.journey.R;
+import com.uoft.journey.data.DownloadTrials;
 import com.uoft.journey.data.LocalDatabaseAccess;
+import com.uoft.journey.data.ServerAccess;
 import com.uoft.journey.entity.Patient;
+import com.uoft.journey.service.DataService;
 import com.uoft.journey.ui.adapter.MainPagerAdapter;
 
 public class PatientMainActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener {
@@ -16,6 +21,7 @@ public class PatientMainActivity extends AppCompatActivity implements ViewPager.
     private Patient mPatient;
     private MainPagerAdapter mPagerAdapter;
     private Toolbar mToolbar;
+    private Journey mApp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +30,13 @@ public class PatientMainActivity extends AppCompatActivity implements ViewPager.
 
         // Show test user
         mPatient = LocalDatabaseAccess.getTestUser(this, "Joe Bloggs");
+        mApp = ((Journey)getApplicationContext());
+        mApp.setUserID(mPatient.getID());
+        //retreive trials if any from the server
+
+
+
+                //ServerAccess.getTrialforUser(getApplicationContext(), mApp.getUserID());
 
         //set title of patient page to patient's name
         setTitle(mPatient.getName());
@@ -39,6 +52,9 @@ public class PatientMainActivity extends AppCompatActivity implements ViewPager.
         tab.setTabGravity(TabLayout.GRAVITY_FILL);
         tab.setTabMode(TabLayout.MODE_FIXED);
         tab.setupWithViewPager(viewPager);
+
+        DownloadTrials task = new DownloadTrials(getApplicationContext(), mApp.getUserID(), mPagerAdapter);
+        task.execute();
     }
 
     @Override

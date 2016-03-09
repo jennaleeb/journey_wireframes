@@ -50,6 +50,7 @@ public class ServerAccess {
     public static void addTrial(Context ctx, int trialID) {
 
         Trial tdata = LocalDatabaseAccess.getTrial(ctx, trialID);
+        tdata.setTrialData(null);
 
         if (tdata == null){
 
@@ -59,27 +60,15 @@ public class ServerAccess {
             return;
         }
 
-        int [] timesArray = tdata.getStepTimes();
-        Date starttime = tdata.getStartTime();
-        float MeanStrideTime = tdata.getMeanStrideTime();
-        float StandardDev = tdata.getStandardDev();
-        float CoeffOfVar = tdata.getCoeffOfVar();
-
-
         Gson gson = new Gson();
 
         BaasDocument newTrial = new BaasDocument("Trials");
-        newTrial.putString("trialID",Integer.toString(trialID));
-        newTrial.putString("startTime",gson.toJson(starttime));
-        newTrial.putString("meanstrideTime",gson.toJson(MeanStrideTime));
-        newTrial.putString("standardDev",gson.toJson(StandardDev));
-        newTrial.putString("coeffOfVar",gson.toJson(CoeffOfVar));
-        newTrial.putString("timesArray",gson.toJson(timesArray));
+        newTrial.putString("data",gson.toJson(tdata));
 
 
 
         //PUT /document/:collection/:id/:action/role/:rolename
-    //    PUT /document/posts/aaa-bbb-ccc-ddd/read/role/friends_of_user_a
+        //PUT /document/posts/aaa-bbb-ccc-ddd/read/role/friends_of_user_a
 
         String friend_of = "friends_of_" + BaasUser.current().getName();
 
@@ -101,32 +90,19 @@ public class ServerAccess {
 
     }
 
-    public static void getTrialforUser(final Context ctx) {
+    public static void getTrialforUser(Context ctx, int userid) {
 
-        BaasDocument.fetchAll("Trials",
-                new BaasHandler<List<BaasDocument>>() {
-                    @Override
-                    public void handle(BaasResult<List<BaasDocument>> res) {
+        BaasResult<java.util.List<BaasDocument>> res  = BaasDocument.fetchAllSync("Trials");
+        Gson gson = new Gson();
 
-                        if (res.isSuccess()) {
+        for (BaasDocument doc : res.value()) {
+            Log.d("LOG", "Doc: " + doc);
+
+            Trial t = gson.fromJson(doc.getString("data"), Trial.class);
 
 
-
-                            for (BaasDocument doc:res.value()) {
-                                Log.d("LOG", "Doc: " + doc);
-                                Gson gson = new Gson();
-
-                                Integer a = gson.fromJson(doc.getObject("trialID").toString(), Integer.class);
-                                AccelerometerData b = gson.fromJson(doc.getObject("data").toString(), AccelerometerData.class);
-
-                                LocalDatabaseAccess.addTrialData(ctx, a, b);
-                            }
-                        } else {
-                            Log.e("LOG", "Error", res.error());
-                        }
-                    }
-                });
-
+            LocalDatabaseAccess.insertTrial(ctx, userid, t);
+        }
 
 
     }

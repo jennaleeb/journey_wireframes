@@ -26,6 +26,7 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.uoft.journey.Journey;
 import com.uoft.journey.R;
 import com.uoft.journey.data.ServerAccess;
 import com.uoft.journey.entity.AccelerometerData;
@@ -61,6 +62,8 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
     private RelativeLayout mTimedLayout;
     private long mTimedSecs = 0;
     private long mStartTime = 0;
+    //private Journey mApp;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +72,9 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
 
         Bundle extras = getIntent().getExtras();
         mUserId = extras.getInt("userId");
+
+        /*mApp = ((Journey)getApplicationContext());
+        mApp.setUserID(mUserId);*/
 
         if(savedInstanceState != null) {
             mTrial = savedInstanceState.getParcelable("trial");
@@ -401,8 +407,8 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
             mFinished = true;
             stopProcessing();
             mTrial = trial;
-            showResults();
             ServerAccess.addTrial(getApplicationContext(), mTrial.getTrialId());
+            showResults();
 
 
         }catch (Exception e) {
