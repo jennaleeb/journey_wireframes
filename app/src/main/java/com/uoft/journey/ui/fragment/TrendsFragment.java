@@ -123,7 +123,7 @@ public class TrendsFragment extends Fragment {
 
             BarDataSet setMean = new BarDataSet(yValsMean, "Average Stride Time");
             setMean.setBarSpacePercent(5);
-            setMean.setColor(Color.rgb(99, 240, 99));
+            setMean.setColor(Color.rgb(46, 204, 113));
             data1.addDataSet(setMean);
 
             mMeanChart.setData(data1);
