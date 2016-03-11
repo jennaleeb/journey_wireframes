@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/trial_card"
+    android:layout_marginTop="10dp"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <LinearLayout
@@ -13,54 +14,110 @@
         android:layout_centerHorizontal="true"
         android:background="@color/windowBackground"
         android:elevation="2dp"
-        android:layout_margin="5dp"
         android:id="@+id/linearLayout" >
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:background="@color/colorPrimaryTranslucent"
+        >
+
+        <TextView
+            android:id="@+id/card_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/textColorPrimary"
+            android:textSize="18sp"
+            android:paddingLeft="5dp"
+            android:layout_weight="1"/>
 
         <TextView
             android:id="@+id/card_day"
-            android:layout_width="match_parent"
-            android:background="@color/colorAccent"
-            android:textColor="@color/textColorPrimary"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:gravity="end"
-            android:textSize="16sp"
-            android:padding="3dp"/>
+            android:textSize="18sp"
+            android:paddingRight="5dp"
+            android:textColor="@color/textColorPrimary"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
 
         <View
             android:layout_width="match_parent"
             android:layout_height= "2dp"
-            android:background="@color/colorDivider"/>
+            android:background="#12568850">
+        </View>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0:8:00 AM"
+            android:id="@+id/card_time"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"/>
         <LinearLayout
-            android:orientation="vertical"
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="10dp">
-            <TextView
-                android:id="@+id/card_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:textColor="@color/textColorHeading"
-                android:textSize="18sp"/>
-            <TextView
-                android:id="@+id/card_line_1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-               />
-            <TextView
-                android:id="@+id/card_line_2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                 />
-            <TextView
-                android:id="@+id/card_line_3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"/>
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="15"
+                    android:id="@+id/step_count_value"
+                    android:layout_gravity="center"
+                    android:textSize="32sp"
+                    android:layout_marginBottom="5dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="STEP COUNT"
+                    android:id="@+id/step_count_label"
+                    android:layout_gravity="center"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <TextView android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:textAppearance="?android:attr/textAppearanceLarge"
+                          android:text="3.2"
+                          android:id="@+id/stride_var_value"
+                          android:layout_gravity="center"
+                          android:textSize="32sp"
+                          android:layout_marginBottom="5dp"/>
+
+                <TextView android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:text="STV (%)"
+                          android:id="@+id/stride_var_label"
+                          android:layout_gravity="center"/>
+
+            </LinearLayout>
+
         </LinearLayout>
+
+
 
     </LinearLayout>
 

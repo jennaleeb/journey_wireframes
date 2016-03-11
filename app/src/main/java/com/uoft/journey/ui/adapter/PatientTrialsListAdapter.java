@@ -5,7 +5,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.TextView;
 
 import com.uoft.journey.R;
@@ -38,19 +37,19 @@ public class PatientTrialsListAdapter extends RecyclerView.Adapter<PatientTrials
         CardView cv;
         TextView day;
         TextView title;
-        TextView line1;
-        TextView line2;
-        TextView line3;
+        TextView time;
+        TextView stepCount;
+        TextView strideTimeVar;
 
         // Show each trial as a card
         ViewHolder(View itemView) {
             super(itemView);
             cv = (CardView)itemView.findViewById(R.id.trial_card);
             day = (TextView)itemView.findViewById(R.id.card_day);
+            time = (TextView)itemView.findViewById(R.id.card_time);
             title = (TextView)itemView.findViewById(R.id.card_title);
-            line1 = (TextView)itemView.findViewById(R.id.card_line_1);
-            line2 = (TextView)itemView.findViewById(R.id.card_line_2);
-            line3 = (TextView)itemView.findViewById(R.id.card_line_3);
+            stepCount = (TextView)itemView.findViewById(R.id.step_count_value);
+            strideTimeVar = (TextView)itemView.findViewById(R.id.stride_var_value);
         }
     }
 
@@ -68,9 +67,9 @@ public class PatientTrialsListAdapter extends RecyclerView.Adapter<PatientTrials
         if(mTrials != null && mTrials.size() > position) {
             holder.day.setText(df.format(mTrials.get(position).getStartTime()));
             holder.title.setText(String.format("Assessment %d", mTrials.get(position).getTrialId()));
-            holder.line1.setText(df2.format(mTrials.get(position).getStartTime()));
-            holder.line2.setText(String.format("Number of Steps: %d", mTrials.get(position).getNumberOfSteps()));
-            holder.line3.setText(String.format("Stride Variation: %.2f", mTrials.get(position).getCoeffOfVar()));
+            holder.stepCount.setText(String.valueOf(mTrials.get(position).getNumberOfSteps()));
+            holder.strideTimeVar.setText(String.format("%.1f", mTrials.get(position).getCoeffOfVar()));
+            holder.time.setText(df2.format(mTrials.get(position).getStartTime()));
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
