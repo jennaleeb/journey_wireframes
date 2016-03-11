@@ -75,7 +75,6 @@
         android:background="@drawable/round_button"
         android:textColor="@color/textColorPrimary"
         android:layout_centerInParent="true"
-        android:layout_below="@+id/text_instructions"
         />
 
     <Button

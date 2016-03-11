@@ -73,11 +73,11 @@ public class DataProcessingService extends Service {
             try{
                 // Perform smoothing on X,Y,Z
                 trial.getTrialData().addProcessedData(Gait.simpleLowPassFilter(trial.getTrialData().getAccelDataX(), 50.0f),
-                        Gait.simpleLowPassFilter(trial.getTrialData().getAccelDataY(), 50.0f),
+                        Gait.butterworthFilter(trial.getTrialData().getAccelDataY(), 60.0, 4, 4.0, 1.0),
                         Gait.simpleLowPassFilter(trial.getTrialData().getAccelDataZ(), 50.0f));
 
                 // Identify steps
-                Integer[] steps = Gait.localMaximaTimes(trial.getTrialData().getProcessedY(), trial.getTrialData().getElapsedTimestamps());
+                Integer[] steps = Gait.localMaximaTimesUsingWindow(trial.getTrialData().getProcessedY(), trial.getTrialData().getElapsedTimestamps());
                 int[] stepTimes = new int[steps.length];
                 for(int i=0; i<steps.length; i++) {
                     stepTimes[i] = steps[i];

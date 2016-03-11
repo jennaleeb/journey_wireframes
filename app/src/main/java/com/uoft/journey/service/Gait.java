@@ -9,6 +9,7 @@ import java.util.ArrayList;
 public class Gait {
 
     private static float minThreshold = 9.4f; // Threshold for Y values, below which minima can be taken
+    private static float maxThreshold = 9.8f; // Above this maxima can be taken
 
     // A very simple low pass filter, smoothing value may need adjusting
     public static float[] simpleLowPassFilter(float[] data, float smoothing) {
@@ -20,6 +21,37 @@ public class Gait {
         }
 
         return data;
+    }
+
+    // Converted from c# algorithm found on http://www.centerspace.net/butterworth-filter-csharp/
+    public static float[] butterworthFilter(float[] inData, double sampleFrequency, int order, double f0, double dcGain) {
+        double[] data = convertFloatsToDoubles(inData);
+
+        int n = data.length;
+
+        // Apply forward FFT
+        DoubleFFT_1D fft = new DoubleFFT_1D(n);
+        fft.realForward(data);
+
+        if ( f0 > 0 )
+        {
+            int numBins = n / 2;  // Half the length of the FFT by symmetry
+            double binWidth = sampleFrequency / n; // Hz
+
+            // Filter
+            for(int i=1; i<=numBins; i++) {
+                double binFreq = binWidth * i;
+                double gain = dcGain / ( Math.sqrt((1 +
+                        Math.pow(binFreq / f0, 2.0 * order))) );
+                data[i] *= gain;
+                data[n - i] *= gain;
+            }
+        }
+
+        // Reverse filtered signal, with scale to get correct amplitude
+        fft.realInverse(data, true);
+
+        return convertDoublesToFloats(data);
     }
 
     // Locate where the local maximas are and return the indexes
@@ -62,6 +94,110 @@ public class Gait {
         }
 
         return stepTimes.toArray(new Integer[stepTimes.size()]);
+    }
+
+    // Locate where the local maximas are and return the step times
+    // This version uses locking windows to identify steps
+    public static Integer[] localMaximaTimesUsingWindow(float[] data, int[] times) {
+        ArrayList<Integer> stepTimes = new ArrayList<>();
+        ArrayList<Integer> peaks = new ArrayList<>();
+        int windowSize = getWindow(data, times);
+
+        // Identify the peaks
+        for(int i=1; i<data.length-1; i++) {
+            if(times[i] >= windowSize/2 && data[i-1] < data[i] && data[i] > data[i+1] && data[i] > maxThreshold) {
+                peaks.add(i);
+            }
+        }
+
+        float prevLeft = 0;
+        float prevRight = 0;
+        int prevIndex = -1;
+
+        for(int i: peaks) {
+            int halfWin = windowSize/2;
+
+            // Check if too close to prev step
+            if(prevIndex > -1 && times[i] - times[prevIndex] < halfWin)
+                continue;
+
+            float minLeft = data[i];
+            float minRight = data[i];
+            int centreTime = times[i];
+
+            // Find the minimum value to the left, within lock window
+            for(int j=i; j>=0 && Math.abs(times[i] - centreTime) <= halfWin; j--) {
+                if(data[j] < minLeft)
+                    minLeft = data[j];
+            }
+
+            // Find the minimum value to the left, within lock window
+            for(int j=i; j<data.length && Math.abs(times[i] - centreTime) <= halfWin; j++) {
+                if(data[j] < minRight)
+                    minRight = data[j];
+            }
+
+            minLeft = data[i] - minLeft;
+            minRight = data[i] - minRight;
+
+            // First step
+            if(prevLeft == 0) {
+                prevLeft = minLeft;
+                prevRight = minRight;
+            }
+
+            // Within threshold so add step
+            if(minLeft/prevLeft > 0.35 && minRight/prevRight > 0.35) {
+                stepTimes.add(times[i]);
+                prevLeft = minLeft;
+                prevRight = minRight;
+                prevIndex = i;
+            }
+        }
+
+        return stepTimes.toArray(new Integer[stepTimes.size()]);
+    }
+
+    // Calculate a locking window where steps won't be detected
+    private static int getWindow(float[] data, int[] times) {
+        ArrayList<Integer> crossPoints = new ArrayList<>();
+        int max = 0;
+
+        // Find all the points where it crosses the low threshold
+        for(int i=0; i<data.length-1; i++) {
+            if((data[i] <= minThreshold && data[i+1] > minThreshold)) {
+                if(crossPoints.size() == 0) {
+                    crossPoints.add(times[i]);
+                    max = times[i];
+                }
+                else {
+                    int val = times[i] - crossPoints.get(crossPoints.size() - 1);
+                    crossPoints.add(val);
+                    if(val > max)
+                        max = val;
+                }
+            }
+        }
+
+        int halfMax = max/2;
+        if(max > 700) {
+            // Max between two points is too large (above 0.7s) so return half the mean
+            int tot = 0;
+            for(int i=0; i<crossPoints.size(); i++){
+                tot += crossPoints.get(i);
+            }
+            int mean = tot / crossPoints.size();
+            return mean/2;
+
+        }
+        else if(max < 400) {
+            // Max too small (below 0.4s) so multiply by 0.6
+            return (int)(max * 0.6f);
+        }
+        else {
+            // Default to half max gap
+            return halfMax;
+        }
     }
 
     // As above. Locate where the local maximas but return the data as zeros, with 10s for the maxima points
@@ -116,5 +252,33 @@ public class Gait {
     // Coefficient of Variation of steps 100 * SD / mean
     public static float getCoefficientOfVariation(float standardDev, float mean) {
         return 100.0f * standardDev / mean;
+    }
+
+    private static double[] convertFloatsToDoubles(float[] input)
+    {
+        if (input == null)
+        {
+            return null;
+        }
+        double[] output = new double[input.length];
+        for (int i = 0; i < input.length; i++)
+        {
+            output[i] = input[i];
+        }
+        return output;
+    }
+
+    private static float[] convertDoublesToFloats(double[] input)
+    {
+        if (input == null)
+        {
+            return null;
+        }
+        float[] output = new float[input.length];
+        for (int i = 0; i < input.length; i++)
+        {
+            output[i] = (float)input[i];
+        }
+        return output;
     }
 }

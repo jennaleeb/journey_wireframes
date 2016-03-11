@@ -15,6 +15,7 @@ import com.uoft.journey.R;
 import com.uoft.journey.entity.Trial;
 import com.uoft.journey.service.DataService;
 import com.uoft.journey.ui.activity.AssessmentDetailActivity;
+import com.uoft.journey.ui.activity.DebugMeasureActivity;
 import com.uoft.journey.ui.activity.MeasureActivity;
 import com.uoft.journey.ui.adapter.PatientTrialsListAdapter;
 
@@ -94,7 +95,7 @@ public class PatientTrialsFragment extends Fragment implements PatientTrialsList
         switch (v.getId()) {
             case R.id.button_new:
                 Intent intent = new Intent(mContext, MeasureActivity.class); // **** Standard Version ****
-                //Intent intent = new Intent(PatientMainActivity.this, DebugMeasureActivity.class); // **** For Debug Version ****
+                //Intent intent = new Intent(mContext, DebugMeasureActivity.class); // **** For Debug Version ****
                 Bundle bundle = new Bundle();
                 bundle.putInt("userId", mUserId);
                 intent.putExtras(bundle);

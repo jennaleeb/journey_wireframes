@@ -297,7 +297,7 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
 
             // If it's a timed trial
             mStartTime = System.currentTimeMillis();
-            mTimedSecs = 0;
+            mTimedSecs = 300000; // Default to 5 mins max
             if(mTimedCheck.isChecked()) {
                 switch(mTimeSpinner.getSelectedItemPosition()) {
                     case 0:
@@ -320,6 +320,15 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
                         break;
                     case 6:
                         mTimedSecs = 120000;
+                        break;
+                    case 7:
+                        mTimedSecs = 180000;
+                        break;
+                    case 8:
+                        mTimedSecs = 240000;
+                        break;
+                    case 9:
+                        mTimedSecs = 300000;
                         break;
                 }
             }

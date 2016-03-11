@@ -1,12 +1,13 @@
 package com.uoft.journey;
 
 import android.app.Application;
+import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 import com.baasbox.android.*;
 
 
 
-public class Journey extends Application {
+public class Journey extends MultiDexApplication {
 
         private BaasBox box;
         private int UserId;

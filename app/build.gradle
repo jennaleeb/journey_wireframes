@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.1"
+    buildToolsVersion "23.0.2"
 
     defaultConfig {
         applicationId "com.uoft.journey"
@@ -11,10 +11,14 @@ android {
         versionCode 1
         versionName "1.0"
         generatedDensities = []
+        multiDexEnabled = true
     }
     // Flag to tell aapt to keep the attribute ids around
     aaptOptions {
         additionalParameters "--no-version-vectors"
+    }
+    dexOptions {
+        javaMaxHeapSize "4g"
     }
     buildTypes {
         release {
@@ -38,7 +42,7 @@ dependencies {
     compile 'com.baasbox:baasbox-android:0.9.0'
     compile 'com.google.android.gms:play-services:8.4.0'
     compile 'com.jakewharton:butterknife:7.0.1'
-    compile 'com.android.support:support-v4:23.2.0'
-    compile 'com.android.support:support-v4:23.1.1'
     compile 'com.google.code.gson:gson:2.6.2'
+    compile ('pl.edu.icm:JLargeArrays:1.6')
+    compile 'com.android.support:multidex:1.0.1'
 }
