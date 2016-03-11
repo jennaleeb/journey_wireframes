@@ -96,21 +96,20 @@ public class TrendsFragment extends Fragment {
             ArrayList<BarEntry> yValsVar = new ArrayList<BarEntry>();
             ArrayList<BarEntry> yValsMean = new ArrayList<BarEntry>();
 
-            for(int i=0; i<mTrials.size(); i++) {
+            for (int i= mTrials.size()-1 ; i >=0; i--) {
                 Trial trial = mTrials.get(i);
                 DateFormat df = new SimpleDateFormat("dd MMM", Locale.CANADA);
                 xVals.add(trial.getTrialId() + "(" + df.format(trial.getStartTime()) + ")");
-                yValsVar.add(new BarEntry(trial.getCoeffOfVar(), i));
-                yValsMean.add(new BarEntry(trial.getMeanStrideTime(), i));
+                yValsVar.add(new BarEntry(trial.getCoeffOfVar(), Math.abs(i - mTrials.size()+1)));
+                yValsMean.add(new BarEntry(trial.getMeanStrideTime(), Math.abs(i-mTrials.size()+1)));
             }
 
             // Stride variation
             BarData data = new BarData(xVals);
-            data.setValueTextColor(Color.RED);
-
+            data.setValueTextColor(Color.rgb(39, 174, 96));
             BarDataSet setVar = new BarDataSet(yValsVar, "Stride Variation");
             setVar.setBarSpacePercent(5);
-            setVar.setColor(Color.rgb(240, 99, 99));
+            setVar.setColor(Color.rgb(39, 174, 96));
             data.addDataSet(setVar);
 
             mVariationChart.setData(data);
@@ -119,11 +118,11 @@ public class TrendsFragment extends Fragment {
 
             // Mean stride time
             BarData data1 = new BarData(xVals);
-            data.setValueTextColor(Color.RED);
+            data1.setValueTextColor(Color.rgb(231, 76, 60));
 
             BarDataSet setMean = new BarDataSet(yValsMean, "Average Stride Time");
             setMean.setBarSpacePercent(5);
-            setMean.setColor(Color.rgb(46, 204, 113));
+            setMean.setColor(Color.rgb(231, 76, 60));
             data1.addDataSet(setMean);
 
             mMeanChart.setData(data1);
