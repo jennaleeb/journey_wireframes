@@ -11,6 +11,7 @@ public class Journey extends MultiDexApplication {
 
         private BaasBox box;
         private int UserId;
+        private String Username;
 
 
     @Override
@@ -38,6 +39,14 @@ public class Journey extends MultiDexApplication {
 
     public int getUserID() {
         return UserId;
+    }
+
+    public void setUsername(String username) {
+        this.Username = username;
+    }
+
+    public String getUsername() {
+        return Username;
     }
 }
 

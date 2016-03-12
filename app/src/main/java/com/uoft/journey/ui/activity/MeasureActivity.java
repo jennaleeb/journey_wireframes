@@ -62,6 +62,7 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
     private RelativeLayout mTimedLayout;
     private long mTimedSecs = 0;
     private long mStartTime = 0;
+    Journey mApp;
     //private Journey mApp;
 
 
@@ -73,8 +74,7 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
         Bundle extras = getIntent().getExtras();
         mUserId = extras.getInt("userId");
 
-        /*mApp = ((Journey)getApplicationContext());
-        mApp.setUserID(mUserId);*/
+        mApp = ((Journey)getApplicationContext());
 
         if(savedInstanceState != null) {
             mTrial = savedInstanceState.getParcelable("trial");
@@ -292,8 +292,8 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
             // Create the trial
             Calendar cal = Calendar.getInstance(TimeZone.getDefault());
             Date start = cal.getTime();
-            int trialId = DataService.addNewTrial(this, mUserId, start);
-            mTrial = new Trial(trialId, start, null);
+            int trialId = DataService.addNewTrial(this, mUserId, start, mApp.getUsername());
+            mTrial = new Trial(trialId, start, null, mApp.getUsername());
 
             // If it's a timed trial
             mStartTime = System.currentTimeMillis();

@@ -1,5 +1,6 @@
 package com.uoft.journey.ui.activity;
 
+import android.content.Intent;
 import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -28,15 +29,12 @@ public class PatientMainActivity extends AppCompatActivity implements ViewPager.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patient_main);
 
-        // Show test user
-        mPatient = LocalDatabaseAccess.getTestUser(this, "Joe Bloggs");
+        Intent intent = getIntent();
+        String name = intent.getStringExtra("patient");
+        mPatient = LocalDatabaseAccess.getTestUser(this, name);
         mApp = ((Journey)getApplicationContext());
         mApp.setUserID(mPatient.getID());
-        //retreive trials if any from the server
 
-
-
-                //ServerAccess.getTrialforUser(getApplicationContext(), mApp.getUserID());
 
         //set title of patient page to patient's name
         setTitle(mPatient.getName());
@@ -46,14 +44,14 @@ public class PatientMainActivity extends AppCompatActivity implements ViewPager.
         // Set up the viewpager which shows the tabs
         ViewPager viewPager = (ViewPager)findViewById(R.id.viewpager);
         viewPager.addOnPageChangeListener(this);
-        mPagerAdapter = new MainPagerAdapter(getSupportFragmentManager(), this, mPatient.getID());
+        mPagerAdapter = new MainPagerAdapter(getSupportFragmentManager(), this, mPatient.getID(), mPatient.getName());
         viewPager.setAdapter(mPagerAdapter);
         TabLayout tab = (TabLayout)findViewById(R.id.tabs);
         tab.setTabGravity(TabLayout.GRAVITY_FILL);
         tab.setTabMode(TabLayout.MODE_FIXED);
         tab.setupWithViewPager(viewPager);
 
-        DownloadTrials task = new DownloadTrials(getApplicationContext(), mApp.getUserID(), mPagerAdapter);
+        DownloadTrials task = new DownloadTrials(getApplicationContext(), mPatient.getName(), mPatient.getID(), mPagerAdapter);
         task.execute();
     }
 

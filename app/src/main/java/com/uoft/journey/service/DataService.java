@@ -14,19 +14,19 @@ import java.util.Date;
  */
 public class DataService {
 
-    public static int addNewTrial(Context ctx, int userId, Date startTime) {
-        return LocalDatabaseAccess.addTrial(ctx, userId, startTime);
+    public static int addNewTrial(Context ctx, int userId, Date startTime, String username) {
+        return LocalDatabaseAccess.addTrial(ctx, userId, startTime, username);
     }
 
     public static AccelerometerData getTrialData(Context ctx, int trialId) {
         return LocalDatabaseAccess.getTrialData(ctx, trialId);
     }
 
-    public static Trial getTrial(Context ctx, int trialId) {
-        return LocalDatabaseAccess.getTrial(ctx, trialId);
+    public static Trial getTrial(Context ctx, int trialId, String username) {
+        return LocalDatabaseAccess.getTrial(ctx, trialId, username);
     }
 
-    public static ArrayList<Trial> getTrialsForUser(Context ctx, int userId) {
-        return LocalDatabaseAccess.getTrialsForUser(ctx, userId);
+    public static ArrayList<Trial> getTrialsForUser(Context ctx, int userId, String username) {
+        return LocalDatabaseAccess.getTrialsForUser(ctx, userId, username);
     }
 }

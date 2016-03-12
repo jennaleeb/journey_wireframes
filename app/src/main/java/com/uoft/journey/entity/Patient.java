@@ -46,8 +46,16 @@ public class Patient {
     }
 
     public String getDateAdmittedString() {
+
+
         DateFormat mDateFormat = new SimpleDateFormat("yyyy/MM/dd");
-        String mDateAdmittedString = mDateFormat.format(mDateAdmitted);
+        String mDateAdmittedString;
+        if(mDateAdmitted != null) {
+            mDateAdmittedString = mDateFormat.format(mDateAdmitted);
+        }
+        else{
+            mDateAdmittedString = "no Date Found";
+        }
         return mDateAdmittedString;
     }
 

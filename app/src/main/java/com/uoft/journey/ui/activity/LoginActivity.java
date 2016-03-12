@@ -15,7 +15,10 @@ import com.baasbox.android.BaasHandler;
 import com.baasbox.android.BaasResult;
 import com.baasbox.android.BaasUser;
 import com.baasbox.android.RequestToken;
+import com.uoft.journey.Journey;
 import com.uoft.journey.R;
+import com.uoft.journey.data.LocalDatabaseAccess;
+import com.uoft.journey.data.ServerAccess;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -26,9 +29,7 @@ import butterknife.ButterKnife;
 public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG = "LoginActivity";
-    private static final int REQUEST_SIGNUP = 0;
     private final static String SIGNUP_TOKEN_KEY = "signup_token_key";
-    public static final String EXTRA_USERNAME = "com.baasbox.deardiary.username.EXTRA";
     private RequestToken mSignupOrLogin;
 
 
@@ -41,12 +42,15 @@ public class LoginActivity extends AppCompatActivity {
     Button _signupLink;
     ProgressDialog _auth;
     boolean _newUser;
+    Journey mApp;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        mApp = ((Journey)getApplicationContext());
+
         if (savedInstanceState!=null){
             mSignupOrLogin = savedInstanceState.getParcelable(SIGNUP_TOKEN_KEY);
         }
@@ -66,9 +70,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                // Start the Signup activity
-               /* Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
-                startActivityForResult(intent, REQUEST_SIGNUP);*/
+
                 login(true);
 
             }
@@ -93,20 +95,10 @@ public class LoginActivity extends AppCompatActivity {
         String email = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
 
-        // TODO: Implement your own authentication logic here.
 
         signupWithBaasBox(newUser, email, password);
 
 
-        /*new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        // On complete call either onLoginSuccess or onLoginFailed
-                        //onLoginSuccess();
-                        // onLoginFailed();
-                        _auth.dismiss();
-                    }
-                }, 3000);*/
     }
 
     @Override
@@ -121,6 +113,8 @@ public class LoginActivity extends AppCompatActivity {
 
         BaasUser user = BaasUser.withUserName(email);
         user.setPassword(password);
+        //user.is
+
         _newUser = newUser;
 
         if (newUser) {
@@ -150,7 +144,11 @@ public class LoginActivity extends AppCompatActivity {
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             finish();*/
+            mApp.setUsername(_emailText.getText().toString());
             onLoginSuccess(_newUser);
+
+            //ServerAccess.addFriend(getApplicationContext(), 0);
+
 
         } else {
             onLoginFailed(_newUser);
@@ -158,18 +156,6 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-
-    /*@Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_SIGNUP) {
-            if (resultCode == RESULT_OK) {
-
-                // TODO: Implement successful signup logic here
-                // By default we just finish the Activity and log them in automatically
-                this.finish();
-            }
-        }
-    }*/
 
     @Override
     public void onBackPressed() {
@@ -186,7 +172,10 @@ public class LoginActivity extends AppCompatActivity {
         else {
             Toast.makeText(getBaseContext(), "Login Successful", Toast.LENGTH_LONG).show();
         }
-        Intent intent = new Intent(LoginActivity.this, PatientMainActivity.class);
+       // Intent intent = new Intent(LoginActivity.this, PatientMainActivity.class);
+        LocalDatabaseAccess.addUser(getApplicationContext(), mApp.getUsername());
+        Intent intent = new Intent(LoginActivity.this, PatientListActivity.class);
+
         _auth.dismiss();
 
         startActivity(intent);

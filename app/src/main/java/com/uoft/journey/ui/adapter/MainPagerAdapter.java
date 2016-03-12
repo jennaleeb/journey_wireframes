@@ -17,21 +17,23 @@ public class MainPagerAdapter extends FragmentPagerAdapter {
     private PatientTrialsFragment mPatientTrialsFragment;
     private TrendsFragment mTrendsFragment;
     private int mUserId;
+    private String mUsername;
 
-    public MainPagerAdapter(FragmentManager fm, Context context, int userId) {
+    public MainPagerAdapter(FragmentManager fm, Context context, int userId, String username) {
         super(fm);
         mContext = context;
         mUserId = userId;
+        mUsername = username;
     }
 
     @Override
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                mPatientTrialsFragment = PatientTrialsFragment.newInstance(mUserId);
+                mPatientTrialsFragment = PatientTrialsFragment.newInstance(mUserId, mUsername);
                 return mPatientTrialsFragment;
             case 1:
-                mTrendsFragment = TrendsFragment.newInstance(mUserId);
+                mTrendsFragment = TrendsFragment.newInstance(mUserId, mUsername);
                 return mTrendsFragment;
         }
 

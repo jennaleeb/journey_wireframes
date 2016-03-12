@@ -1,11 +1,23 @@
 package com.uoft.journey.ui.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
+import android.view.View;
+import android.widget.EditText;
 
+import com.baasbox.android.BaasUser;
 import com.uoft.journey.R;
+import com.uoft.journey.data.AddPatient;
+import com.uoft.journey.data.DownloadFriends;
+import com.uoft.journey.data.DownloadTrials;
+import com.uoft.journey.data.ServerAccess;
 import com.uoft.journey.entity.Patient;
 import com.uoft.journey.ui.adapter.PatientListAdapter;
 
@@ -16,7 +28,7 @@ import java.util.List;
 public class PatientListActivity extends AppCompatActivity {
 
     List<Patient> mPatientList = new ArrayList<Patient>();
-    RecyclerView.Adapter mAdapter;
+    PatientListAdapter mAdapter;
     RecyclerView mRecyclerView;
     RecyclerView.LayoutManager mLayoutManager;
 
@@ -31,9 +43,19 @@ public class PatientListActivity extends AppCompatActivity {
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
+        FloatingActionButton newBtn = (FloatingActionButton) findViewById(R.id.add_patient_button);
+        newBtn.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                add(v);
+            }
+        });
+
+
 
         // for now hard code patients
-        Patient patient1 = new Patient(193192, "Arnold Palmer", new Date(12/1/2016));
+      /*  Patient patient1 = new Patient(193192, "Arnold Palmer", new Date(12/1/2016));
         Patient patient2 = new Patient(193192, "Jane Smith", new Date(21/12/2015));
         Patient patient3 = new Patient(193192, "Kate Bishop", new Date(15/1/2016));
         Patient patient4 = new Patient(193192, "Marco Polo", new Date(28/1/2016));
@@ -43,12 +65,62 @@ public class PatientListActivity extends AppCompatActivity {
         mPatientList.add(patient2);
         mPatientList.add(patient3);
         mPatientList.add(patient4);
-        mPatientList.add(patient5);
-
+        mPatientList.add(patient5);*/
         mAdapter = new PatientListAdapter(this, mPatientList);
         mRecyclerView.setAdapter(mAdapter);
+
+        DownloadFriends task = new DownloadFriends(getApplicationContext(), mAdapter);
+        task.execute();
+
+
+
+
+
+    }
+
+    public void add(View v) {
+        switch (v.getId()) {
+            case R.id.add_patient_button:
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Enter Patients email");
+
+                // Set up the input
+                final EditText input = new EditText(this);
+
+                input.setInputType(InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS);
+                builder.setView(input);
+
+                // Set up the buttons
+                builder.setPositiveButton("Add Patient", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        addPatient(input.getText().toString());
+                    }
+
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                builder.show();
+                break;
+        }
+
+
+    }
+    private void addPatient(String s) {
+
+        AddPatient task = new AddPatient(getApplicationContext(), mAdapter, s);
+        task.execute();
+
 
     }
 
 
 }
+
+

@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.uoft.journey.R;
 import com.uoft.journey.entity.Patient;
+import com.uoft.journey.ui.activity.PatientMainActivity;
 
 import java.util.List;
 
@@ -58,6 +59,16 @@ public class PatientListAdapter extends RecyclerView.Adapter<PatientListAdapter.
         return mPatientList.size();
     }
 
+    public void addPatient(Patient p) {
+        if(mPatientList.contains(p) == false) {
+            mPatientList.add(p);
+        }
+    }
+
+    public void clearlist() {
+       mPatientList.clear();
+    }
+
 
     public static class PatientListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
@@ -75,10 +86,12 @@ public class PatientListAdapter extends RecyclerView.Adapter<PatientListAdapter.
         public void onClick(View view) {
             Log.d(TAG, "Clicked" + getAdapterPosition());
 
-//            Intent intent= new Intent(view.getContext(), PatientPageActivity.class);
-//            intent.putExtra("name", mPatientList.get(getAdapterPosition()).getName());
-//            view.getContext().startActivity(intent);
+            Intent intent= new Intent(view.getContext(), PatientMainActivity.class);
+            intent.putExtra("patient", mPatientList.get(getAdapterPosition()).getName());
+            view.getContext().startActivity(intent);
         }
+
+
 
     }
 }

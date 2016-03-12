@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.baasbox.android.BaasUser;
 import com.uoft.journey.R;
 import com.uoft.journey.entity.Trial;
 import com.uoft.journey.service.DataService;
@@ -26,6 +27,7 @@ import java.util.ArrayList;
 public class PatientTrialsFragment extends Fragment implements PatientTrialsListAdapter.OnItemClickListener, View.OnClickListener {
     private static final String ARG_USER_ID = "userId";
     private int mUserId;
+    private String username;
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -36,10 +38,11 @@ public class PatientTrialsFragment extends Fragment implements PatientTrialsList
         // Required empty public constructor
     }
 
-    public static PatientTrialsFragment newInstance(int param1) {
+    public static PatientTrialsFragment newInstance(int param1, String param2) {
         PatientTrialsFragment fragment = new PatientTrialsFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_USER_ID, param1);
+        args.putString("username", param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -49,6 +52,7 @@ public class PatientTrialsFragment extends Fragment implements PatientTrialsList
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mUserId = getArguments().getInt(ARG_USER_ID);
+            username = getArguments().getString("username");
         }
     }
 
@@ -59,14 +63,18 @@ public class PatientTrialsFragment extends Fragment implements PatientTrialsList
         View view = inflater.inflate(R.layout.fragment_patient_trials, container, false);
         mContext = view.getContext();
         setRetainInstance(true);
-        FloatingActionButton newBtn = (FloatingActionButton)view.findViewById(R.id.button_new);
-        newBtn.setOnClickListener(this);
-
+        FloatingActionButton newBtn = (FloatingActionButton) view.findViewById(R.id.button_new);
+        if (username.equals(BaasUser.current().getName())) {
+            newBtn.setOnClickListener(this);
+        }
+        else{
+            newBtn.hide();
+        }
         // List contained in RecyclerView
         mRecyclerView = (RecyclerView) view.findViewById(R.id.trial_list_view);
         mLayoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mTrials = DataService.getTrialsForUser(view.getContext(), mUserId);
+        mTrials = DataService.getTrialsForUser(view.getContext(), mUserId, username);
         mAdapter = new PatientTrialsListAdapter(mTrials, this);
         mRecyclerView.setAdapter(mAdapter);
 
@@ -84,6 +92,7 @@ public class PatientTrialsFragment extends Fragment implements PatientTrialsList
         Intent intent = new Intent(mContext, AssessmentDetailActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt("trialId", trialId);
+        bundle.putString("user", username);
         intent.putExtras(bundle);
         startActivity(intent);
     }
@@ -105,7 +114,7 @@ public class PatientTrialsFragment extends Fragment implements PatientTrialsList
 
     public void reloadTrials() {
         mTrials.clear();
-        mTrials.addAll(DataService.getTrialsForUser(mContext, mUserId));
+        mTrials.addAll(DataService.getTrialsForUser(mContext, mUserId, username));
         mAdapter.notifyDataSetChanged();
     }
 }

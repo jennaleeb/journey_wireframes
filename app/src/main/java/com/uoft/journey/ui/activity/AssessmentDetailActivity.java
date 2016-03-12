@@ -32,8 +32,9 @@ public class AssessmentDetailActivity extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         int trialId = extras.getInt("trialId");
+        String username = extras.getString("user");
 
-        mTrial = DataService.getTrial(this, trialId);
+        mTrial = DataService.getTrial(this, trialId, username);
         mGraph = (LineChart)findViewById(R.id.detail_graph);
         setupGraph();
 

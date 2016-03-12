@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.baasbox.android.BaasUser;
 import com.uoft.journey.entity.AccelerometerData;
 import com.uoft.journey.entity.Patient;
 import com.uoft.journey.entity.Trial;
@@ -34,7 +35,7 @@ public class LocalDatabaseAccess {
 
             cv.put(LocalDatabaseHelper.COLUMN_USER_ID, nextId);
             cv.put(LocalDatabaseHelper.COLUMN_USER_NAME, name);
-            db.getWritableDatabase().insert(LocalDatabaseHelper.TABLE_USER, null, cv);
+            db.getWritableDatabase().insertWithOnConflict(LocalDatabaseHelper.TABLE_USER, null, cv, SQLiteDatabase.CONFLICT_IGNORE);
             return nextId;
         }
         catch (Exception e) {
@@ -48,19 +49,47 @@ public class LocalDatabaseAccess {
         try {
             LocalDatabaseHelper db = LocalDatabaseHelper.getInstance(ctx.getApplicationContext());
             ContentValues cv=new ContentValues();
-            Cursor id = db.getReadableDatabase().rawQuery(String.format("SELECT %s FROM %s WHERE %s='%s'", LocalDatabaseHelper.COLUMN_USER_ID,
+            Cursor id = db.getReadableDatabase().rawQuery(String.format("SELECT %s, %s FROM %s WHERE %s='%s'", LocalDatabaseHelper.COLUMN_USER_ID, LocalDatabaseHelper.COLUMN_USER_NAME,
                     LocalDatabaseHelper.TABLE_USER, LocalDatabaseHelper.COLUMN_USER_NAME, name), null);
-            int userId = 1;
+            int userId;
+            String username;
             if(id.moveToFirst()) {
                 userId = id.getInt(0);
-                id.close();
+                username = id.getString(1);
             }
             else {
-                id.close();
-                userId = addUser(ctx, name);
+                userId = 1;
+                username = name;
+                System.out.println("ERROR THE USER WAS NOT FOUND");
             }
+            id.close();
 
-            return new Patient(userId, name, null);
+            return new Patient(userId, username, null);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static ArrayList<Patient> getallUsers(Context ctx) {
+        try {
+            LocalDatabaseHelper db = LocalDatabaseHelper.getInstance(ctx.getApplicationContext());
+            ContentValues cv=new ContentValues();
+            Cursor id = db.getReadableDatabase().rawQuery(String.format("SELECT %s,%s FROM %s", LocalDatabaseHelper.COLUMN_USER_ID, LocalDatabaseHelper.COLUMN_USER_NAME,
+                    LocalDatabaseHelper.TABLE_USER), null);
+
+
+            ArrayList<Patient> ans = new ArrayList<Patient>();
+
+            while(id.moveToNext()) {
+
+                ans.add(new Patient(id.getInt(0), id.getString(1), null));
+
+            }
+            id.close();
+            return ans;
+
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -69,7 +98,7 @@ public class LocalDatabaseAccess {
     }
 
     // Insert a trial
-    public static Integer addTrial(Context ctx, int userId, Date startTime) {
+    public static Integer addTrial(Context ctx, int userId, Date startTime, String user) {
         try {
             LocalDatabaseHelper db = LocalDatabaseHelper.getInstance(ctx.getApplicationContext());
             ContentValues cv=new ContentValues();
@@ -85,6 +114,7 @@ public class LocalDatabaseAccess {
             cv.put(LocalDatabaseHelper.COLUMN_TRIAL_ID, nextId);
             cv.put(LocalDatabaseHelper.COLUMN_TRIAL_USER_ID, userId);
             cv.put(LocalDatabaseHelper.COLUMN_TRIAL_START_TIME, df.format(startTime));
+            cv.put(LocalDatabaseHelper.COLUMN_TRIAL_USER_NAME, user);
             db.getWritableDatabase().insert(LocalDatabaseHelper.TABLE_TRIAL, null, cv);
             return nextId;
         }
@@ -95,7 +125,7 @@ public class LocalDatabaseAccess {
     }
 
     // Insert a trial retreived from fromserver
-    public static Boolean insertTrial(Context ctx, int userId, Trial trial) {
+    public static Boolean insertTrial(Context ctx, int userId, Trial trial, String username) {
         try {
             LocalDatabaseHelper db = LocalDatabaseHelper.getInstance(ctx.getApplicationContext());
             ContentValues cv=new ContentValues();
@@ -108,6 +138,7 @@ public class LocalDatabaseAccess {
             cv.put(LocalDatabaseHelper.COLUMN_TRIAL_MEAN_STRIDE_TIME, trial.getMeanStrideTime());
             cv.put(LocalDatabaseHelper.COLUMN_TRIAL_STANDARD_DEV, trial.getCoeffOfVar());
             cv.put(LocalDatabaseHelper.COLUMN_TRIAL_COEFF_OF_VAR, trial.getCoeffOfVar());
+            cv.put(LocalDatabaseHelper.COLUMN_TRIAL_USER_NAME, username);
             db.getWritableDatabase().insertWithOnConflict(LocalDatabaseHelper.TABLE_TRIAL, null, cv, SQLiteDatabase.CONFLICT_IGNORE);
             return true;
         }
@@ -204,12 +235,12 @@ public class LocalDatabaseAccess {
     }
 
     // Get the list of trials for user
-    public static ArrayList<Trial> getTrialsForUser(Context ctx, int userId) {
+    public static ArrayList<Trial> getTrialsForUser(Context ctx, int userId, String username) {
         try {
             LocalDatabaseHelper db = LocalDatabaseHelper.getInstance(ctx.getApplicationContext());
-            Cursor data = db.getReadableDatabase().rawQuery(String.format("SELECT %s, %s, %s, %s, %s FROM %s WHERE userId=%d ORDER BY %s DESC", LocalDatabaseHelper.COLUMN_TRIAL_ID,
+            Cursor data = db.getReadableDatabase().rawQuery(String.format("SELECT %s, %s, %s, %s, %s, %s FROM %s WHERE name='%s' ORDER BY %s DESC", LocalDatabaseHelper.COLUMN_TRIAL_ID,
                     LocalDatabaseHelper.COLUMN_TRIAL_START_TIME, LocalDatabaseHelper.COLUMN_TRIAL_MEAN_STRIDE_TIME, LocalDatabaseHelper.COLUMN_TRIAL_STANDARD_DEV,
-                    LocalDatabaseHelper.COLUMN_TRIAL_COEFF_OF_VAR, LocalDatabaseHelper.TABLE_TRIAL, userId, LocalDatabaseHelper.COLUMN_TRIAL_START_TIME), null);
+                    LocalDatabaseHelper.COLUMN_TRIAL_COEFF_OF_VAR, LocalDatabaseHelper.COLUMN_TRIAL_USER_NAME, LocalDatabaseHelper.TABLE_TRIAL, username, LocalDatabaseHelper.COLUMN_TRIAL_START_TIME), null);
 
             ArrayList<Trial> trials = new ArrayList<>();
             DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
@@ -218,7 +249,7 @@ public class LocalDatabaseAccess {
                 if(!data.isNull(1)) {
                     startTime = df.parse(data.getString(1));
                 }
-                Trial trial = new Trial(data.getInt(0), startTime, null);
+                Trial trial = new Trial(data.getInt(0), startTime, null, data.getString(5));
 
                 if(!data.isNull(2)) {
                     trial.setStepAnalysis(data.getFloat(2), data.getFloat(3), data.getFloat(4));
@@ -314,12 +345,12 @@ public class LocalDatabaseAccess {
         }
     }
 
-    public static Trial getTrial(Context ctx, int trialId) {
+    public static Trial getTrial(Context ctx, int trialId, String username) {
         try {
             LocalDatabaseHelper db = LocalDatabaseHelper.getInstance(ctx.getApplicationContext());
-            Cursor data = db.getReadableDatabase().rawQuery(String.format("SELECT %s, %s, %s, %s, %s FROM %s WHERE id=%d", LocalDatabaseHelper.COLUMN_TRIAL_USER_ID,
+            Cursor data = db.getReadableDatabase().rawQuery(String.format("SELECT %s, %s, %s, %s, %s, %s FROM %s WHERE id=%d AND name='%s'", LocalDatabaseHelper.COLUMN_TRIAL_USER_ID,
                     LocalDatabaseHelper.COLUMN_TRIAL_START_TIME, LocalDatabaseHelper.COLUMN_TRIAL_MEAN_STRIDE_TIME, LocalDatabaseHelper.COLUMN_TRIAL_STANDARD_DEV,
-                    LocalDatabaseHelper.COLUMN_TRIAL_COEFF_OF_VAR, LocalDatabaseHelper.TABLE_TRIAL, trialId), null);
+                    LocalDatabaseHelper.COLUMN_TRIAL_COEFF_OF_VAR, LocalDatabaseHelper.COLUMN_TRIAL_USER_NAME, LocalDatabaseHelper.TABLE_TRIAL, trialId, username), null);
 
             DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
             data.moveToNext();
@@ -327,7 +358,7 @@ public class LocalDatabaseAccess {
             if(!data.isNull(1)) {
                 startTime = df.parse(data.getString(1));
             }
-            Trial trial = new Trial(trialId, startTime, null);
+            Trial trial = new Trial(trialId, startTime, null, data.getString(5));
 
             if(!data.isNull(2)) {
                 trial.setStepAnalysis(data.getFloat(2), data.getFloat(3), data.getFloat(4));

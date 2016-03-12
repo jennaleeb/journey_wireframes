@@ -16,6 +16,7 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.uoft.journey.Journey;
 import com.uoft.journey.R;
 import com.uoft.journey.data.LocalDatabaseAccess;
 import com.uoft.journey.entity.AccelerometerData;
@@ -39,11 +40,14 @@ public class DebugMeasureActivity extends AppCompatActivity implements View.OnCl
     private IntentFilter mProcessIntentFilter;
     private Trial mTrial;
     private int mUserId;
+    private Journey mApp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_debug_measure);
+
+        mApp = ((Journey)getApplicationContext());
 
         Bundle extras = getIntent().getExtras();
         mUserId = extras.getInt("userId");
@@ -178,8 +182,8 @@ public class DebugMeasureActivity extends AppCompatActivity implements View.OnCl
             // Create the trial
             Calendar cal = Calendar.getInstance(TimeZone.getDefault());
             Date start = cal.getTime();
-            int trialId = LocalDatabaseAccess.addTrial(this, mUserId, start);
-            mTrial = new Trial(trialId, start, null);
+            int trialId = LocalDatabaseAccess.addTrial(this, mUserId, start, mApp.getUsername());
+            mTrial = new Trial(trialId, start, null, mApp.getUsername());
 
             // Call the service to start collecting accelerometer data
             Intent intent = new Intent(this, SensorService.class);

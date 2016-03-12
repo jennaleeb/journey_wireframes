@@ -31,14 +31,17 @@ public class TrendsFragment extends Fragment {
     private BarChart mVariationChart;
     private BarChart mMeanChart;
     private ArrayList<Trial> mTrials;
+    private String mUsername;
 
     public TrendsFragment() {
         // Required empty public constructor
     }
-    public static TrendsFragment newInstance(int userId) {
+    public static TrendsFragment newInstance(int userId, String username) {
         TrendsFragment fragment = new TrendsFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_USER_ID, userId);
+        args.putString("username", username);
+
         fragment.setArguments(args);
         return fragment;
     }
@@ -48,6 +51,7 @@ public class TrendsFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mUserId = getArguments().getInt(ARG_USER_ID);
+            mUsername = getArguments().getString("username");
         }
     }
 
@@ -67,7 +71,7 @@ public class TrendsFragment extends Fragment {
     }
 
     public void populateTrials() {
-        mTrials = DataService.getTrialsForUser(mContext, mUserId);
+        mTrials = DataService.getTrialsForUser(mContext, mUserId, mUsername);
     }
 
     public void setupChart() {
