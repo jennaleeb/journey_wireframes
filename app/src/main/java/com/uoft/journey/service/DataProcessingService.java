@@ -25,8 +25,6 @@ public class DataProcessingService extends Service {
 
     public static final String  ACTION_PROCESSED_DATA = "com.uoft.journey.action.PROCESSED_DATA";
 
-//    private final static int WINDOW_SHIFT_MS = 100;
-//    private final static int WINDOW_SIZE_MS = 3000;
     private SignalProcessTask mTask;
     private Context mContext;
     public static boolean isRunning = false;
@@ -72,9 +70,9 @@ public class DataProcessingService extends Service {
             Trial trial = params[0];
             try{
                 // Perform smoothing on X,Y,Z
-                trial.getTrialData().addProcessedData(Gait.simpleLowPassFilter(trial.getTrialData().getAccelDataX(), 50.0f),
+                trial.getTrialData().addProcessedData(Gait.simpleLowPassFilter(trial.getTrialData().getAccelDataX(), 50),
                         Gait.butterworthFilter(trial.getTrialData().getAccelDataY(), 60.0, 4, 4.0, 1.0),
-                        Gait.simpleLowPassFilter(trial.getTrialData().getAccelDataZ(), 50.0f));
+                        Gait.simpleLowPassFilter(trial.getTrialData().getAccelDataZ(), 50));
 
                 // Identify steps
                 Integer[] steps = Gait.localMaximaTimesUsingWindow(trial.getTrialData().getProcessedY(), trial.getTrialData().getElapsedTimestamps());

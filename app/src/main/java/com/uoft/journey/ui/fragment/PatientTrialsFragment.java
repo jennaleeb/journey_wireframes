@@ -18,6 +18,7 @@ import com.uoft.journey.R;
 import com.uoft.journey.entity.Trial;
 import com.uoft.journey.service.DataService;
 import com.uoft.journey.ui.activity.AssessmentDetailActivity;
+import com.uoft.journey.ui.activity.DebugMeasureActivity;
 import com.uoft.journey.ui.activity.MeasureActivity;
 import com.uoft.journey.ui.adapter.PatientTrialsListAdapter;
 
@@ -113,7 +114,7 @@ public class PatientTrialsFragment extends Fragment implements PatientTrialsList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.button_new:
-                if (username.equals(BaasUser.current().getName())) {
+                //if (username.equals(BaasUser.current().getName())) {
                     mApp.setUsername(username);
 
                     Intent intent = new Intent(mContext, MeasureActivity.class); // **** Standard Version ****
@@ -123,11 +124,11 @@ public class PatientTrialsFragment extends Fragment implements PatientTrialsList
                     intent.putExtras(bundle);
                     startActivity(intent);
                     break;
-                }
-                else{
-                    Toast.makeText(getContext(), "Not allowed to generate trials for patient", Toast.LENGTH_LONG).show();
-
-                }
+//                }
+//                else{
+//                    Toast.makeText(getContext(), "Not allowed to generate trials for patient", Toast.LENGTH_LONG).show();
+//
+//                }
         }
     }
 

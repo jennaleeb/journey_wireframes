@@ -175,14 +175,14 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
             getApplicationContext().unregisterReceiver(mReceiver);
         }
         catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
 
         try {
             getApplicationContext().unregisterReceiver(mProcessReceiver);
         }
         catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 
@@ -274,6 +274,7 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
 
                 MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.notification0);
                 mp.start();
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -418,7 +419,6 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
             mTrial = trial;
             ServerAccess.addTrial(getApplicationContext(), mTrial.getTrialId());
             showResults();
-
 
         }catch (Exception e) {
             e.printStackTrace();

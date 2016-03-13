@@ -113,9 +113,13 @@ public class Gait {
         float prevLeft = 0;
         float prevRight = 0;
         int prevIndex = -1;
+        int numIndex = -1;
+        int prevNumIndex = -1;
+        int halfWin = windowSize/2;
 
         for(int i: peaks) {
-            int halfWin = windowSize/2;
+
+            numIndex++;
 
             // Check if too close to prev step
             if(prevIndex > -1 && times[i] - times[prevIndex] < halfWin)
@@ -126,13 +130,13 @@ public class Gait {
             int centreTime = times[i];
 
             // Find the minimum value to the left, within lock window
-            for(int j=i; j>=0 && Math.abs(times[i] - centreTime) <= halfWin; j--) {
+            for(int j=i; j>=0 && Math.abs(times[j] - centreTime) <= halfWin; j--) {
                 if(data[j] < minLeft)
                     minLeft = data[j];
             }
 
-            // Find the minimum value to the left, within lock window
-            for(int j=i; j<data.length && Math.abs(times[i] - centreTime) <= halfWin; j++) {
+            // Find the minimum value to the right, within lock window
+            for(int j=i; j<data.length && Math.abs(times[j] - centreTime) <= halfWin; j++) {
                 if(data[j] < minRight)
                     minRight = data[j];
             }
@@ -147,11 +151,45 @@ public class Gait {
             }
 
             // Within threshold so add step
-            if(minLeft/prevLeft > 0.35 && minRight/prevRight > 0.35) {
+            if(minLeft/prevLeft > 0.38 && minRight/prevRight > 0.38) {
+                if(stepTimes.size() > 1 && times[i] - stepTimes.get(stepTimes.size() - 1) > (stepTimes.get(stepTimes.size() - 1) - stepTimes.get(stepTimes.size() - 2)) * 1.75) {
+                    //Possible missed step so look at any in between peaks
+                    int stepDiff = stepTimes.get(stepTimes.size() - 2) - stepTimes.get(stepTimes.size() - 1);
+                    int prevStepTime = stepTimes.get(stepTimes.size() - 1);
+
+                    // Look at the middle steps and relax the rules slightly
+                    for(int k=prevNumIndex + 1; k<numIndex; k++) {
+                        if(times[peaks.get(k)] - prevStepTime >= stepDiff * 0.4 ) {
+                            centreTime = times[peaks.get(k)];
+                            float newMinLeft = data[peaks.get(k)];
+                            float newMinRight = data[peaks.get(k)];
+
+                            // Find the minimum value to the left, within lock window
+                            for(int j=peaks.get(k); j>=0 && Math.abs(times[j] - centreTime) <= halfWin; j--) {
+                                if(data[j] < newMinLeft)
+                                    newMinLeft = data[j];
+                            }
+
+                            // Find the minimum value to the right, within lock window
+                            for(int j=peaks.get(k); j<data.length && Math.abs(times[j] - centreTime) <= halfWin; j++) {
+                                if(data[j] < newMinRight)
+                                    newMinRight = data[j];
+                            }
+
+                            // Check relaxed threshold
+                            if(newMinLeft/prevLeft > 0.4 && newMinRight/prevRight > 0.4) {
+                                stepTimes.add(times[peaks.get(k)]);
+                                break;
+                            }
+                        }
+                    }
+                }
+
                 stepTimes.add(times[i]);
                 prevLeft = minLeft;
                 prevRight = minRight;
                 prevIndex = i;
+                prevNumIndex = numIndex;
             }
         }
 
@@ -162,6 +200,7 @@ public class Gait {
     private static int getWindow(float[] data, int[] times) {
         ArrayList<Integer> crossPoints = new ArrayList<>();
         int max = 0;
+        int prevTime = 0;
 
         // Find all the points where it crosses the low threshold
         for(int i=0; i<data.length-1; i++) {
@@ -169,9 +208,11 @@ public class Gait {
                 if(crossPoints.size() == 0) {
                     crossPoints.add(times[i]);
                     max = times[i];
+                    prevTime = times[i];
                 }
                 else {
-                    int val = times[i] - crossPoints.get(crossPoints.size() - 1);
+                    int val = times[i] - prevTime;
+                    prevTime = times[i];
                     crossPoints.add(val);
                     if(val > max)
                         max = val;
@@ -183,10 +224,10 @@ public class Gait {
         if(max > 700) {
             // Max between two points is too large (above 0.7s) so return half the mean
             int tot = 0;
-            for(int i=0; i<crossPoints.size(); i++){
+            for(int i=1; i<crossPoints.size(); i++){
                 tot += crossPoints.get(i);
             }
-            int mean = tot / crossPoints.size();
+            int mean = tot / (crossPoints.size() - 1);
             return mean/2;
 
         }
