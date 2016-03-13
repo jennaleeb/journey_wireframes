@@ -2,7 +2,6 @@ package com.uoft.journey.ui.activity;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -12,17 +11,13 @@ import android.text.InputType;
 import android.view.View;
 import android.widget.EditText;
 
-import com.baasbox.android.BaasUser;
 import com.uoft.journey.R;
 import com.uoft.journey.data.AddPatient;
 import com.uoft.journey.data.DownloadFriends;
-import com.uoft.journey.data.DownloadTrials;
-import com.uoft.journey.data.ServerAccess;
 import com.uoft.journey.entity.Patient;
 import com.uoft.journey.ui.adapter.PatientListAdapter;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class PatientListActivity extends AppCompatActivity {

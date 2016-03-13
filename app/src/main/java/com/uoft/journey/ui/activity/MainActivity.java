@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void startUserHomeScreen() {
         mTimer.cancel();
-        Intent intent = new Intent(MainActivity.this, PatientMainActivity.class);
+        Intent intent = new Intent(MainActivity.this, PatientListActivity.class);
         startActivity(intent);
     }
 
