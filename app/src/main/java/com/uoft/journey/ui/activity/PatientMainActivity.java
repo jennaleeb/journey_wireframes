@@ -1,7 +1,6 @@
 package com.uoft.journey.ui.activity;
 
 import android.content.Intent;
-import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -12,10 +11,9 @@ import com.uoft.journey.Journey;
 import com.uoft.journey.R;
 import com.uoft.journey.data.DownloadTrials;
 import com.uoft.journey.data.LocalDatabaseAccess;
-import com.uoft.journey.data.ServerAccess;
 import com.uoft.journey.entity.Patient;
-import com.uoft.journey.service.DataService;
 import com.uoft.journey.ui.adapter.MainPagerAdapter;
+import com.uoft.journey.ui.custom.ViewPagerFixed;
 
 public class PatientMainActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener {
 
@@ -23,6 +21,7 @@ public class PatientMainActivity extends AppCompatActivity implements ViewPager.
     private MainPagerAdapter mPagerAdapter;
     private Toolbar mToolbar;
     private Journey mApp;
+    private int mActivePointerId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,14 +34,13 @@ public class PatientMainActivity extends AppCompatActivity implements ViewPager.
         mApp = ((Journey)getApplicationContext());
         mApp.setUserID(mPatient.getID());
 
-
         //set title of patient page to patient's name
         setTitle(mPatient.getName());
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
 
         // Set up the viewpager which shows the tabs
-        ViewPager viewPager = (ViewPager)findViewById(R.id.viewpager);
+        ViewPagerFixed viewPager = (ViewPagerFixed)findViewById(R.id.viewpager);
         viewPager.addOnPageChangeListener(this);
         mPagerAdapter = new MainPagerAdapter(getSupportFragmentManager(), this, mPatient.getID(), mPatient.getName());
         viewPager.setAdapter(mPagerAdapter);

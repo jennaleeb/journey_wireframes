@@ -30,11 +30,66 @@
                 />
 
             <TextView
-                android:id="@+id/text_mean_title"
+                android:id="@+id/text_var_last"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="12sp"
                 android:layout_below="@+id/chart_variation"
+                android:text="@string/last_5"/>
+
+            <ImageView
+                android:id="@+id/circle_var_1"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_margin="5dp"
+                android:src="@drawable/green"
+                android:layout_below="@+id/text_var_last"/>
+            <ImageView
+                android:id="@+id/circle_var_2"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_margin="5dp"
+                android:src="@drawable/green"
+                android:layout_below="@+id/text_var_last"
+                android:layout_toEndOf="@+id/circle_var_1"
+                android:layout_toRightOf="@+id/circle_var_1"/>
+            <ImageView
+                android:id="@+id/circle_var_3"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_margin="5dp"
+                android:src="@drawable/green"
+                android:layout_below="@+id/text_var_last"
+                android:layout_toEndOf="@+id/circle_var_2"
+                android:layout_toRightOf="@+id/circle_var_2"/>
+            <ImageView
+                android:id="@+id/circle_var_4"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_margin="5dp"
+                android:src="@drawable/green"
+                android:layout_below="@+id/text_var_last"
+                android:layout_toEndOf="@+id/circle_var_3"
+                android:layout_toRightOf="@+id/circle_var_3"/>
+            <ImageView
+                android:id="@+id/circle_var_5"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_margin="5dp"
+                android:src="@drawable/green"
+                android:layout_below="@+id/text_var_last"
+                android:layout_toEndOf="@+id/circle_var_4"
+                android:layout_toRightOf="@+id/circle_var_4"/>
+
+            <TextView
+                android:id="@+id/text_mean_title"
+                android:layout_below="@+id/circle_var_1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
+                android:layout_marginTop="10dp"
                 android:textColor="@color/textColorHeading"
                 android:textSize="18sp"
                 android:text="@string/mean_title"/>

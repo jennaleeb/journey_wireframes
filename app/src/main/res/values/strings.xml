@@ -19,6 +19,7 @@
     <string name="variation_title">Stride Variation</string>
     <string name="mean_title">Average Stride Time</string>
     <string name="timed_assessment">Timed Assessment</string>
+    <string name="last_5">Last 5 Assessments</string>
 
 
     <string name="hello_world">Hello world!</string>
