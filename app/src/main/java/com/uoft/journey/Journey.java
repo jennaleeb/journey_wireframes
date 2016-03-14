@@ -12,6 +12,7 @@ public class Journey extends MultiDexApplication {
         private BaasBox box;
         private int UserId;
         private String Username;
+        private String userType;
 
 
     @Override
@@ -47,6 +48,14 @@ public class Journey extends MultiDexApplication {
 
     public String getUsername() {
         return Username;
+    }
+
+    public void setType(String type) {
+        this.userType = type;
+    }
+
+    public String getType(){
+        return userType;
     }
 }
 

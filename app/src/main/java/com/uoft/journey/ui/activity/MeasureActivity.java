@@ -481,4 +481,5 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
             mTimeSpinner.setEnabled(isChecked);
         }
     }
+
 }

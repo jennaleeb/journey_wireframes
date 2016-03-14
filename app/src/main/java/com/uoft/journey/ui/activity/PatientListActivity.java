@@ -115,6 +115,12 @@ public class PatientListActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onPause(){
+        super.onPause();
+
+    }
+
 
 }
 

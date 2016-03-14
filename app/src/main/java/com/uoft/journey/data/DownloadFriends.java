@@ -48,14 +48,14 @@ public class DownloadFriends extends AsyncTask<Void, String, Void> {
 
              ArrayList<Patient> users = LocalDatabaseAccess.getallUsers(ct);
             m.clearlist();
-            int count = 0;
+           // int count = 0;
             for (Patient p: users){
 
                 m.addPatient(p);
-                count++;
+             //   count++;
             }
 
-            Toast.makeText(ct, "Patients added ".concat(Integer.toString(count)), Toast.LENGTH_LONG).show();
+            //Toast.makeText(ct, "Patients added ".concat(Integer.toString(count)), Toast.LENGTH_LONG).show();
 
             m.notifyDataSetChanged();
 

@@ -5,12 +5,12 @@
             android:fitsSystemWindows="true">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="56dp"
         android:paddingLeft="24dp"
-        android:paddingRight="24dp">
+        android:paddingRight="24dp"
+        android:orientation="vertical">
 
         <ImageView android:src="@drawable/arrow"
                    android:layout_width="wrap_content"
@@ -43,6 +43,14 @@
                       android:inputType="textPassword"
                       android:hint="Password"/>
         </android.support.design.widget.TextInputLayout>
+
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="I am a Clinician"
+            android:id="@+id/clinician"
+            android:layout_gravity="center_horizontal" />
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/btn_login"

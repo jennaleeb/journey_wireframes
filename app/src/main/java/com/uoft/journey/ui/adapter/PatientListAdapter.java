@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.uoft.journey.Journey;
 import com.uoft.journey.R;
 import com.uoft.journey.entity.Patient;
 import com.uoft.journey.ui.activity.PatientMainActivity;
@@ -60,7 +61,8 @@ public class PatientListAdapter extends RecyclerView.Adapter<PatientListAdapter.
     }
 
     public void addPatient(Patient p) {
-        if(mPatientList.contains(p) == false) {
+        Journey mApp = (Journey)context.getApplicationContext();
+        if(mPatientList.contains(p) == false && p.getName().equals(mApp.getUsername()) == false) {
             mPatientList.add(p);
         }
     }

@@ -7,14 +7,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.baasbox.android.BaasException;
 import com.baasbox.android.BaasHandler;
 import com.baasbox.android.BaasResult;
 import com.baasbox.android.BaasUser;
 import com.baasbox.android.RequestToken;
+import com.baasbox.android.json.JsonObject;
 import com.uoft.journey.Journey;
 import com.uoft.journey.R;
 import com.uoft.journey.data.LocalDatabaseAccess;
@@ -40,9 +43,12 @@ public class LoginActivity extends AppCompatActivity {
     Button _loginButton;
     @Bind(R.id.link_signup)
     Button _signupLink;
+    @Bind(R.id.clinician)
+    CheckBox _clinician;
     ProgressDialog _auth;
     boolean _newUser;
     Journey mApp;
+    BaasUser currUser;
 
 
     @Override
@@ -56,6 +62,8 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         ButterKnife.bind(this);
+        _clinician.setChecked(false);
+
         _auth = new ProgressDialog(LoginActivity.this,
                 R.style.AppTheme);;
         _loginButton.setOnClickListener(new View.OnClickListener() {
@@ -94,9 +102,10 @@ public class LoginActivity extends AppCompatActivity {
 
         String email = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
+        Boolean clincian = _clinician.isChecked();
 
 
-        signupWithBaasBox(newUser, email, password);
+        signupWithBaasBox(newUser, email, password, clincian);
 
 
     }
@@ -105,19 +114,28 @@ public class LoginActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         if (mSignupOrLogin!=null){
-            outState.putParcelable(SIGNUP_TOKEN_KEY,mSignupOrLogin);
+            outState.putParcelable(SIGNUP_TOKEN_KEY, mSignupOrLogin);
         }
     }
 
-    private void signupWithBaasBox(boolean newUser, String email, String password) {
+    private void signupWithBaasBox(boolean newUser, String email, String password, Boolean clinician) {
 
         BaasUser user = BaasUser.withUserName(email);
         user.setPassword(password);
-        //user.is
+
+
 
         _newUser = newUser;
 
         if (newUser) {
+            //JsonObject extras = user.getScope(BaasUser.Scope.PRIVATE).put("clinician", clinician);
+            if(clinician)
+                user.hasRole("clinician");
+               // mApp.setType("clinician");
+
+            else
+                user.hasRole("patient");
+               // mApp.setType("patient");
             mSignupOrLogin=user.signup(onComplete);
         } else {
             mSignupOrLogin=user.login(onComplete);
@@ -133,6 +151,12 @@ public class LoginActivity extends AppCompatActivity {
                     if (result.isFailed()){
                         Log.d("ERROR","ERROR",result.error());
                     }
+
+                    try {
+                        currUser = result.get();
+                    } catch (BaasException e) {
+                        e.printStackTrace();
+                    }
                     completeLogin(result.isSuccess());
                 }
             };
@@ -144,11 +168,18 @@ public class LoginActivity extends AppCompatActivity {
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             finish();*/
+
             mApp.setUsername(_emailText.getText().toString());
+            if (currUser.getRoles().contains("clinician")) {
+                mApp.setType("clinician");
+            }
+            else{
+                mApp.setType("patient");
+            }
+
             onLoginSuccess(_newUser);
 
             //ServerAccess.addFriend(getApplicationContext(), 0);
-
 
         } else {
             onLoginFailed(_newUser);
@@ -165,16 +196,25 @@ public class LoginActivity extends AppCompatActivity {
 
     public void onLoginSuccess(boolean newUser) {
         _loginButton.setEnabled(true);
-        if (newUser){
-            Toast.makeText(getBaseContext(), "Signup Successful", Toast.LENGTH_LONG).show();
+        if (newUser) {
+            Toast.makeText(getBaseContext(), "Signup Successful ".concat(mApp.getType()), Toast.LENGTH_LONG).show();
+
+        } else {
+            Toast.makeText(getBaseContext(), "Login Successful ".concat(mApp.getType()), Toast.LENGTH_LONG).show();
+        }
+        // Intent intent = new Intent(LoginActivity.this, PatientMainActivity.class);
+        LocalDatabaseAccess.addUser(getApplicationContext(), mApp.getUsername());
+        Intent intent;
+
+        if (mApp.getType().equals("clinician")) {
+            intent = new Intent(LoginActivity.this, PatientListActivity.class);
+        }
+        else{
+            intent = new Intent(LoginActivity.this, PatientMainActivity.class);
+            intent.putExtra("patient", mApp.getUsername());
 
         }
-        else {
-            Toast.makeText(getBaseContext(), "Login Successful", Toast.LENGTH_LONG).show();
-        }
-       // Intent intent = new Intent(LoginActivity.this, PatientMainActivity.class);
-        LocalDatabaseAccess.addUser(getApplicationContext(), mApp.getUsername());
-        Intent intent = new Intent(LoginActivity.this, PatientListActivity.class);
+
 
         _auth.dismiss();
 

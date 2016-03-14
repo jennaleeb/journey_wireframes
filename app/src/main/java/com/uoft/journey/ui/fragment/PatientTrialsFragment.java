@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.baasbox.android.BaasUser;
@@ -24,6 +25,8 @@ import com.uoft.journey.ui.adapter.PatientTrialsListAdapter;
 
 import java.util.ArrayList;
 
+import butterknife.Bind;
+
 /**
  * Fragment for displaying list of assessments
  */
@@ -36,6 +39,7 @@ public class PatientTrialsFragment extends Fragment implements PatientTrialsList
     private RecyclerView.LayoutManager mLayoutManager;
     private Context mContext;
     private ArrayList<Trial> mTrials;
+    private FloatingActionButton addButton;
     Journey mApp;
 
 
@@ -61,6 +65,8 @@ public class PatientTrialsFragment extends Fragment implements PatientTrialsList
             username = getArguments().getString("username");
         }
         mApp = ((Journey)getActivity().getApplicationContext());
+       // addButton.setOnClickListener(this);
+
     }
 
     @Override
@@ -70,14 +76,11 @@ public class PatientTrialsFragment extends Fragment implements PatientTrialsList
         View view = inflater.inflate(R.layout.fragment_patient_trials, container, false);
         mContext = view.getContext();
         setRetainInstance(true);
-        FloatingActionButton newBtn = (FloatingActionButton) view.findViewById(R.id.button_new);
-        newBtn.setOnClickListener(this);
-
-       /* if (username.equals(mApp.getUsername())) {
+        addButton = (FloatingActionButton) view.findViewById(R.id.button_new);
+        addButton.setOnClickListener(this);
+        if(mApp.getType().equals("clinician")) {
+            addButton.hide();
         }
-        else{
-            newBtn.hide();
-        }*/
         // List contained in RecyclerView
         mRecyclerView = (RecyclerView) view.findViewById(R.id.trial_list_view);
         mLayoutManager = new LinearLayoutManager(getContext());
@@ -92,6 +95,16 @@ public class PatientTrialsFragment extends Fragment implements PatientTrialsList
     @Override
     public void onDetach() {
         super.onDetach();
+    }
+
+    public void onResume() {
+        super.onDetach();
+        mApp = (Journey)getActivity().getApplicationContext();
+        if(mApp.getType().equals("clinician")) {
+            addButton.hide();
+
+        }
+
     }
 
     // When a trial is clicked
@@ -114,8 +127,9 @@ public class PatientTrialsFragment extends Fragment implements PatientTrialsList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.button_new:
-                //if (username.equals(BaasUser.current().getName())) {
+                if (username.equals(BaasUser.current().getName())) {
                     mApp.setUsername(username);
+
 
                     Intent intent = new Intent(mContext, MeasureActivity.class); // **** Standard Version ****
                     //Intent intent = new Intent(mContext, DebugMeasureActivity.class); // **** For Debug Version ****
@@ -124,11 +138,11 @@ public class PatientTrialsFragment extends Fragment implements PatientTrialsList
                     intent.putExtras(bundle);
                     startActivity(intent);
                     break;
-//                }
-//                else{
-//                    Toast.makeText(getContext(), "Not allowed to generate trials for patient", Toast.LENGTH_LONG).show();
-//
-//                }
+                }
+                else{
+                    Toast.makeText(getContext(), "Not allowed to generate trials for patient", Toast.LENGTH_LONG).show();
+
+                }
         }
     }
 
@@ -137,4 +151,6 @@ public class PatientTrialsFragment extends Fragment implements PatientTrialsList
         mTrials.addAll(DataService.getTrialsForUser(mContext, mUserId, username));
         mAdapter.notifyDataSetChanged();
     }
+
+
 }

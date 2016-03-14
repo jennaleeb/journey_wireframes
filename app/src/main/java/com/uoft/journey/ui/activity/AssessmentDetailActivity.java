@@ -131,4 +131,10 @@ public class AssessmentDetailActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onPause(){
+        super.onPause();
+
+    }
+
 }

@@ -78,4 +78,10 @@ public class PatientMainActivity extends AppCompatActivity implements ViewPager.
     public void onPageScrollStateChanged(int state) {
         // Do nothing
     }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+
+    }
 }
