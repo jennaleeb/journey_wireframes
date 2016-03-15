@@ -62,7 +62,6 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         ButterKnife.bind(this);
-        _clinician.setChecked(false);
 
         _auth = new ProgressDialog(LoginActivity.this,
                 R.style.AppTheme);;
@@ -129,13 +128,14 @@ public class LoginActivity extends AppCompatActivity {
 
         if (newUser) {
             //JsonObject extras = user.getScope(BaasUser.Scope.PRIVATE).put("clinician", clinician);
-            if(clinician)
+            if(clinician) {
                 user.hasRole("clinician");
-               // mApp.setType("clinician");
-
-            else
+                mApp.setType("clinician");
+            }
+            else {
                 user.hasRole("patient");
-               // mApp.setType("patient");
+                mApp.setType("patient");
+            }
             mSignupOrLogin=user.signup(onComplete);
         } else {
             mSignupOrLogin=user.login(onComplete);

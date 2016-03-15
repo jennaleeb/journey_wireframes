@@ -128,6 +128,7 @@ public class ServerAccess {
 
 
             LocalDatabaseAccess.insertTrial(ctx, userid, t, username);
+            LocalDatabaseAccess.addTrialSteps(ctx,t.getTrialId(),t.getStepTimes());
         }
 
     }
