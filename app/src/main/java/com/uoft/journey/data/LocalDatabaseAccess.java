@@ -216,6 +216,8 @@ public class LocalDatabaseAccess {
     public static Boolean addTrialSteps(Context ctx, int trialId, int[] stepTimes) {
         try {
             LocalDatabaseHelper db = LocalDatabaseHelper.getInstance(ctx.getApplicationContext());
+            // Clear existing steps first
+            db.getWritableDatabase().delete(LocalDatabaseHelper.TABLE_TRIAL_STEP, LocalDatabaseHelper.COLUMN_TRIAL_STEP_TRIAL_ID + "=" + trialId, null);
             ContentValues cv=new ContentValues();
 
             for(int i=0; i<stepTimes.length; i++) {

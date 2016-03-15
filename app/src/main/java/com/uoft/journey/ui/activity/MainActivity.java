@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import com.baasbox.android.BaasUser;
 import com.uoft.journey.Journey;
 import com.uoft.journey.R;
-import com.uoft.journey.entity.Patient;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -62,9 +61,10 @@ public class MainActivity extends AppCompatActivity {
             mApp.setType("patient");
             intent = new Intent(MainActivity.this, PatientMainActivity.class);
             intent.putExtra("patient", mApp.getUsername());
-
         }
 
+        // Prevent navigation back to here
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }
 

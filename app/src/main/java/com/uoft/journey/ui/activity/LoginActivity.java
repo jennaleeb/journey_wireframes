@@ -212,9 +212,10 @@ public class LoginActivity extends AppCompatActivity {
         else{
             intent = new Intent(LoginActivity.this, PatientMainActivity.class);
             intent.putExtra("patient", mApp.getUsername());
-
         }
 
+        // Prevent navigation back to here
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
         _auth.dismiss();
 
