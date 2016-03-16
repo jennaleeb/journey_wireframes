@@ -10,7 +10,7 @@ import java.util.Date;
  */
 public class Trial implements Parcelable {
     public static final String  TRIAL_DATA_KEY = "TRIAL_DATA_KEY";
-    private String username;
+    private String mUsername;
     private int mTrialId;
     private Date mStartTime;
     private AccelerometerData mTrialData;
@@ -44,6 +44,7 @@ public class Trial implements Parcelable {
         mMeanStrideTime = parcel.readFloat();
         mStandardDev = parcel.readFloat();
         mCoeffOfVar = parcel.readFloat();
+        mUsername = parcel.readString();
     }
 
     public int getTrialId() {
@@ -103,10 +104,10 @@ public class Trial implements Parcelable {
     }
 
     public void setUsername(String user){
-        username = user;
+        mUsername = user;
     }
     public String getUsername(){
-        return username;
+        return mUsername;
     }
 
     @Override
@@ -138,6 +139,7 @@ public class Trial implements Parcelable {
         dest.writeFloat(mMeanStrideTime);
         dest.writeFloat(mStandardDev);
         dest.writeFloat(mCoeffOfVar);
+        dest.writeString(mUsername);
     }
 
     public static final Parcelable.Creator<Trial> CREATOR

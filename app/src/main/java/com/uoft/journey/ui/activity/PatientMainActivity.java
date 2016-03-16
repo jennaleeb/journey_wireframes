@@ -12,8 +12,11 @@ import com.uoft.journey.R;
 import com.uoft.journey.data.DownloadTrials;
 import com.uoft.journey.data.LocalDatabaseAccess;
 import com.uoft.journey.entity.Patient;
+import com.uoft.journey.entity.Trial;
 import com.uoft.journey.ui.adapter.MainPagerAdapter;
 import com.uoft.journey.ui.custom.ViewPagerFixed;
+
+import java.util.ArrayList;
 
 public class PatientMainActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener {
 
@@ -21,6 +24,7 @@ public class PatientMainActivity extends AppCompatActivity implements ViewPager.
     private MainPagerAdapter mPagerAdapter;
     private Toolbar mToolbar;
     private Journey mApp;
+    private ArrayList<Trial> mTrials;
     private int mActivePointerId;
 
     @Override
@@ -42,6 +46,7 @@ public class PatientMainActivity extends AppCompatActivity implements ViewPager.
         // Set up the viewpager which shows the tabs
         ViewPagerFixed viewPager = (ViewPagerFixed)findViewById(R.id.viewpager);
         viewPager.addOnPageChangeListener(this);
+        viewPager.setOffscreenPageLimit(3);
         mPagerAdapter = new MainPagerAdapter(getSupportFragmentManager(), this, mPatient.getID(), mPatient.getName());
         viewPager.setAdapter(mPagerAdapter);
         TabLayout tab = (TabLayout)findViewById(R.id.tabs);
@@ -58,8 +63,7 @@ public class PatientMainActivity extends AppCompatActivity implements ViewPager.
     {
         super.onResume();
         // Reload the trial data in fragments
-        mPagerAdapter.pageChange(0);
-        mPagerAdapter.pageChange(1);
+        mPagerAdapter.pageChange();
     }
 
     @Override
@@ -69,7 +73,7 @@ public class PatientMainActivity extends AppCompatActivity implements ViewPager.
 
     @Override
     public void onPageSelected(int position) {
-        // WHen tab changed
+        mPagerAdapter.pageChange();
     }
 
     @Override

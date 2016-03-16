@@ -12,4 +12,7 @@
     <color name="colorAccent">#009688</color>
     <color name="colorPressed">#000000</color>
     <color name="colorDisabled">#E0E0E0</color>
+    <color name="colorGreen">#00FF21</color>
+    <color name="colorYellow">#FFD800</color>
+    <color name="colorRed">#FF0000</color>
 </resources>

@@ -102,7 +102,7 @@ public class LocalDatabaseAccess {
         try {
             LocalDatabaseHelper db = LocalDatabaseHelper.getInstance(ctx.getApplicationContext());
             ContentValues cv=new ContentValues();
-            Cursor max = db.getReadableDatabase().rawQuery(String.format("SELECT max(%s) FROM %s", LocalDatabaseHelper.COLUMN_USER_ID, LocalDatabaseHelper.TABLE_TRIAL), null);
+            Cursor max = db.getReadableDatabase().rawQuery(String.format("SELECT max(%s) FROM %s", LocalDatabaseHelper.COLUMN_TRIAL_ID, LocalDatabaseHelper.TABLE_TRIAL), null);
             int nextId = 1;
             if(max.moveToFirst()) {
                 nextId += max.getInt(0);
@@ -112,7 +112,6 @@ public class LocalDatabaseAccess {
             DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
 
             cv.put(LocalDatabaseHelper.COLUMN_TRIAL_ID, nextId);
-            cv.put(LocalDatabaseHelper.COLUMN_TRIAL_USER_ID, userId);
             cv.put(LocalDatabaseHelper.COLUMN_TRIAL_START_TIME, df.format(startTime));
             cv.put(LocalDatabaseHelper.COLUMN_TRIAL_USER_NAME, user);
             db.getWritableDatabase().insert(LocalDatabaseHelper.TABLE_TRIAL, null, cv);
@@ -237,7 +236,7 @@ public class LocalDatabaseAccess {
     }
 
     // Get the list of trials for user
-    public static ArrayList<Trial> getTrialsForUser(Context ctx, int userId, String username) {
+    public static ArrayList<Trial> getTrialsForUser(Context ctx, String username) {
         try {
             LocalDatabaseHelper db = LocalDatabaseHelper.getInstance(ctx.getApplicationContext());
             Cursor data = db.getReadableDatabase().rawQuery(String.format("SELECT %s, %s, %s, %s, %s, %s FROM %s WHERE name='%s' ORDER BY %s DESC", LocalDatabaseHelper.COLUMN_TRIAL_ID,

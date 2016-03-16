@@ -28,12 +28,11 @@ import java.util.Locale;
 * Fragment to show trends
  */
 public class TrendsFragment extends Fragment {
-    private static final String ARG_USER_ID = "userId";
-    private int mUserId;
+    private static final String ARG_USER_NAME = "username";
     private Context mContext;
     private BarChart mVariationChart;
     private BarChart mMeanChart;
-    private ArrayList<Trial> mTrials;
+    private ArrayList<Trial> mTrials = new ArrayList<>();
     private String mUsername;
     private ImageView mCircleVar1;
     private ImageView mCircleVar2;
@@ -45,12 +44,10 @@ public class TrendsFragment extends Fragment {
     public TrendsFragment() {
         // Required empty public constructor
     }
-    public static TrendsFragment newInstance(int userId, String username) {
+    public static TrendsFragment newInstance(String username) {
         TrendsFragment fragment = new TrendsFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_USER_ID, userId);
-        args.putString("username", username);
-
+        args.putString(ARG_USER_NAME, username);
         fragment.setArguments(args);
         return fragment;
     }
@@ -59,8 +56,7 @@ public class TrendsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mUserId = getArguments().getInt(ARG_USER_ID);
-            mUsername = getArguments().getString("username");
+            mUsername = getArguments().getString(ARG_USER_NAME);
         }
     }
 
@@ -78,14 +74,14 @@ public class TrendsFragment extends Fragment {
         mCircleVar3 = (ImageView)view.findViewById(R.id.circle_var_3);
         mCircleVar4 = (ImageView)view.findViewById(R.id.circle_var_4);
         mCircleVar5 = (ImageView)view.findViewById(R.id.circle_var_5);
-        populateTrials();
+        //populateTrials();
         setupChart();
         plotCharts();
         return view;
     }
 
     public void populateTrials() {
-        mTrials = DataService.getTrialsForUser(mContext, mUserId, mUsername);
+        mTrials = DataService.getTrialsForUser(mContext, mUsername);
     }
 
     public void setupChart() {
@@ -228,8 +224,9 @@ public class TrendsFragment extends Fragment {
         super.onDetach();
     }
 
-    public void reloadTrials() {
-        populateTrials();
+    public void reloadTrials(ArrayList<Trial> trials) {
+        mTrials.clear();
+        mTrials.addAll(trials);
         plotCharts();
     }
 }

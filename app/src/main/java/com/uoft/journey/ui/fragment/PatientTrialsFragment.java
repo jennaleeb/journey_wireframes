@@ -31,15 +31,16 @@ import butterknife.Bind;
  * Fragment for displaying list of assessments
  */
 public class PatientTrialsFragment extends Fragment implements PatientTrialsListAdapter.OnItemClickListener, View.OnClickListener {
-    private static final String ARG_USER_ID = "userId";
+    private static final String ARG_USER_ID = "userid";
+    private static final String ARG_USER_NAME = "username";
     private int mUserId;
-    private String username;
+    private String mUsername;
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private Context mContext;
-    private ArrayList<Trial> mTrials;
-    private FloatingActionButton addButton;
+    private ArrayList<Trial> mTrials = new ArrayList<>();
+    private FloatingActionButton mAddButton;
     Journey mApp;
 
 
@@ -52,7 +53,7 @@ public class PatientTrialsFragment extends Fragment implements PatientTrialsList
         PatientTrialsFragment fragment = new PatientTrialsFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_USER_ID, param1);
-        args.putString("username", param2);
+        args.putString(ARG_USER_NAME, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -62,11 +63,9 @@ public class PatientTrialsFragment extends Fragment implements PatientTrialsList
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mUserId = getArguments().getInt(ARG_USER_ID);
-            username = getArguments().getString("username");
+            mUsername = getArguments().getString(ARG_USER_NAME);
         }
         mApp = ((Journey)getActivity().getApplicationContext());
-       // addButton.setOnClickListener(this);
-
     }
 
     @Override
@@ -76,16 +75,17 @@ public class PatientTrialsFragment extends Fragment implements PatientTrialsList
         View view = inflater.inflate(R.layout.fragment_patient_trials, container, false);
         mContext = view.getContext();
         setRetainInstance(true);
-        addButton = (FloatingActionButton) view.findViewById(R.id.button_new);
-        addButton.setOnClickListener(this);
+        mAddButton = (FloatingActionButton) view.findViewById(R.id.button_new);
+        mAddButton.setOnClickListener(this);
         if(mApp.getType().equals("clinician")) {
-            addButton.hide();
+            mAddButton.hide();
         }
         // List contained in RecyclerView
         mRecyclerView = (RecyclerView) view.findViewById(R.id.trial_list_view);
         mLayoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mTrials = DataService.getTrialsForUser(view.getContext(), mUserId, username);
+        //mTrials = DataService.getTrialsForUser(view.getContext(), mUsername);
+
         mAdapter = new PatientTrialsListAdapter(mTrials, this);
         mRecyclerView.setAdapter(mAdapter);
 
@@ -101,25 +101,19 @@ public class PatientTrialsFragment extends Fragment implements PatientTrialsList
         super.onDetach();
         mApp = (Journey)getActivity().getApplicationContext();
         if(mApp.getType().equals("clinician")) {
-            addButton.hide();
-
+            mAddButton.hide();
         }
-
     }
 
     // When a trial is clicked
     @Override
     public void onItemClick(int trialId) {
-
-
             Intent intent = new Intent(mContext, AssessmentDetailActivity.class);
             Bundle bundle = new Bundle();
             bundle.putInt("trialId", trialId);
-            bundle.putString("user", username);
+            bundle.putString("user", mUsername);
             intent.putExtras(bundle);
             startActivity(intent);
-
-
     }
 
     // New assessment button clicked
@@ -127,8 +121,8 @@ public class PatientTrialsFragment extends Fragment implements PatientTrialsList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.button_new:
-                if (username.equals(BaasUser.current().getName())) {
-                    mApp.setUsername(username);
+                if (mUsername.equals(BaasUser.current().getName())) {
+                    mApp.setUsername(mUsername);
 
 
                     Intent intent = new Intent(mContext, MeasureActivity.class); // **** Standard Version ****
@@ -141,16 +135,14 @@ public class PatientTrialsFragment extends Fragment implements PatientTrialsList
                 }
                 else{
                     Toast.makeText(getContext(), "Not allowed to generate trials for patient", Toast.LENGTH_LONG).show();
-
                 }
         }
     }
 
-    public void reloadTrials() {
+    public void reloadTrials(ArrayList<Trial> trials) {
         mTrials.clear();
-        mTrials.addAll(DataService.getTrialsForUser(mContext, mUserId, username));
+        mTrials.addAll(trials);
+        //mTrials.addAll(DataService.getTrialsForUser(mContext, mUsername));
         mAdapter.notifyDataSetChanged();
     }
-
-
 }

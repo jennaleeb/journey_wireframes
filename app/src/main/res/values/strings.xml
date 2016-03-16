@@ -20,6 +20,7 @@
     <string name="mean_title">Average Stride Time</string>
     <string name="timed_assessment">Timed Assessment</string>
     <string name="last_5">Last 5 Assessments</string>
+    <string name="home">Summary</string>
 
 
     <string name="hello_world">Hello world!</string>
@@ -52,5 +53,8 @@
         <item>4 minutes</item>
         <item>5 minutes</item>
     </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

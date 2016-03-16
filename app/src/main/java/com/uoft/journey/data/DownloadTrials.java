@@ -3,17 +3,16 @@ package com.uoft.journey.data;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.baasbox.android.BaasUser;
 import com.uoft.journey.ui.adapter.MainPagerAdapter;
 
 /**
- * Created by sukri on 2016-03-09.
+ * Download from server
  */
-public class DownloadTrials extends AsyncTask<Void, String, Void> {
+public class DownloadTrials extends AsyncTask<Void, String, Boolean> {
 
         private Context ct;
         private int UserID;
-    private String user;
+        private String user;
         MainPagerAdapter m;
 
         public DownloadTrials(Context ctx, String username, int userID, MainPagerAdapter mp) {
@@ -21,22 +20,25 @@ public class DownloadTrials extends AsyncTask<Void, String, Void> {
             UserID = userID;
             m = mp;
             user = username;
-
         }
 
         @Override
-        protected Void doInBackground(Void... unused) {
-            ServerAccess.getTrialforUser(ct, UserID, user);
-            //ServerAccess.getFriends();
-            //ServerAccess.getTrialforFriend(ct, UserID, BaasUser.current().getName());
-            return (null);
+        protected Boolean doInBackground(Void... unused) {
+            try {
+                ServerAccess.getTrialforUser(ct, UserID, user);
+                return true;
+                //ServerAccess.getFriends();
+                //ServerAccess.getTrialforFriend(ct, UserID, BaasUser.current().getName());
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
         }
 
         @Override
         protected void onPreExecute() {
-
-                 super.onPreExecute();
-
+             super.onPreExecute();
         }
 
         @Override
@@ -45,14 +47,8 @@ public class DownloadTrials extends AsyncTask<Void, String, Void> {
         }
 
         @Override
-        protected void onPostExecute(Void unused) {
-
-            m.pageChange(0);
-
-            super.onPostExecute(unused);
-
-
+        protected void onPostExecute(Boolean success) {
+            m.trialsLoaded(success);
+            super.onPostExecute(success);
         }
-
-
 }

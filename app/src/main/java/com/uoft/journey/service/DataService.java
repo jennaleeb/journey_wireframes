@@ -26,7 +26,7 @@ public class DataService {
         return LocalDatabaseAccess.getTrial(ctx, trialId, username);
     }
 
-    public static ArrayList<Trial> getTrialsForUser(Context ctx, int userId, String username) {
-        return LocalDatabaseAccess.getTrialsForUser(ctx, userId, username);
+    public static ArrayList<Trial> getTrialsForUser(Context ctx, String username) {
+        return LocalDatabaseAccess.getTrialsForUser(ctx, username);
     }
 }
