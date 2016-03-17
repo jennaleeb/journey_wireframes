@@ -274,6 +274,7 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
 
                 MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.notification0);
                 mp.start();
+                mp.release();
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -354,6 +355,7 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
 
                 MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.notification0);
                 mp.start();
+                mp.release();
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -77,7 +77,7 @@ public class Trial implements Parcelable {
 
     public int getDuration() {
         if(mStepTimes != null && mStepTimes.length > 1)
-            return mStepTimes[mStepTimes.length - 1] - mStepTimes[0];
+            return mStepTimes[mStepTimes.length - 1];
 
         return 0;
     }

@@ -21,6 +21,7 @@
     <string name="timed_assessment">Timed Assessment</string>
     <string name="last_5">Last 5 Assessments</string>
     <string name="home">Summary</string>
+    <string name="stv">STV %</string>
 
 
     <string name="hello_world">Hello world!</string>

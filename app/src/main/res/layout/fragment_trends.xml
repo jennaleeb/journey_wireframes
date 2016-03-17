@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -6,112 +5,75 @@
     android:fillViewport="true"
     tools:context="com.uoft.journey.ui.fragment.TrendsFragment">
 
-        <RelativeLayout
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/card_var"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:layout_marginBottom="100dp">
-
-            <TextView
-                android:id="@+id/text_var_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:textColor="@color/textColorHeading"
-                android:textSize="18sp"
-                android:text="@string/variation_title"/>
-
-            <com.github.mikephil.charting.charts.BarChart
-                android:id="@+id/chart_variation"
-                android:layout_below="@+id/text_var_title"
+            android:layout_marginBottom="20dp"
+            >
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_marginTop="20dp"
-                />
-
-            <TextView
-                android:id="@+id/text_var_last"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="2dp"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="12sp"
-                android:layout_below="@+id/chart_variation"
-                android:text="@string/last_5"/>
+                android:padding="10dp"
+                android:layout_marginBottom="10dp">
 
-            <ImageView
-                android:id="@+id/circle_var_1"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_margin="5dp"
-                android:src="@drawable/green"
-                android:layout_below="@+id/text_var_last"/>
-            <ImageView
-                android:id="@+id/circle_var_2"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_margin="5dp"
-                android:src="@drawable/green"
-                android:layout_below="@+id/text_var_last"
-                android:layout_toEndOf="@+id/circle_var_1"
-                android:layout_toRightOf="@+id/circle_var_1"/>
-            <ImageView
-                android:id="@+id/circle_var_3"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_margin="5dp"
-                android:src="@drawable/green"
-                android:layout_below="@+id/text_var_last"
-                android:layout_toEndOf="@+id/circle_var_2"
-                android:layout_toRightOf="@+id/circle_var_2"/>
-            <ImageView
-                android:id="@+id/circle_var_4"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_margin="5dp"
-                android:src="@drawable/green"
-                android:layout_below="@+id/text_var_last"
-                android:layout_toEndOf="@+id/circle_var_3"
-                android:layout_toRightOf="@+id/circle_var_3"/>
-            <ImageView
-                android:id="@+id/circle_var_5"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_margin="5dp"
-                android:src="@drawable/green"
-                android:layout_below="@+id/text_var_last"
-                android:layout_toEndOf="@+id/circle_var_4"
-                android:layout_toRightOf="@+id/circle_var_4"/>
+                <TextView
+                    android:id="@+id/text_var_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:textColor="@color/textColorHeading"
+                    android:textSize="18sp"
+                    android:text="@string/variation_title"/>
 
-            <TextView
-                android:id="@+id/text_mean_title"
-                android:layout_below="@+id/circle_var_1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:layout_marginTop="10dp"
-                android:textColor="@color/textColorHeading"
-                android:textSize="18sp"
-                android:text="@string/mean_title"/>
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/chart_variation"
+                    android:layout_below="@+id/text_var_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginTop="20dp"
+                    />
+            </RelativeLayout>
+        </android.support.v7.widget.CardView>
 
-            <com.github.mikephil.charting.charts.BarChart
-                android:id="@+id/chart_mean"
-                android:layout_below="@+id/text_mean_title"
+        <android.support.v7.widget.CardView
+            android:id="@+id/card_mean"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            >
+
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_marginTop="20dp"
-                />
-
-            <!-- Dummy required for scrolling -->
-            <TextView
-                android:layout_below="@+id/chart_mean"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="200dp"
-                android:textColor="@color/textColorHeading"
-                android:textSize="18sp"
-                />
+                android:padding="10dp"
+                android:layout_marginBottom="10dp">
 
-        </RelativeLayout>
+                <TextView
+                    android:id="@+id/text_mean_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@color/textColorHeading"
+                    android:textSize="18sp"
+                    android:text="@string/mean_title"/>
 
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/chart_mean"
+                    android:layout_below="@+id/text_mean_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginTop="20dp"
+                    />
+
+            </RelativeLayout>
+        </android.support.v7.widget.CardView>
+    </LinearLayout>
 </ScrollView>

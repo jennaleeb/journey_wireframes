@@ -63,7 +63,7 @@ public class PatientMainActivity extends AppCompatActivity implements ViewPager.
     {
         super.onResume();
         // Reload the trial data in fragments
-        mPagerAdapter.pageChange();
+        mPagerAdapter.trialsLoaded(true);
     }
 
     @Override
