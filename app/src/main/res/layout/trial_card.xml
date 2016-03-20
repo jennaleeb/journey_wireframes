@@ -74,10 +74,10 @@
                 android:layout_weight="1">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:gravity="center"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="15"
                     android:id="@+id/step_count_value"
                     android:layout_gravity="center"
                     android:textSize="32sp"
@@ -86,7 +86,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="STEP COUNT"
+                    android:text="@string/step_count"
                     android:id="@+id/step_count_label"
                     android:layout_gravity="center"/>
 
@@ -98,18 +98,19 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1">
 
-                <TextView android:layout_width="wrap_content"
-                          android:layout_height="wrap_content"
-                          android:textAppearance="?android:attr/textAppearanceLarge"
-                          android:text="3.2"
-                          android:id="@+id/stride_var_value"
-                          android:layout_gravity="center"
-                          android:textSize="32sp"
-                          android:layout_marginBottom="5dp"/>
+                <TextView android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:gravity="center"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:background="@drawable/round_text_green"
+                    android:id="@+id/stride_var_value"
+                    android:layout_gravity="center"
+                    android:textSize="32sp"
+                    android:layout_marginBottom="5dp"/>
 
                 <TextView android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
-                          android:text="STV (%)"
+                          android:text="@string/stv"
                           android:id="@+id/stride_var_label"
                           android:layout_gravity="center"/>
 

@@ -70,6 +70,17 @@ public class PatientTrialsListAdapter extends RecyclerView.Adapter<PatientTrials
             holder.stepCount.setText(String.valueOf(mTrials.get(position).getNumberOfSteps()));
             holder.strideTimeVar.setText(String.format("%.1f", mTrials.get(position).getCoeffOfVar()));
             holder.time.setText(df2.format(mTrials.get(position).getStartTime()));
+
+            if( mTrials.get(position).getCoeffOfVar() <= 3.0f) {
+                holder.strideTimeVar.setBackgroundResource(R.drawable.round_text_green);
+            }
+            else if( mTrials.get(position).getCoeffOfVar() <= 6.0f) {
+                holder.strideTimeVar.setBackgroundResource(R.drawable.round_text_yellow);
+            }
+            else {
+                holder.strideTimeVar.setBackgroundResource(R.drawable.round_text_red);
+            }
+
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
