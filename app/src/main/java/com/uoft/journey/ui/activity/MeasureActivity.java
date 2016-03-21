@@ -43,6 +43,7 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
 
     private Button mBtnStart;
     private Button mBtnStop;
+    private Button mBtnDone;
     private IntentFilter mIntentFilter;
     private IntentFilter mProcessIntentFilter;
     private Trial mTrial;
@@ -90,6 +91,9 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
         mBtnStart.setOnClickListener(this);
         mBtnStop = (Button)findViewById(R.id.button_stop);
         mBtnStop.setOnClickListener(this);
+        mBtnDone = (Button)findViewById(R.id.button_done);
+        mBtnDone.setOnClickListener(this);
+        mBtnDone.setEnabled(false);
         mProgress = (ProgressBar)findViewById(R.id.pb_spinner);
         mProcessingText = (TextView)findViewById(R.id.text_processing);
         mCountdown = (TextView)findViewById(R.id.text_countdown);
@@ -251,6 +255,9 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
                 break;
             case R.id.button_stop:
                 stopCollecting();
+                break;
+            case R.id.button_done:
+                finish();
                 break;
         }
     }
@@ -428,12 +435,32 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void showResults() {
-        ((TextView)findViewById(R.id.text_output_1_val)).setText(String.format("%ds", mTrial.getDuration() / 1000));
+//        ((TextView)findViewById(R.id.text_output_1_val)).setText(String.format("%ds", mTrial.getDuration() / 1000));
+//        ((TextView)findViewById(R.id.text_output_2_val)).setText(String.format("%d", mTrial.getNumberOfSteps()));
+//        ((TextView)findViewById(R.id.text_output_3_val)).setText(String.format("%.2fms", mTrial.getMeanStrideTime()));
+//        ((TextView)findViewById(R.id.text_output_4_val)).setText(String.format("%.2fms", mTrial.getStandardDev()));
+//        ((TextView)findViewById(R.id.text_output_5_val)).setText(String.format("%.2f", mTrial.getCoeffOfVar()));
+
+        ((TextView)findViewById(R.id.text_output_1_val)).setText(String.format("%d", mTrial.getDuration() / 1000));
         ((TextView)findViewById(R.id.text_output_2_val)).setText(String.format("%d", mTrial.getNumberOfSteps()));
-        ((TextView)findViewById(R.id.text_output_3_val)).setText(String.format("%.2fms", mTrial.getMeanStrideTime()));
-        ((TextView)findViewById(R.id.text_output_4_val)).setText(String.format("%.2fms", mTrial.getStandardDev()));
-        ((TextView)findViewById(R.id.text_output_5_val)).setText(String.format("%.2f", mTrial.getCoeffOfVar()));
+        ((TextView)findViewById(R.id.text_output_3_val)).setText(String.format("%.0f", mTrial.getMeanStrideTime()));
+
+        TextView stv = (TextView) findViewById(R.id.text_output_4_val);
+        stv.setText(String.format("%.1f", mTrial.getCoeffOfVar()));
+
+        if( mTrial.getCoeffOfVar() <= 3.0f) {
+            stv.setBackgroundResource(R.drawable.round_text_green);
+        }
+        else if( mTrial.getCoeffOfVar() <= 6.0f) {
+            stv.setBackgroundResource(R.drawable.round_text_yellow);
+        }
+        else {
+            stv.setBackgroundResource(R.drawable.round_text_red);
+        }
+
         findViewById(R.id.layout_output).setVisibility(View.VISIBLE);
+        mBtnDone.setVisibility(View.VISIBLE);
+        mBtnDone.setEnabled(true);
     }
 
     BroadcastReceiver mReceiver = new BroadcastReceiver() {

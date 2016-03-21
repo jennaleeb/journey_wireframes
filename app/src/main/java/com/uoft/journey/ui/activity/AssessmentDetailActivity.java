@@ -1,8 +1,14 @@
 package com.uoft.journey.ui.activity;
 
+import android.content.Context;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -12,6 +18,7 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.uoft.journey.R;
+import com.uoft.journey.data.ServerAccess;
 import com.uoft.journey.entity.AccelerometerData;
 import com.uoft.journey.entity.Trial;
 import com.uoft.journey.service.DataService;
@@ -24,17 +31,22 @@ public class AssessmentDetailActivity extends AppCompatActivity {
 
     private Trial mTrial;
     private LineChart mGraph;
+    private String mUsername;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_ACTION_BAR);
         setContentView(R.layout.activity_assessment_detail);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
+        setSupportActionBar(toolbar);
 
         Bundle extras = getIntent().getExtras();
         int trialId = extras.getInt("trialId");
-        String username = extras.getString("user");
-
-        mTrial = DataService.getTrial(this, trialId, username);
+        mUsername = extras.getString("user");
+        getSupportActionBar().setTitle(R.string.assessment);
+        mTrial = DataService.getTrial(this, trialId, mUsername);
         mGraph = (LineChart)findViewById(R.id.detail_graph);
         setupGraph();
 
@@ -49,13 +61,25 @@ public class AssessmentDetailActivity extends AppCompatActivity {
 
     private void populateTrial() {
         DateFormat df = new SimpleDateFormat("dd MMM yyyy - hh:mm a", Locale.CANADA);
-        ((TextView)findViewById(R.id.text_detail_title)).setText(String.format("Assessment %d Details", mTrial.getTrialId()));
         ((TextView)findViewById(R.id.text_detail_date)).setText(df.format(mTrial.getStartTime()));
-        ((TextView)findViewById(R.id.text_detail_1_val)).setText(String.format("%ds", mTrial.getDuration() / 1000));
+        ((TextView)findViewById(R.id.text_detail_1_val)).setText(String.format("%d", mTrial.getDuration() / 1000));
         ((TextView)findViewById(R.id.text_detail_2_val)).setText(String.format("%d", mTrial.getNumberOfSteps()));
-        ((TextView)findViewById(R.id.text_detail_3_val)).setText(String.format("%.1fms", mTrial.getMeanStrideTime()));
-        ((TextView)findViewById(R.id.text_detail_4_val)).setText(String.format("%.1fms", mTrial.getStandardDev()));
-        ((TextView)findViewById(R.id.text_detail_5_val)).setText(String.format("%.2f", mTrial.getCoeffOfVar()));
+        ((TextView)findViewById(R.id.text_detail_3_val)).setText(String.format("%.0f", mTrial.getMeanStrideTime()));
+
+        TextView stv = (TextView) findViewById(R.id.text_detail_4_val);
+        stv.setText(String.format("%.1f", mTrial.getCoeffOfVar()));
+
+        if( mTrial.getCoeffOfVar() <= 3.0f) {
+            stv.setBackgroundResource(R.drawable.round_text_green);
+        }
+        else if( mTrial.getCoeffOfVar() <= 6.0f) {
+            stv.setBackgroundResource(R.drawable.round_text_yellow);
+        }
+        else {
+            stv.setBackgroundResource(R.drawable.round_text_red);
+        }
+
+        //((TextView)findViewById(R.id.text_detail_4_val)).setText(String.format("%.1fms", mTrial.getStandardDev()));
     }
 
     private void setupGraph() {
@@ -134,7 +158,58 @@ public class AssessmentDetailActivity extends AppCompatActivity {
     @Override
     public void onPause(){
         super.onPause();
-
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Menu with delete icon.
+        getMenuInflater().inflate(R.menu.menu_assessment, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        // Handle menu item clicks, only one option in this case
+        if (id == R.id.delete) {
+            DeleteTask task = new DeleteTask(mTrial.getTrialId(), mUsername, this);
+            task.execute();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void deleteComplete(boolean success) {
+        if(success) {
+            Toast.makeText(this, "Assessment deleted", Toast.LENGTH_SHORT).show();
+            this.finish();
+        }
+        else {
+            Toast.makeText(this, "Failed to delete assessment, try again.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private class DeleteTask extends AsyncTask<Void, Void, Boolean> {
+        private int trialId;
+        private String username;
+        private Context context;
+
+        public DeleteTask(int tId, String user, Context ctx) {
+            trialId = tId;
+            username = user;
+            context = ctx;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            return DataService.deleteTrial(context, trialId, username);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean success) {
+            deleteComplete(success);
+            super.onPostExecute(success);
+        }
+    }
 }

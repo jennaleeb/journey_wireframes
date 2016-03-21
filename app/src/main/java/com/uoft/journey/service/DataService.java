@@ -3,6 +3,7 @@ package com.uoft.journey.service;
 import android.content.Context;
 
 import com.uoft.journey.data.LocalDatabaseAccess;
+import com.uoft.journey.data.ServerAccess;
 import com.uoft.journey.entity.AccelerometerData;
 import com.uoft.journey.entity.Trial;
 
@@ -28,5 +29,13 @@ public class DataService {
 
     public static ArrayList<Trial> getTrialsForUser(Context ctx, String username) {
         return LocalDatabaseAccess.getTrialsForUser(ctx, username);
+    }
+
+    public static boolean deleteTrial(Context ctx, int trialId, String username) {
+        boolean success = LocalDatabaseAccess.deleteTrial(ctx, trialId);
+        if(success)
+            return ServerAccess.deleteTrial(trialId, username);
+
+        return false;
     }
 }

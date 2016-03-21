@@ -88,6 +88,18 @@
         android:layout_alignParentBottom="true"
         />
 
+    <Button
+        android:id="@+id/button_done"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button"
+        android:textColor="@color/textColorPrimary"
+        android:text="@string/done"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:visibility="invisible"
+        />
+
     <TextView
         android:id="@+id/text_countdown"
         android:layout_width="wrap_content"
@@ -131,122 +143,134 @@
         android:text="@string/processing"
         android:visibility="invisible"/>
 
-    <TableLayout
+    <RelativeLayout
         android:id="@+id/layout_output"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:layout_marginStart="5dp"
+        android:padding="10dp"
         android:layout_centerInParent="true"
         android:visibility="invisible"
-        android:stretchColumns="0">
+        android:layout_marginBottom="5dp">
 
-        <TableRow>
-            <TextView
-                android:id="@+id/text_output_1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="20sp"
-                android:layout_marginBottom="10dp"
-                android:text="@string/duration"
-                />
-            <TextView
-                android:id="@+id/text_output_1_val"
-                android:layout_width="80dp"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:background="@color/colorAccent"
-                android:textColor="@color/textColorPrimary"
-                android:layout_marginBottom="10dp"
-                android:gravity="center"
-                android:padding="3dp"
-                />
-        </TableRow>
-        <TableRow>
-            <TextView
-                android:id="@+id/text_output_2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="20sp"
-                android:layout_marginBottom="10dp"
-                android:text="@string/number_steps"
-                />
-            <TextView
-                android:id="@+id/text_output_2_val"
-                android:layout_width="80dp"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:background="@color/colorAccent"
-                android:textColor="@color/textColorPrimary"
-                android:layout_marginBottom="10dp"
-                android:padding="3dp"
-                android:gravity="center"
-                />
-        </TableRow>
-        <TableRow>
-            <TextView
-                android:id="@+id/text_output_3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="20sp"
-                android:layout_marginBottom="10dp"
-                android:text="@string/average_time"
-                />
-            <TextView
-                android:id="@+id/text_output_3_val"
-                android:layout_width="80dp"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:background="@color/colorAccent"
-                android:textColor="@color/textColorPrimary"
-                android:layout_marginBottom="10dp"
-                android:padding="3dp"
-                android:gravity="center"
-                />
-        </TableRow>
-        <TableRow>
-            <TextView
-                android:id="@+id/text_output_4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="20sp"
-                android:layout_marginBottom="10dp"
-                android:text="@string/standard_dev"
-                />
-            <TextView
-                android:id="@+id/text_output_4_val"
-                android:layout_width="80dp"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:background="@color/colorAccent"
-                android:textColor="@color/textColorPrimary"
-                android:layout_marginBottom="10dp"
-                android:padding="3dp"
-                android:gravity="center"
-                />
-        </TableRow>
-        <TableRow>
-            <TextView
-                android:id="@+id/text_output_5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="20sp"
-                android:layout_marginBottom="10dp"
-                android:text="@string/variation"
-                />
-            <TextView
-                android:id="@+id/text_output_5_val"
-                android:layout_width="80dp"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:background="@color/colorAccent"
-                android:textColor="@color/textColorPrimary"
-                android:layout_marginBottom="10dp"
-                android:padding="3dp"
-                android:gravity="center"
-                />
-        </TableRow>
+        <LinearLayout
+            android:id="@+id/output_top_row"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
 
-    </TableLayout>
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/text_output_1_val"
+                    android:layout_width="wrap_content"
+                    android:layout_height="75dp"
+                    android:gravity="center"
+                    android:layout_centerHorizontal="true"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textSize="32sp"
+                    android:layout_marginBottom="5dp"/>
+
+                <TextView
+                    android:id="@+id/text_output_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/duration"
+                    android:layout_below="@+id/text_output_1_val"
+                    android:layout_centerHorizontal="true"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/text_output_2_val"
+                    android:layout_width="wrap_content"
+                    android:layout_height="75dp"
+                    android:gravity="center"
+                    android:layout_centerHorizontal="true"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textSize="32sp"
+                    android:layout_marginBottom="5dp"/>
+
+                <TextView
+                    android:id="@+id/text_output_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/step_count"
+                    android:layout_below="@+id/text_output_2_val"
+                    android:layout_centerHorizontal="true"/>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/output_bottom_row"
+            android:layout_below="@+id/output_top_row"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="5dp">
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/text_output_3_val"
+                    android:layout_width="wrap_content"
+                    android:layout_height="75dp"
+                    android:gravity="center"
+                    android:layout_centerHorizontal="true"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textSize="32sp"
+                    android:layout_marginBottom="5dp"/>
+
+                <TextView
+                    android:id="@+id/text_output_3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/average_time"
+                    android:layout_below="@+id/text_output_3_val"
+                    android:layout_centerHorizontal="true"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/text_output_4_val"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:gravity="center"
+                    android:layout_centerHorizontal="true"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textSize="32sp"
+                    android:layout_marginBottom="5dp"/>
+
+                <TextView
+                    android:id="@+id/text_output_4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/stv"
+                    android:layout_below="@+id/text_output_4_val"
+                    android:layout_centerHorizontal="true"/>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
 
 </RelativeLayout>

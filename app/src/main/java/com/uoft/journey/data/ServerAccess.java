@@ -1,6 +1,7 @@
 package com.uoft.journey.data;
 
 import android.content.Context;
+import android.location.Criteria;
 import android.util.Log;
 
 import com.baasbox.android.BaasDocument;
@@ -162,5 +163,34 @@ public class ServerAccess {
             LocalDatabaseAccess.addUser(ctx, u.getName());
         }
 
+    }
+
+    public static Boolean deleteTrial(int trialId, String username) {
+        BaasQuery.Criteria filter = BaasQuery.builder()
+                .where(String.format("_author = \"%s\" and data like '%%\"mTrialId\":%d%%'", username, trialId))
+                .criteria();
+
+        try {
+
+            BaasResult<java.util.List<BaasDocument>> res = BaasDocument.fetchAllSync("Trials", filter);
+            // Will only be one trial
+            for (BaasDocument doc : res.value()) {
+                doc.delete(new BaasHandler<Void>() {
+                    @Override
+                    public void handle(BaasResult<Void> res) {
+                        if (res.isSuccess()) {
+                            Log.d("LOG", "Document deleted");
+                        } else {
+                            Log.e("LOG", "error", res.error());
+                        }
+                    }
+                });
+            }
+            return true;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

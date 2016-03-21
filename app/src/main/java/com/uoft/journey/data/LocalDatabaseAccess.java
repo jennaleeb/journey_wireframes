@@ -407,4 +407,21 @@ public class LocalDatabaseAccess {
             return null;
         }
     }
+
+    public static boolean deleteTrial(Context ctx, int trialId) {
+        try {
+            LocalDatabaseHelper db = LocalDatabaseHelper.getInstance(ctx.getApplicationContext());
+
+            // Delete trial from all tables
+            db.getWritableDatabase().delete(LocalDatabaseHelper.TABLE_TRIAL_STEP, LocalDatabaseHelper.COLUMN_TRIAL_STEP_TRIAL_ID + "=" + trialId, null);
+            db.getWritableDatabase().delete(LocalDatabaseHelper.TABLE_TRIAL_DATA, LocalDatabaseHelper.COLUMN_TRIAL_DATA_TRIAL_ID + "=" + trialId, null);
+            db.getWritableDatabase().delete(LocalDatabaseHelper.TABLE_TRIAL, LocalDatabaseHelper.COLUMN_TRIAL_ID + "=" + trialId, null);
+
+            return true;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
