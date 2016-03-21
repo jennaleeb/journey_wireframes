@@ -1,174 +1,185 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.uoft.journey.ui.activity.AssessmentDetailActivity">
 
-    <TextView
-        android:id="@+id/text_detail_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/details_title"
-        android:textSize="24sp"
-        android:layout_marginTop="5dp"
-        android:layout_gravity="start"
-        android:layout_marginLeft="5dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginBottom="10dp"
-        android:textColor="@color/textColorHeading"
-        />
-
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/text_detail_title">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/detail_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+        </android.support.design.widget.AppBarLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:padding="10dp"
+            >
 
-            <TextView
-                android:id="@+id/text_detail_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginStart="5dp"
-                android:textSize="20sp"
-                android:layout_marginBottom="10dp"
-                />
-
-
-            <TableLayout
-                android:id="@+id/detail_table"
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginStart="5dp"
-                android:stretchColumns="0"
-                android:layout_below="@+id/text_detail_date">
+                android:layout_height="match_parent"
+                >
 
-                <TableRow>
-                    <TextView
-                        android:id="@+id/text_detail_1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="20sp"
-                        android:layout_marginBottom="10dp"
-                        android:text="@string/duration"
-                        />
-                    <TextView
-                        android:id="@+id/text_detail_1_val"
-                        android:layout_width="80dp"
-                        android:layout_height="wrap_content"
-                        android:textSize="16sp"
-                        android:background="@color/colorAccent"
-                        android:textColor="@color/textColorPrimary"
-                        android:layout_marginBottom="10dp"
-                        android:gravity="center"
-                        android:padding="3dp"
-                        />
-                </TableRow>
-                <TableRow>
-                    <TextView
-                        android:id="@+id/text_detail_2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="20sp"
-                        android:layout_marginBottom="10dp"
-                        android:text="@string/number_steps"
-                        />
-                    <TextView
-                        android:id="@+id/text_detail_2_val"
-                        android:layout_width="80dp"
-                        android:layout_height="wrap_content"
-                        android:textSize="16sp"
-                        android:background="@color/colorAccent"
-                        android:textColor="@color/textColorPrimary"
-                        android:layout_marginBottom="10dp"
-                        android:padding="3dp"
-                        android:gravity="center"
-                        />
-                </TableRow>
-                <TableRow>
-                    <TextView
-                        android:id="@+id/text_detail_3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="20sp"
-                        android:layout_marginBottom="10dp"
-                        android:text="@string/average_time"
-                        />
-                    <TextView
-                        android:id="@+id/text_detail_3_val"
-                        android:layout_width="80dp"
-                        android:layout_height="wrap_content"
-                        android:textSize="16sp"
-                        android:background="@color/colorAccent"
-                        android:textColor="@color/textColorPrimary"
-                        android:layout_marginBottom="10dp"
-                        android:padding="3dp"
-                        android:gravity="center"
-                        />
-                </TableRow>
-                <TableRow>
-                    <TextView
-                        android:id="@+id/text_detail_4"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="20sp"
-                        android:layout_marginBottom="10dp"
-                        android:text="@string/standard_dev"
-                        />
-                    <TextView
-                        android:id="@+id/text_detail_4_val"
-                        android:layout_width="80dp"
-                        android:layout_height="wrap_content"
-                        android:textSize="16sp"
-                        android:background="@color/colorAccent"
-                        android:textColor="@color/textColorPrimary"
-                        android:layout_marginBottom="10dp"
-                        android:padding="3dp"
-                        android:gravity="center"
-                        />
-                </TableRow>
-                <TableRow>
-                    <TextView
-                        android:id="@+id/text_detail_5"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="20sp"
-                        android:layout_marginBottom="10dp"
-                        android:text="@string/variation"
-                        />
-                    <TextView
-                        android:id="@+id/text_detail_5_val"
-                        android:layout_width="80dp"
-                        android:layout_height="wrap_content"
-                        android:textSize="16sp"
-                        android:background="@color/colorAccent"
-                        android:textColor="@color/textColorPrimary"
-                        android:layout_marginBottom="10dp"
-                        android:padding="3dp"
-                        android:gravity="center"
-                        />
-                </TableRow>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-            </TableLayout>
+                    <TextView
+                        android:id="@+id/text_detail_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginStart="5dp"
+                        android:textSize="20sp"
+                        android:layout_marginBottom="10dp"
+                        />
 
-            <com.github.mikephil.charting.charts.LineChart
-                android:id="@+id/detail_graph"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_below="@+id/detail_table"
-                android:layout_marginTop="20dp"
-                />
+
+                    <TableLayout
+                        android:id="@+id/detail_table"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginStart="5dp"
+                        android:stretchColumns="0"
+                        android:layout_below="@+id/text_detail_date">
+
+                        <TableRow>
+                            <TextView
+                                android:id="@+id/text_detail_1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="20sp"
+                                android:layout_marginBottom="10dp"
+                                android:text="@string/duration"
+                                />
+                            <TextView
+                                android:id="@+id/text_detail_1_val"
+                                android:layout_width="80dp"
+                                android:layout_height="wrap_content"
+                                android:textSize="16sp"
+                                android:background="@color/colorAccent"
+                                android:textColor="@color/textColorPrimary"
+                                android:layout_marginBottom="10dp"
+                                android:gravity="center"
+                                android:padding="3dp"
+                                />
+                        </TableRow>
+                        <TableRow>
+                            <TextView
+                                android:id="@+id/text_detail_2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="20sp"
+                                android:layout_marginBottom="10dp"
+                                android:text="@string/number_steps"
+                                />
+                            <TextView
+                                android:id="@+id/text_detail_2_val"
+                                android:layout_width="80dp"
+                                android:layout_height="wrap_content"
+                                android:textSize="16sp"
+                                android:background="@color/colorAccent"
+                                android:textColor="@color/textColorPrimary"
+                                android:layout_marginBottom="10dp"
+                                android:padding="3dp"
+                                android:gravity="center"
+                                />
+                        </TableRow>
+                        <TableRow>
+                            <TextView
+                                android:id="@+id/text_detail_3"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="20sp"
+                                android:layout_marginBottom="10dp"
+                                android:text="@string/average_time"
+                                />
+                            <TextView
+                                android:id="@+id/text_detail_3_val"
+                                android:layout_width="80dp"
+                                android:layout_height="wrap_content"
+                                android:textSize="16sp"
+                                android:background="@color/colorAccent"
+                                android:textColor="@color/textColorPrimary"
+                                android:layout_marginBottom="10dp"
+                                android:padding="3dp"
+                                android:gravity="center"
+                                />
+                        </TableRow>
+                        <TableRow>
+                            <TextView
+                                android:id="@+id/text_detail_4"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="20sp"
+                                android:layout_marginBottom="10dp"
+                                android:text="@string/standard_dev"
+                                />
+                            <TextView
+                                android:id="@+id/text_detail_4_val"
+                                android:layout_width="80dp"
+                                android:layout_height="wrap_content"
+                                android:textSize="16sp"
+                                android:background="@color/colorAccent"
+                                android:textColor="@color/textColorPrimary"
+                                android:layout_marginBottom="10dp"
+                                android:padding="3dp"
+                                android:gravity="center"
+                                />
+                        </TableRow>
+                        <TableRow>
+                            <TextView
+                                android:id="@+id/text_detail_5"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="20sp"
+                                android:layout_marginBottom="10dp"
+                                android:text="@string/variation"
+                                />
+                            <TextView
+                                android:id="@+id/text_detail_5_val"
+                                android:layout_width="80dp"
+                                android:layout_height="wrap_content"
+                                android:textSize="16sp"
+                                android:background="@color/colorAccent"
+                                android:textColor="@color/textColorPrimary"
+                                android:layout_marginBottom="10dp"
+                                android:padding="3dp"
+                                android:gravity="center"
+                                />
+                        </TableRow>
+
+                    </TableLayout>
+
+                    <com.github.mikephil.charting.charts.LineChart
+                        android:id="@+id/detail_graph"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:layout_below="@+id/detail_table"
+                        android:layout_marginTop="20dp"
+                        />
+                </RelativeLayout>
+
+            </ScrollView>
+
         </RelativeLayout>
-
-    </ScrollView>
-
-</RelativeLayout>
+    </LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

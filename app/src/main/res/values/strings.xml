@@ -15,6 +15,7 @@
     <string name="start_walking">Start walking</string>
     <string name="keep_walking">Keep walking</string>
     <string name="assessments">Assessments</string>
+    <string name="assessment">Assessment</string>
     <string name="trends">Trends</string>
     <string name="variation_title">Stride Variation</string>
     <string name="mean_title">Average Stride Time</string>
