@@ -41,141 +41,168 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <TextView
-                        android:id="@+id/text_detail_date"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginStart="5dp"
-                        android:textSize="20sp"
-                        android:layout_marginBottom="10dp"
-                        />
-
-
-                    <TableLayout
-                        android:id="@+id/detail_table"
+                    <android.support.v7.widget.CardView
+                        android:id="@+id/card_top"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginStart="5dp"
-                        android:stretchColumns="0"
-                        android:layout_below="@+id/text_detail_date">
+                        android:layout_marginBottom="5dp"
+                        >
 
-                        <TableRow>
-                            <TextView
-                                android:id="@+id/text_detail_1"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textSize="20sp"
-                                android:layout_marginBottom="10dp"
-                                android:text="@string/duration"
-                                />
-                            <TextView
-                                android:id="@+id/text_detail_1_val"
-                                android:layout_width="80dp"
-                                android:layout_height="wrap_content"
-                                android:textSize="16sp"
-                                android:background="@color/colorAccent"
-                                android:textColor="@color/textColorPrimary"
-                                android:layout_marginBottom="10dp"
-                                android:gravity="center"
-                                android:padding="3dp"
-                                />
-                        </TableRow>
-                        <TableRow>
-                            <TextView
-                                android:id="@+id/text_detail_2"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textSize="20sp"
-                                android:layout_marginBottom="10dp"
-                                android:text="@string/number_steps"
-                                />
-                            <TextView
-                                android:id="@+id/text_detail_2_val"
-                                android:layout_width="80dp"
-                                android:layout_height="wrap_content"
-                                android:textSize="16sp"
-                                android:background="@color/colorAccent"
-                                android:textColor="@color/textColorPrimary"
-                                android:layout_marginBottom="10dp"
-                                android:padding="3dp"
-                                android:gravity="center"
-                                />
-                        </TableRow>
-                        <TableRow>
-                            <TextView
-                                android:id="@+id/text_detail_3"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textSize="20sp"
-                                android:layout_marginBottom="10dp"
-                                android:text="@string/average_time"
-                                />
-                            <TextView
-                                android:id="@+id/text_detail_3_val"
-                                android:layout_width="80dp"
-                                android:layout_height="wrap_content"
-                                android:textSize="16sp"
-                                android:background="@color/colorAccent"
-                                android:textColor="@color/textColorPrimary"
-                                android:layout_marginBottom="10dp"
-                                android:padding="3dp"
-                                android:gravity="center"
-                                />
-                        </TableRow>
-                        <TableRow>
-                            <TextView
-                                android:id="@+id/text_detail_4"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textSize="20sp"
-                                android:layout_marginBottom="10dp"
-                                android:text="@string/standard_dev"
-                                />
-                            <TextView
-                                android:id="@+id/text_detail_4_val"
-                                android:layout_width="80dp"
-                                android:layout_height="wrap_content"
-                                android:textSize="16sp"
-                                android:background="@color/colorAccent"
-                                android:textColor="@color/textColorPrimary"
-                                android:layout_marginBottom="10dp"
-                                android:padding="3dp"
-                                android:gravity="center"
-                                />
-                        </TableRow>
-                        <TableRow>
-                            <TextView
-                                android:id="@+id/text_detail_5"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textSize="20sp"
-                                android:layout_marginBottom="10dp"
-                                android:text="@string/variation"
-                                />
-                            <TextView
-                                android:id="@+id/text_detail_5_val"
-                                android:layout_width="80dp"
-                                android:layout_height="wrap_content"
-                                android:textSize="16sp"
-                                android:background="@color/colorAccent"
-                                android:textColor="@color/textColorPrimary"
-                                android:layout_marginBottom="10dp"
-                                android:padding="3dp"
-                                android:gravity="center"
-                                />
-                        </TableRow>
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="10dp"
+                            android:layout_marginBottom="5dp">
 
-                    </TableLayout>
+                            <TextView
+                                android:id="@+id/text_detail_date"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textSize="20sp"
+                                android:gravity="center"
+                                />
 
-                    <com.github.mikephil.charting.charts.LineChart
-                        android:id="@+id/detail_graph"
+                            <LinearLayout
+                                android:id="@+id/detail_top_row"
+                                android:layout_below="@+id/text_detail_date"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                >
+
+                                <RelativeLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1">
+
+                                    <TextView
+                                        android:id="@+id/text_detail_1_val"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="75dp"
+                                        android:gravity="center"
+                                        android:layout_centerHorizontal="true"
+                                        android:textAppearance="?android:attr/textAppearanceLarge"
+                                        android:textSize="32sp"
+                                        android:layout_marginBottom="5dp"/>
+
+                                    <TextView
+                                        android:id="@+id/text_detail_1"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/duration"
+                                        android:layout_below="@+id/text_detail_1_val"
+                                        android:layout_centerHorizontal="true"/>
+
+                                </RelativeLayout>
+
+                                <RelativeLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1">
+
+                                    <TextView
+                                        android:id="@+id/text_detail_2_val"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="75dp"
+                                        android:gravity="center"
+                                        android:layout_centerHorizontal="true"
+                                        android:textAppearance="?android:attr/textAppearanceLarge"
+                                        android:textSize="32sp"
+                                        android:layout_marginBottom="5dp"/>
+
+                                    <TextView
+                                        android:id="@+id/text_detail_2"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/step_count"
+                                        android:layout_below="@+id/text_detail_2_val"
+                                        android:layout_centerHorizontal="true"/>
+
+                                </RelativeLayout>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/detail_bottom_row"
+                                android:layout_below="@+id/detail_top_row"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:layout_marginTop="5dp">
+
+                                <RelativeLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1">
+
+                                    <TextView
+                                        android:id="@+id/text_detail_3_val"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="75dp"
+                                        android:gravity="center"
+                                        android:layout_centerHorizontal="true"
+                                        android:textAppearance="?android:attr/textAppearanceLarge"
+                                        android:textSize="32sp"
+                                        android:layout_marginBottom="5dp"/>
+
+                                    <TextView
+                                        android:id="@+id/text_detail_3"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/average_time"
+                                        android:layout_below="@+id/text_detail_3_val"
+                                        android:layout_centerHorizontal="true"/>
+
+                                </RelativeLayout>
+
+                                <RelativeLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1">
+
+                                    <TextView
+                                        android:id="@+id/text_detail_4_val"
+                                        android:layout_width="75dp"
+                                        android:layout_height="75dp"
+                                        android:gravity="center"
+                                        android:layout_centerHorizontal="true"
+                                        android:textAppearance="?android:attr/textAppearanceLarge"
+                                        android:textSize="32sp"
+                                        android:layout_marginBottom="5dp"/>
+
+                                    <TextView
+                                        android:id="@+id/text_detail_4"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/stv"
+                                        android:layout_below="@+id/text_detail_4_val"
+                                        android:layout_centerHorizontal="true"/>
+
+                                </RelativeLayout>
+
+                            </LinearLayout>
+
+                        </RelativeLayout>
+
+                    </android.support.v7.widget.CardView>
+
+                    <android.support.v7.widget.CardView
+                        android:id="@+id/card_bottom"
+                        android:layout_below="@+id/card_top"
                         android:layout_width="match_parent"
-                        android:layout_height="200dp"
-                        android:layout_below="@+id/detail_table"
-                        android:layout_marginTop="20dp"
-                        />
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
+                        >
+
+                        <com.github.mikephil.charting.charts.LineChart
+                            android:id="@+id/detail_graph"
+                            android:layout_width="match_parent"
+                            android:layout_height="200dp"
+                            android:layout_below="@+id/detail_bottom_row"
+                            android:layout_marginTop="20dp"
+                            />
+
+                    </android.support.v7.widget.CardView>
                 </RelativeLayout>
 
             </ScrollView>

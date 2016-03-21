@@ -62,11 +62,24 @@ public class AssessmentDetailActivity extends AppCompatActivity {
     private void populateTrial() {
         DateFormat df = new SimpleDateFormat("dd MMM yyyy - hh:mm a", Locale.CANADA);
         ((TextView)findViewById(R.id.text_detail_date)).setText(df.format(mTrial.getStartTime()));
-        ((TextView)findViewById(R.id.text_detail_1_val)).setText(String.format("%ds", mTrial.getDuration() / 1000));
+        ((TextView)findViewById(R.id.text_detail_1_val)).setText(String.format("%d", mTrial.getDuration() / 1000));
         ((TextView)findViewById(R.id.text_detail_2_val)).setText(String.format("%d", mTrial.getNumberOfSteps()));
-        ((TextView)findViewById(R.id.text_detail_3_val)).setText(String.format("%.1fms", mTrial.getMeanStrideTime()));
-        ((TextView)findViewById(R.id.text_detail_4_val)).setText(String.format("%.1fms", mTrial.getStandardDev()));
-        ((TextView)findViewById(R.id.text_detail_5_val)).setText(String.format("%.2f", mTrial.getCoeffOfVar()));
+        ((TextView)findViewById(R.id.text_detail_3_val)).setText(String.format("%.0f", mTrial.getMeanStrideTime()));
+
+        TextView stv = (TextView) findViewById(R.id.text_detail_4_val);
+        stv.setText(String.format("%.1f", mTrial.getCoeffOfVar()));
+
+        if( mTrial.getCoeffOfVar() <= 3.0f) {
+            stv.setBackgroundResource(R.drawable.round_text_green);
+        }
+        else if( mTrial.getCoeffOfVar() <= 6.0f) {
+            stv.setBackgroundResource(R.drawable.round_text_yellow);
+        }
+        else {
+            stv.setBackgroundResource(R.drawable.round_text_red);
+        }
+
+        //((TextView)findViewById(R.id.text_detail_4_val)).setText(String.format("%.1fms", mTrial.getStandardDev()));
     }
 
     private void setupGraph() {

@@ -3,13 +3,14 @@
     <string name="start_new">New Assessment</string>
     <string name="start">Start</string>
     <string name="stop">Stop</string>
+    <string name="done">Done</string>
     <string name="processing">Processing..,</string>
     <string name="instructions">Place the phone in the harness and press START when you are ready to begin</string>
     <string name="new_title">New Assessment</string>
     <string name="details_title">Assessment Details</string>
-    <string name="duration">Assessment Duration</string>
+    <string name="duration">DURATION (s)</string>
     <string name="number_steps">Number of steps</string>
-    <string name="average_time">Average stride time</string>
+    <string name="average_time">AVG. STRIDE (ms)</string>
     <string name="standard_dev">Standard deviation</string>
     <string name="variation">Coefficient of Variation</string>
     <string name="start_walking">Start walking</string>
@@ -22,7 +23,7 @@
     <string name="timed_assessment">Timed Assessment</string>
     <string name="last_5">Last 5 Assessments</string>
     <string name="home">Summary</string>
-    <string name="stv">STV %</string>
+    <string name="stv">STV (%)</string>
     <string name="latest">Latest</string>
     <string name="step_count">STEP COUNT</string>
 
