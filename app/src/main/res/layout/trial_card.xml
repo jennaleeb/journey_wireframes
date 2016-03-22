@@ -21,14 +21,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="5dp"
-        android:background="@color/colorPrimaryTranslucent"
+        android:background="@color/colorSubHeader"
         >
 
         <TextView
             android:id="@+id/card_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/textColorPrimary"
             android:textSize="18sp"
             android:paddingLeft="5dp"
             android:layout_weight="1"/>
@@ -41,7 +40,6 @@
             android:gravity="end"
             android:textSize="18sp"
             android:paddingRight="5dp"
-            android:textColor="@color/textColorPrimary"
             android:layout_weight="1"/>
 
     </LinearLayout>
@@ -101,12 +99,13 @@
                 <TextView android:layout_width="75dp"
                     android:layout_height="75dp"
                     android:gravity="center"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
                     android:background="@drawable/round_text_green"
                     android:id="@+id/stride_var_value"
+                    android:color="@color/colorWhiteTranslucent"
                     android:layout_gravity="center"
                     android:textSize="32sp"
-                    android:layout_marginBottom="5dp"/>
+                    android:layout_marginBottom="5dp"
+                          android:textColor="@color/colorWhiteTranslucent"/>
 
                 <TextView android:layout_width="wrap_content"
                           android:layout_height="wrap_content"

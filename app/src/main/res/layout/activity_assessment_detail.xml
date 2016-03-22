@@ -162,6 +162,7 @@
 
                                     <TextView
                                         android:id="@+id/text_detail_4_val"
+                                        android:textColor="@color/colorWhiteTranslucent"
                                         android:layout_width="75dp"
                                         android:layout_height="75dp"
                                         android:gravity="center"

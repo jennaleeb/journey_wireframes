@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
-    <color name="colorPrimary">#125688</color>
+    <color name="colorPrimary">#536DFE</color>
     <color name="colorPrimaryTranslucent">#80125688</color>
     <color name="colorPrimaryDark">#125688</color>
     <color name="textColorPrimary">#FFFFFF</color>
@@ -9,10 +9,13 @@
     <color name="colorDivider">#E0E0E0</color>
     <color name="windowBackground">#FFFFFF</color>
     <color name="navigationBarColor">#000000</color>
-    <color name="colorAccent">#009688</color>
+    <color name="colorAccent">#FFFFFF</color>
     <color name="colorPressed">#000000</color>
     <color name="colorDisabled">#E0E0E0</color>
-    <color name="colorGreen">#00FF21</color>
-    <color name="colorYellow">#FFD800</color>
-    <color name="colorRed">#FF0000</color>
+    <color name="colorGreen">#2ecc71</color>
+    <color name="colorYellow">#f1c40f</color>
+    <color name="colorRed">#e74c3c</color>
+    <color name="colorWhiteTranslucent">#80FFFFFF</color>
+    <color name="colorSubHeader">#E0E0E0</color>
+    <color name="colorElement">#424242</color>
 </resources>

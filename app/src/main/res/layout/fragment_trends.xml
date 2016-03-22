@@ -45,7 +45,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="5dp"
-                        android:textColor="@color/textColorHeading"
                         android:textSize="18sp"
                         android:text="@string/latest"/>
 
@@ -64,6 +63,7 @@
                     <TextView
                         android:id="@+id/text_recent"
                         android:layout_width="150dp"
+                        android:textColor="@color/colorWhiteTranslucent"
                         android:layout_height="150dp"
                         android:layout_below="@+id/text_last_date"
                         android:textSize="40sp"
@@ -89,61 +89,64 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="2dp"
-                        android:layout_marginLeft="10dp"
                         android:layout_marginStart="10dp"
                         android:textColor="@color/colorPrimaryDark"
                         android:textSize="12sp"
                         android:layout_below="@+id/text_stv"
-                        android:text="@string/last_5"/>
+                        android:text="@string/last_5"
+                        android:layout_centerHorizontal="true"/>
 
-                    <ImageView
-                        android:id="@+id/circle_var_1"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_margin="5dp"
-                        android:src="@drawable/green"
-                        android:visibility="invisible"
-                        android:layout_below="@+id/text_var_last"/>
-                    <ImageView
-                        android:id="@+id/circle_var_2"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_margin="5dp"
-                        android:src="@drawable/green"
-                        android:visibility="invisible"
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_centerHorizontal="true"
                         android:layout_below="@+id/text_var_last"
-                        android:layout_toEndOf="@+id/circle_var_1"
-                        android:layout_toRightOf="@+id/circle_var_1"/>
-                    <ImageView
-                        android:id="@+id/circle_var_3"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_margin="5dp"
-                        android:src="@drawable/green"
-                        android:visibility="invisible"
-                        android:layout_below="@+id/text_var_last"
-                        android:layout_toEndOf="@+id/circle_var_2"
-                        android:layout_toRightOf="@+id/circle_var_2"/>
-                    <ImageView
-                        android:id="@+id/circle_var_4"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_margin="5dp"
-                        android:src="@drawable/green"
-                        android:visibility="invisible"
-                        android:layout_below="@+id/text_var_last"
-                        android:layout_toEndOf="@+id/circle_var_3"
-                        android:layout_toRightOf="@+id/circle_var_3"/>
-                    <ImageView
-                        android:id="@+id/circle_var_5"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_margin="5dp"
-                        android:src="@drawable/green"
-                        android:visibility="invisible"
-                        android:layout_below="@+id/text_var_last"
-                        android:layout_toEndOf="@+id/circle_var_4"
-                        android:layout_toRightOf="@+id/circle_var_4"/>
+                        android:id="@+id/history_container">
+                        <ImageView
+                            android:id="@+id/circle_var_1"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_margin="5dp"
+                            android:src="@drawable/green"
+                            android:visibility="invisible"/>
+                        <ImageView
+                            android:id="@+id/circle_var_2"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_margin="5dp"
+                            android:src="@drawable/green"
+                            android:visibility="invisible"
+                            android:layout_toEndOf="@+id/circle_var_1"
+                            android:layout_toRightOf="@+id/circle_var_1"/>
+                        <ImageView
+                            android:id="@+id/circle_var_3"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_margin="5dp"
+                            android:src="@drawable/green"
+                            android:visibility="invisible"
+                            android:layout_toEndOf="@+id/circle_var_2"
+                            android:layout_toRightOf="@+id/circle_var_2"/>
+                        <ImageView
+                            android:id="@+id/circle_var_4"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_margin="5dp"
+                            android:src="@drawable/green"
+                            android:visibility="invisible"
+                            android:layout_toEndOf="@+id/circle_var_3"
+                            android:layout_toRightOf="@+id/circle_var_3"/>
+                        <ImageView
+                            android:id="@+id/circle_var_5"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_margin="5dp"
+                            android:src="@drawable/green"
+                            android:visibility="invisible"
+                            android:layout_toEndOf="@+id/circle_var_4"
+                            android:layout_toRightOf="@+id/circle_var_4"/>
+                    </LinearLayout>
 
                 </RelativeLayout>
 
@@ -166,7 +169,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="5dp"
-                        android:textColor="@color/textColorHeading"
                         android:textSize="18sp"
                         android:text="@string/variation_title"/>
 
@@ -198,7 +200,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="5dp"
-                        android:textColor="@color/textColorHeading"
                         android:textSize="18sp"
                         android:text="@string/mean_title"/>
 
