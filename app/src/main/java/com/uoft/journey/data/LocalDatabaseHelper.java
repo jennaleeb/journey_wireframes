@@ -17,6 +17,7 @@ public class LocalDatabaseHelper extends SQLiteOpenHelper {
     public static final String TABLE_TRIAL = "trial";
     public static final String TABLE_TRIAL_DATA = "trialData";
     public static final String TABLE_TRIAL_STEP = "trialStep";
+    public static final String TABLE_TRIAL_PAUSE = "trialPause";
     // Columns - User
     public static final String COLUMN_USER_ID = "id";
     public static final String COLUMN_USER_NAME = "name";
@@ -28,7 +29,6 @@ public class LocalDatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_TRIAL_STANDARD_DEV = "standardDev";
     public static final String COLUMN_TRIAL_COEFF_OF_VAR = "coeffOfVar";
     public static final String COLUMN_TRIAL_USER_NAME = "name";
-
     // Columns - TrialData
     public static final String COLUMN_TRIAL_DATA_TRIAL_ID = "trialId";
     public static final String COLUMN_TRIAL_DATA_ELAPSED_TIME = "elapsedTime";
@@ -42,6 +42,10 @@ public class LocalDatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_TRIAL_STEP_TRIAL_ID = "trialId";
     public static final String COLUMN_TRIAL_STEP_STEP_NUM = "stepNum";
     public static final String COLUMN_TRIAL_STEP_ELAPSED_TIME = "elapsedTime";
+    // Columns - TrialStep
+    public static final String COLUMN_TRIAL_PAUSE_TRIAL_ID = "trialId";
+    public static final String COLUMN_TRIAL_PAUSE_START = "startPause";
+    public static final String COLUMN_TRIAL_PAUSE_END = "endPause";
 
     private LocalDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, SCHEMA);
@@ -63,6 +67,7 @@ public class LocalDatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE trial (id INTEGER PRIMARY KEY, userId INTEGER, startTime TEXT, meanStrideTime REAL, standardDev REAL, coeffOfVar REAL, name TEXT);");
         db.execSQL("CREATE TABLE trialData (trialId INTEGER, elapsedTime INTEGER, xVal REAL, yVal REAL, zVal REAL, xProcessed REAL, yProcessed REAL, zProcessed REAL, FOREIGN KEY(trialId) REFERENCES trial(id));");
         db.execSQL("CREATE TABLE trialStep (trialId INTEGER, stepNum INTEGER, elapsedTime INTEGER, FOREIGN KEY(trialId) REFERENCES trial(id));");
+        db.execSQL("CREATE TABLE trialPause (trialId INTEGER, startPause INTEGER, endPause INTEGER, FOREIGN KEY(trialId) REFERENCES trial(id));");
     }
 
     @Override

@@ -39,7 +39,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
-public class MeasureActivity extends AppCompatActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+public class MeasureActivity extends AppCompatActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener, MediaPlayer.OnCompletionListener {
 
     private Button mBtnStart;
     private Button mBtnStop;
@@ -281,7 +281,7 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
 
                 MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.notification0);
                 mp.start();
-                mp.release();
+                mp.setOnCompletionListener(this);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -362,7 +362,7 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
 
                 MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.notification0);
                 mp.start();
-                mp.release();
+                mp.setOnCompletionListener(this);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -511,4 +511,14 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
+    @Override
+    public void onCompletion(MediaPlayer mp) {
+        if(mp!=null) {
+            if(mp.isPlaying())
+                mp.stop();
+            mp.reset();
+            mp.release();
+            mp=null;
+        }
+    }
 }

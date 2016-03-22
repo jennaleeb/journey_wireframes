@@ -14,6 +14,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -212,11 +213,12 @@ public class LocalDatabaseAccess {
     }
 
     // Add the trial steps
-    public static Boolean addTrialSteps(Context ctx, int trialId, int[] stepTimes) {
+    public static Boolean addTrialSteps(Context ctx, int trialId, int[] stepTimes, List<int[]> pauseTimes) {
         try {
             LocalDatabaseHelper db = LocalDatabaseHelper.getInstance(ctx.getApplicationContext());
             // Clear existing steps first
             db.getWritableDatabase().delete(LocalDatabaseHelper.TABLE_TRIAL_STEP, LocalDatabaseHelper.COLUMN_TRIAL_STEP_TRIAL_ID + "=" + trialId, null);
+            db.getWritableDatabase().delete(LocalDatabaseHelper.TABLE_TRIAL_PAUSE, LocalDatabaseHelper.COLUMN_TRIAL_PAUSE_TRIAL_ID + "=" + trialId, null);
             ContentValues cv=new ContentValues();
 
             for(int i=0; i<stepTimes.length; i++) {
@@ -225,6 +227,16 @@ public class LocalDatabaseAccess {
                 cv.put(LocalDatabaseHelper.COLUMN_TRIAL_STEP_ELAPSED_TIME, stepTimes[i]);
                 cv.put(LocalDatabaseHelper.COLUMN_TRIAL_STEP_TRIAL_ID, trialId);
                 db.getWritableDatabase().insert(LocalDatabaseHelper.TABLE_TRIAL_STEP, null, cv);
+            }
+
+            if(pauseTimes != null) {
+                for(int i=0; i<pauseTimes.size(); i++) {
+                    cv.clear();
+                    cv.put(LocalDatabaseHelper.COLUMN_TRIAL_PAUSE_TRIAL_ID, trialId);
+                    cv.put(LocalDatabaseHelper.COLUMN_TRIAL_PAUSE_START, pauseTimes.get(i)[0]);
+                    cv.put(LocalDatabaseHelper.COLUMN_TRIAL_PAUSE_END, pauseTimes.get(i)[1]);
+                    db.getWritableDatabase().insert(LocalDatabaseHelper.TABLE_TRIAL_PAUSE, null, cv);
+                }
             }
 
             return true;
@@ -257,6 +269,7 @@ public class LocalDatabaseAccess {
                 }
 
                 trial.setStepTimes(getTrialStepTimes(ctx, trial.getTrialId()));
+                trial.setPauseTimes(getTrialPauseTimes(ctx, trial.getTrialId()));
                 trials.add(trial);
 
             }
@@ -373,6 +386,8 @@ public class LocalDatabaseAccess {
             if(steps != null)
                 trial.setStepTimes(steps);
 
+            trial.setPauseTimes(getTrialPauseTimes(ctx, trialId));
+
             data.close();
             return trial;
         }
@@ -401,6 +416,29 @@ public class LocalDatabaseAccess {
             }
 
             return timesArray;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static List<int[]> getTrialPauseTimes(Context ctx, int trialId) {
+        try {
+            LocalDatabaseHelper db = LocalDatabaseHelper.getInstance(ctx.getApplicationContext());
+            Cursor data = db.getReadableDatabase().rawQuery(String.format("SELECT %s, %s FROM %s WHERE %s=%d ORDER BY %s ASC", LocalDatabaseHelper.COLUMN_TRIAL_PAUSE_START, LocalDatabaseHelper.COLUMN_TRIAL_PAUSE_END,
+                    LocalDatabaseHelper.TABLE_TRIAL_PAUSE, LocalDatabaseHelper.COLUMN_TRIAL_PAUSE_TRIAL_ID, trialId, LocalDatabaseHelper.COLUMN_TRIAL_PAUSE_START), null);
+
+            ArrayList<int[]> times = new ArrayList<>();
+            while(data.moveToNext()) {
+                int[] pause = new int[2];
+                pause[0] = data.getInt(0);
+                pause[1] = data.getInt(1);
+                times.add(pause);
+            }
+
+            data.close();
+            return times;
         }
         catch (Exception e) {
             e.printStackTrace();

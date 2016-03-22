@@ -1,6 +1,8 @@
 package com.uoft.journey.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Signal processing methods
@@ -52,27 +54,6 @@ public class Gait {
         fft.realInverse(data, true);
 
         return convertDoublesToFloats(data);
-    }
-
-    // Locate where the local maximas are and return the indexes
-    // This will always take the first maxima, which may be fine in most cases
-    public static Integer[] localMaximaIndexes(float[] data) {
-        ArrayList<Integer> indexes = new ArrayList<>();
-        Boolean isUp = false;
-
-        for(int i=0; i<data.length-1; i++) {
-            if(!isUp) {
-                if (data[i] < data[i + 1] && data[i] < minThreshold) {
-                    isUp = true;
-                }
-            }
-            else if(data[i] > data[i+1] && data[i] > minThreshold) {
-                isUp = false;
-                indexes.add(i);
-            }
-        }
-
-        return indexes.toArray(new Integer[indexes.size()]);
     }
 
     // Locate where the local maximas are and return the step times
@@ -241,47 +222,66 @@ public class Gait {
         }
     }
 
-    // As above. Locate where the local maximas but return the data as zeros, with 10s for the maxima points
-    public static Integer[] binaryLocalMaxima(float[] data) {
-        Integer[] vals = new Integer[data.length];
-        Boolean isUp = false;
+    public static ArrayList<int[]> getPausePoints(int[] times) {
+        ArrayList<int[]> pauseTimes = new ArrayList<>();
+        if(times.length == 0) {
+            return pauseTimes;
+        }
 
-        for(int i=0; i<data.length-1; i++) {
-            if(!isUp) {
-                vals[i] = 0;
-                if (data[i] < data[i + 1] && data[i] < minThreshold) {
-                    isUp = true;
-                }
-            }
-            else {
-                if(data[i] > data[i+1]  && data[i] > minThreshold) {
-                    isUp = false;
-                    vals[i] = 10;
-                }
-                else {
-                    vals[i] = 0;
-                }
+        int median = getMedian(times);
+        for(int i=0; i < times.length - 1; i++) {
+            // Step is longer the twice the media so record a pause
+            if(times[i+1] - times[i] > median * 1.8) {
+                // Create the pause in the middle of the steps
+                int[] pause = new int[2];
+                pause[0] = times[i] + (median/2);
+                pause[1] = times[i+1] - (median/2);
+                pauseTimes.add(pause);
             }
         }
 
-        vals[data.length - 1] = 0;
-
-        return vals;
+        return pauseTimes;
     }
 
-    public static float getMeanStepTime(int[] stepTimes) {
+    private static int getMedian(int[] times) {
+        int[] items = new int[times.length - 1];
+        for(int i=0; i<times.length-1; i++) {
+            items[i] = times[i+1] - times[i];
+        }
+
+        Arrays.sort(items);
+        if(items.length % 2 == 0)
+            return (items[items.length/2] + items[items.length/2 - 1])/2;
+        else
+            return items[items.length/2];
+    }
+
+    public static float getMeanStepTime(int[] stepTimes, List<int[]> pauseTimes) {
         if (stepTimes.length > 0) {
-            return ((float) stepTimes[stepTimes.length - 1] - (float) stepTimes[0]) / ((float) stepTimes.length - 1);
+            float pauseTime = 0;
+            if(pauseTimes != null) {
+                for(int i=0; i<pauseTimes.size(); i++){
+                    pauseTime += (pauseTimes.get(i)[1] - pauseTimes.get(i)[0]);
+                }
+            }
+
+            return ((float) stepTimes[stepTimes.length - 1] - (float) stepTimes[0] - pauseTime) / ((float) stepTimes.length - 1);
         }
         return 0;
     }
 
     // Get the standard deviation of the steps
-    public static float getStandardDeviation(int[] steps, float mean) {
+    public static float getStandardDeviation(int[] steps, float mean, List<int[]> pauseTimes) {
         float var = 0.0f;
+        int median = getMedian(steps);
         // Calculate the variance
         for(int i=0; i<steps.length-1; i++) {
             float stepTime = steps[i+1] - steps[i];
+            for(int j=0; j<pauseTimes.size(); j++) {
+                if(pauseTimes.get(j)[0] > steps[i] && pauseTimes.get(j)[1] < steps[i+1])
+                    stepTime = median;
+            }
+
             var += (mean - stepTime) * (mean - stepTime);
         }
         var = var/(steps.length-1);
