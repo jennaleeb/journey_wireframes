@@ -3,7 +3,9 @@ package com.uoft.journey.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * A trial
@@ -18,6 +20,7 @@ public class Trial implements Parcelable {
     private float mMeanStrideTime;
     private float mStandardDev;
     private float mCoeffOfVar;
+    private List<int[]> mPauseTimes;
 
     public Trial(int trialId, Date startTime, AccelerometerData data, String username) {
         mTrialId = trialId;
@@ -26,6 +29,7 @@ public class Trial implements Parcelable {
         mMeanStrideTime = 0.0f;
         mStandardDev = 0.0f;
         mCoeffOfVar = 0.0f;
+        mPauseTimes = new ArrayList<>();
     }
 
     private Trial(Parcel parcel) {
@@ -45,6 +49,13 @@ public class Trial implements Parcelable {
         mStandardDev = parcel.readFloat();
         mCoeffOfVar = parcel.readFloat();
         mUsername = parcel.readString();
+
+        try {
+            parcel.readList(mPauseTimes, int[].class.getClassLoader());
+        }
+        catch (Exception e) {
+            mPauseTimes = new ArrayList<>();
+        }
     }
 
     public int getTrialId() {
@@ -61,6 +72,10 @@ public class Trial implements Parcelable {
 
     public int[] getStepTimes() {
         return mStepTimes;
+    }
+
+    public List<int[]> getPauseTimes() {
+        return mPauseTimes;
     }
 
     public float getMeanStrideTime() {
@@ -95,6 +110,10 @@ public class Trial implements Parcelable {
 
     public void setStepTimes(int[] steps) {
         mStepTimes = steps;
+    }
+
+    public void setPauseTimes(List<int[]> pauses) {
+        mPauseTimes = pauses;
     }
 
     public void setStepAnalysis(float mean, float standardDev, float coeffOfVar) {
@@ -140,6 +159,10 @@ public class Trial implements Parcelable {
         dest.writeFloat(mStandardDev);
         dest.writeFloat(mCoeffOfVar);
         dest.writeString(mUsername);
+
+        if(mPauseTimes != null) {
+            dest.writeList(mPauseTimes);
+        }
     }
 
     public static final Parcelable.Creator<Trial> CREATOR

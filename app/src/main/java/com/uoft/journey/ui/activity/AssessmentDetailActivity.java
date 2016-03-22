@@ -13,6 +13,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.LimitLine;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
@@ -145,6 +147,34 @@ public class AssessmentDetailActivity extends AppCompatActivity {
                 if(!added) {
                     graphData.addEntry(new Entry(0, i), 1);
                 }
+
+                // Show any pauses
+                if(mTrial.getPauseTimes() != null) {
+                    XAxis xAxis = mGraph.getXAxis();
+                    for(int j=0; j<mTrial.getPauseTimes().size(); j++) {
+                        if(data.getElapsedTimestamps()[i] == mTrial.getPauseTimes().get(j)[0] ||
+                                (i < data.getElapsedTimestamps().length - 1 && data.getElapsedTimestamps()[i] < mTrial.getPauseTimes().get(j)[0] && data.getElapsedTimestamps()[i+1] > mTrial.getPauseTimes().get(j)[0] )) {
+
+                            LimitLine ll = new LimitLine(i, "Pause");
+                            ll.setLineColor(Color.YELLOW);
+                            ll.setLineWidth(2f);
+                            ll.setTextColor(Color.BLACK);
+                            ll.setTextSize(10f);
+                            ll.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
+                            xAxis.addLimitLine(ll);
+                        }
+
+                        if(data.getElapsedTimestamps()[i] == mTrial.getPauseTimes().get(j)[1] ||
+                                (i < data.getElapsedTimestamps().length - 1 && data.getElapsedTimestamps()[i] < mTrial.getPauseTimes().get(j)[1] && data.getElapsedTimestamps()[i+1] > mTrial.getPauseTimes().get(j)[1] )) {
+
+                            LimitLine ll2 = new LimitLine(i);
+                            ll2.setLineColor(Color.YELLOW);
+                            ll2.setLineWidth(2f);
+                            xAxis.addLimitLine(ll2);
+                        }
+                    }
+                }
+
             }
 
             mGraph.notifyDataSetChanged();

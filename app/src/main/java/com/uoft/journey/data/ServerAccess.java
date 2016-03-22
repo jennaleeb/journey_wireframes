@@ -1,7 +1,6 @@
 package com.uoft.journey.data;
 
 import android.content.Context;
-import android.location.Criteria;
 import android.util.Log;
 
 import com.baasbox.android.BaasDocument;
@@ -20,7 +19,7 @@ import com.uoft.journey.Journey;
 import com.uoft.journey.entity.Trial;
 
 /**
- * Created by Charlie on 11/02/2016.
+ * Methods for reading and writing to server
  */
 public class ServerAccess {
 
@@ -129,7 +128,7 @@ public class ServerAccess {
 
 
             LocalDatabaseAccess.insertTrial(ctx, userid, t, username);
-            LocalDatabaseAccess.addTrialSteps(ctx,t.getTrialId(),t.getStepTimes());
+            LocalDatabaseAccess.addTrialSteps(ctx,t.getTrialId(),t.getStepTimes(), t.getPauseTimes());
         }
 
     }
@@ -167,7 +166,7 @@ public class ServerAccess {
 
     public static Boolean deleteTrial(int trialId, String username) {
         BaasQuery.Criteria filter = BaasQuery.builder()
-                .where(String.format("_author = \"%s\" and data like '%%\"mTrialId\":%d%%'", username, trialId))
+                .where(String.format("_author = \"%s\" and (data like '%%\"mTrialId\":%d}%%' or data like '%%\"mTrialId\":%d,%%')", username, trialId, trialId))
                 .criteria();
 
         try {
