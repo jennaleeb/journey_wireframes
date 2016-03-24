@@ -23,6 +23,7 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -63,6 +64,9 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
     private RelativeLayout mTimedLayout;
     private long mTimedSecs = 0;
     private long mStartTime = 0;
+    private CheckBox mMetroCheck;
+    private SeekBar mMetroSeek;
+    private RelativeLayout mMetroLayout;
     Journey mApp;
     //private Journey mApp;
 
@@ -104,6 +108,11 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
         mTimeSpinner = (Spinner)findViewById(R.id.spin_time);
         mTimeSpinner.setEnabled(false);
         mTimedLayout = (RelativeLayout)findViewById(R.id.layout_timed);
+        mMetroCheck = (CheckBox)findViewById(R.id.check_metro);
+        mMetroCheck.setOnCheckedChangeListener(this);
+        mMetroSeek = (SeekBar)findViewById(R.id.seek_metro);
+        mMetroSeek.setEnabled(false);
+        mMetroLayout = (RelativeLayout)findViewById(R.id.layout_metro);
 
         // Assessment complete, so just show results
         if(mFinished) {
@@ -113,6 +122,7 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
             mBtnStart.setVisibility(View.INVISIBLE);
             mInstructions.setVisibility(View.INVISIBLE);
             mTimedLayout.setVisibility(View.INVISIBLE);
+            mMetroLayout.setVisibility(View.INVISIBLE);
             mStartWalking.setVisibility(View.INVISIBLE);
             showResults();
             return;
@@ -128,6 +138,7 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
             mBtnStart.setVisibility(View.INVISIBLE);
             mInstructions.setVisibility(View.INVISIBLE);
             mTimedLayout.setVisibility(View.INVISIBLE);
+            mMetroLayout.setVisibility(View.INVISIBLE);
             if(SensorService.isRunning) {
                 mWalkImage.setVisibility(View.VISIBLE);
                 mWalkImage.startAnimation(mWalkAnim);
@@ -295,6 +306,7 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
             mWalkImage.startAnimation(mWalkAnim);
             mInstructions.setVisibility(View.INVISIBLE);
             mTimedLayout.setVisibility(View.INVISIBLE);
+            mMetroLayout.setVisibility(View.INVISIBLE);
             mStartWalking.setText(R.string.keep_walking);
             mStartWalking.setVisibility(View.VISIBLE);
 
@@ -342,10 +354,16 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
                 }
             }
 
+            short stepsPerMin = 0;
+            if(mMetroCheck.isChecked()) {
+                stepsPerMin = (short)(40 + (mMetroSeek.getProgress() * 15));
+            }
+
             // Call the service to start collecting accelerometer data
             Intent intent = new Intent(this, SensorService.class);
             Bundle bundle = new Bundle();
             bundle.putInt("trialId", trialId);
+            bundle.putShort("spm", stepsPerMin);
             intent.putExtras(bundle);
             startService(intent);
             getApplicationContext().registerReceiver(mReceiver, mIntentFilter);
@@ -508,6 +526,10 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         if(buttonView.getId() == R.id.check_timed) {
             mTimeSpinner.setEnabled(isChecked);
+        }
+
+        if(buttonView.getId() == R.id.check_metro) {
+            mMetroSeek.setEnabled(isChecked);
         }
     }
 

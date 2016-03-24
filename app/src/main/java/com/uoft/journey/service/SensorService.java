@@ -7,6 +7,8 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -43,6 +45,26 @@ public class SensorService extends Service implements SensorEventListener {
     private SensorManager mSensorManager;
     private Sensor mAccelerometer;
     private int mTrialId;
+
+    // Metronome
+    private short spm = 100;
+    private short noteValue = 4;
+    private short beats = 1;
+    private double beatSound = 2440;
+    private double sound = 6440;
+    private Handler mMetroHandler;
+    private MetronomeAsyncTask metroTask;
+
+    private Handler getHandler() {
+        return new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                String message = (String)msg.obj;
+                // Do something on each beat???
+
+            }
+        };
+    }
 
     private Handler mHandler = new Handler() {
 
@@ -92,12 +114,15 @@ public class SensorService extends Service implements SensorEventListener {
         super.onCreate();
         mContext = getApplicationContext();
         mLock = new ReentrantLock();
+        metroTask = new MetronomeAsyncTask();
     }
 
     @Override
     public void onDestroy() {
         mHandler.removeMessages(HANDLER_SEND_DATA);
         mSensorManager.unregisterListener(this);
+        metroTask.stop();
+        metroTask = new MetronomeAsyncTask();
         isRunning = false;
         super.onDestroy();
     }
@@ -106,10 +131,7 @@ public class SensorService extends Service implements SensorEventListener {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Bundle extras = intent.getExtras();
         mTrialId = extras.getInt("trialId");
-
-        File dir = getFilesDir();
-        File file = new File(dir, "data.csv");
-        boolean deleted = file.delete();
+        spm = extras.getShort("spm");
 
         mData = new AccelerometerData[2];
         mData[0] = new AccelerometerData(DATA_SIZE, -1);
@@ -120,6 +142,15 @@ public class SensorService extends Service implements SensorEventListener {
                 SensorManager.SENSOR_DELAY_FASTEST);
         sendDataDelayed(TIME_DELAY_MILLIS);
         isRunning = true;
+
+        if(spm > 0) {
+            // We want to run multiple async tasks, force this on Honeycomb or greater version
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+                metroTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[]) null);
+            else
+                metroTask.execute();
+        }
+
         return Service.START_STICKY;
     }
 
@@ -153,5 +184,43 @@ public class SensorService extends Service implements SensorEventListener {
                     event.values[2]);
             mLock.unlock();
         }
+    }
+
+
+    private class MetronomeAsyncTask extends AsyncTask<Void,Void,String> {
+        Metronome metronome;
+
+        MetronomeAsyncTask() {
+            mMetroHandler = getHandler();
+            metronome = new Metronome(mMetroHandler);
+        }
+
+        protected String doInBackground(Void... params) {
+            metronome.setBeat(beats);
+            metronome.setNoteValue(noteValue);
+            metronome.setBpm(spm);
+            metronome.setBeatSound(beatSound);
+            metronome.setSound(sound);
+
+            metronome.play();
+
+            return null;
+        }
+
+        public void stop() {
+            metronome.stop();
+            metronome = null;
+        }
+
+        public void setBpm(short bpm) {
+            metronome.setBpm(bpm);
+            metronome.calcSilence();
+        }
+
+        public void setBeat(short beat) {
+            if(metronome != null)
+                metronome.setBeat(beat);
+        }
+
     }
 }
