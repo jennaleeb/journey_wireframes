@@ -77,9 +77,7 @@ public class PatientTrialsFragment extends Fragment implements PatientTrialsList
         setRetainInstance(true);
         mAddButton = (FloatingActionButton) view.findViewById(R.id.button_new);
         mAddButton.setOnClickListener(this);
-        if(mApp.getType().equals("clinician")) {
-            mAddButton.hide();
-        }
+
         // List contained in RecyclerView
         mRecyclerView = (RecyclerView) view.findViewById(R.id.trial_list_view);
         mLayoutManager = new LinearLayoutManager(getContext());
@@ -100,9 +98,7 @@ public class PatientTrialsFragment extends Fragment implements PatientTrialsList
     public void onResume() {
         super.onDetach();
         mApp = (Journey)getActivity().getApplicationContext();
-        if(mApp.getType().equals("clinician")) {
-            mAddButton.hide();
-        }
+
     }
 
     // When a trial is clicked
@@ -121,21 +117,20 @@ public class PatientTrialsFragment extends Fragment implements PatientTrialsList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.button_new:
-                if (mUsername.equals(BaasUser.current().getName())) {
-                    mApp.setUsername(mUsername);
-
 
                     Intent intent = new Intent(mContext, MeasureActivity.class); // **** Standard Version ****
                     //Intent intent = new Intent(mContext, DebugMeasureActivity.class); // **** For Debug Version ****
-                    Bundle bundle = new Bundle();
+                   /* Bundle bundle = new Bundle();
                     bundle.putInt("userId", mUserId);
-                    intent.putExtras(bundle);
+                    bundle.putString("username", mUsername);*/
+                     System.out.println("PATIENTTRIALSFRAG THE USERNAME IS: " + mUsername);
+
+                    //intent.putExtras(bundle);
+                    intent.putExtra("userID",mUserId);
+                    intent.putExtra("username",mUsername);
                     startActivity(intent);
                     break;
-                }
-                else{
-                    Toast.makeText(getContext(), "Not allowed to generate trials for patient", Toast.LENGTH_LONG).show();
-                }
+
         }
     }
 

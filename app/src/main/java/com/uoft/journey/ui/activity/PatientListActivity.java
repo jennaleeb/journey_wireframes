@@ -2,6 +2,7 @@ package com.uoft.journey.ui.activity;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -34,6 +35,10 @@ public class PatientListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patient_list);
 
+        Intent intent = getIntent();
+        String addpatient = intent.getStringExtra("newpatient");
+
+
         mRecyclerView = (RecyclerView) findViewById(R.id.patient_list);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
@@ -64,12 +69,18 @@ public class PatientListActivity extends AppCompatActivity {
         mAdapter = new PatientListAdapter(this, mPatientList);
         mRecyclerView.setAdapter(mAdapter);
 
-        DownloadFriends task = new DownloadFriends(getApplicationContext(), mAdapter);
-        task.execute();
+        if (!addpatient.equals("no")){
 
+           /* AddPatient task2 = new AddPatient(getApplicationContext(), mAdapter, addpatient);
+            task2.execute().;*/
+            DownloadFriends task = new DownloadFriends(getApplicationContext(), mAdapter, addpatient);
+            task.execute();
+        }else {
 
+            DownloadFriends task = new DownloadFriends(getApplicationContext(), mAdapter, null);
+            task.execute();
 
-
+        }
 
     }
 
@@ -86,7 +97,7 @@ public class PatientListActivity extends AppCompatActivity {
                 builder.setView(input);
 
                 // Set up the buttons
-                builder.setPositiveButton("Add Patient", new DialogInterface.OnClickListener() {
+                builder.setPositiveButton("Current Patient", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
@@ -94,12 +105,24 @@ public class PatientListActivity extends AppCompatActivity {
                     }
 
                 });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+                builder.setNegativeButton("New Patient", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
+                        intent.putExtra("clinician","yes");
+
+                        startActivity(intent);
+                    }
+
+                });
+
+               /* builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
                     }
-                });
+                });*/
 
                 builder.show();
                 break;

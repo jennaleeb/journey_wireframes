@@ -52,11 +52,14 @@ public class MainActivity extends AppCompatActivity {
         mTimer.cancel();
         BaasUser currUser = BaasUser.current();
         mApp.setUsername(currUser.getName());
+        mApp.setPassword(currUser.getPassword());
         Intent intent;
 
-        if(currUser.getRoles().contains("clinician")){
+        if(currUser.getScope(BaasUser.Scope.PUBLIC).getString("clinician").equals("yes")){
             mApp.setType("clinician");
             intent = new Intent(MainActivity.this, PatientListActivity.class);
+            intent.putExtra("newpatient","no");
+
         }else{
             mApp.setType("patient");
             intent = new Intent(MainActivity.this, PatientMainActivity.class);

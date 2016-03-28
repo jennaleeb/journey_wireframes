@@ -49,7 +49,7 @@ public class PatientListAdapter extends RecyclerView.Adapter<PatientListAdapter.
 
         Patient patient = mPatientList.get(i);
 
-        patientListViewHolder.vName.setText(patient.getName());
+        patientListViewHolder.vName.setText(patient.getactualName());
         patientListViewHolder.vDateStarted.setText(String.valueOf(patient.getDateAdmittedString()));
 
 
@@ -62,7 +62,7 @@ public class PatientListAdapter extends RecyclerView.Adapter<PatientListAdapter.
 
     public void addPatient(Patient p) {
         Journey mApp = (Journey)context.getApplicationContext();
-        if(mPatientList.contains(p) == false && p.getName().equals(mApp.getUsername()) == false) {
+        if(mPatientList.contains(p) == false && p.getuserName().equals(mApp.getUsername()) == false) {
             mPatientList.add(p);
         }
     }
@@ -89,7 +89,9 @@ public class PatientListAdapter extends RecyclerView.Adapter<PatientListAdapter.
             Log.d(TAG, "Clicked" + getAdapterPosition());
 
             Intent intent= new Intent(view.getContext(), PatientMainActivity.class);
-            intent.putExtra("patient", mPatientList.get(getAdapterPosition()).getName());
+            System.out.println("PATIENTLISTADAPTER THE USERNAME IS: " + mPatientList.get(getAdapterPosition()).getuserName());
+
+            intent.putExtra("patient", mPatientList.get(getAdapterPosition()).getuserName());
             view.getContext().startActivity(intent);
         }
 

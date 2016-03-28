@@ -58,6 +58,13 @@
                       android:hint="Password"/>
         </android.support.design.widget.TextInputLayout>
 
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="I am a Clinician"
+            android:id="@+id/clinician"
+            android:layout_gravity="center_horizontal" />
+
         <!-- Signup Button -->
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/btn_signup"

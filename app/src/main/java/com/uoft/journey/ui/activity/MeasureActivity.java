@@ -68,6 +68,7 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
     private SeekBar mMetroSeek;
     private RelativeLayout mMetroLayout;
     Journey mApp;
+    private String mUsername;
     //private Journey mApp;
 
 
@@ -76,8 +77,15 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_measure);
 
-        Bundle extras = getIntent().getExtras();
-        mUserId = extras.getInt("userId");
+        //Bundle extras = getIntent().getExtras();
+        Intent intent = getIntent();
+        /*mUserId = extras.getInt("userId");
+        mUsername = extras.getString("username");*/
+        mUserId = intent.getIntExtra("userId",0);
+
+        mUsername = intent.getStringExtra("username");
+        System.out.println("MEASURE1 THE USERNAME IS: " + mUsername);
+
 
         mApp = ((Journey)getApplicationContext());
 
@@ -313,8 +321,10 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
             // Create the trial
             Calendar cal = Calendar.getInstance(TimeZone.getDefault());
             Date start = cal.getTime();
-            int trialId = DataService.addNewTrial(this, mUserId, start, mApp.getUsername());
-            mTrial = new Trial(trialId, start, null, mApp.getUsername());
+            System.out.println("MEASURE2 THE USERNAME IS: " + mUsername);
+
+            int trialId = DataService.addNewTrial(this, mUserId, start, mUsername);
+            mTrial = new Trial(trialId, start, null, mUsername);
 
             // If it's a timed trial
             mStartTime = System.currentTimeMillis();
@@ -444,7 +454,10 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
             mFinished = true;
             stopProcessing();
             mTrial = trial;
-            ServerAccess.addTrial(getApplicationContext(), mTrial.getTrialId());
+            System.out.println("MEASUREACCTIVITY3 THE USERNAME IS: "+ mUsername);
+            mTrial.setUsername(mUsername);
+
+            ServerAccess.addTrial(getApplicationContext(), mTrial.getTrialId(), mUsername);
             showResults();
 
         }catch (Exception e) {

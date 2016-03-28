@@ -13,6 +13,7 @@ public class Journey extends MultiDexApplication {
         private int UserId;
         private String Username;
         private String userType;
+        private String password;
 
 
     @Override
@@ -40,6 +41,14 @@ public class Journey extends MultiDexApplication {
 
     public int getUserID() {
         return UserId;
+    }
+
+    public void setPassword(String pass) {
+        this.password = pass;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public void setUsername(String username) {

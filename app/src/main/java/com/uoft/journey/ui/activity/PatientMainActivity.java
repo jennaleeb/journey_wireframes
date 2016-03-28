@@ -34,12 +34,14 @@ public class PatientMainActivity extends AppCompatActivity implements ViewPager.
 
         Intent intent = getIntent();
         String name = intent.getStringExtra("patient");
+        System.out.println("PATIENTMAINACTIIVTY THE name IS: " + name);
+
         mPatient = LocalDatabaseAccess.getTestUser(this, name);
-        mApp = ((Journey)getApplicationContext());
-        mApp.setUserID(mPatient.getID());
+        /*mApp = ((Journey)getApplicationContext());
+        mApp.setUserID(mPatient.getID());*/
 
         //set title of patient page to patient's name
-        setTitle(mPatient.getName());
+        setTitle(mPatient.getactualName());
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
 
@@ -47,14 +49,16 @@ public class PatientMainActivity extends AppCompatActivity implements ViewPager.
         ViewPagerFixed viewPager = (ViewPagerFixed)findViewById(R.id.viewpager);
         viewPager.addOnPageChangeListener(this);
         viewPager.setOffscreenPageLimit(3);
-        mPagerAdapter = new MainPagerAdapter(getSupportFragmentManager(), this, mPatient.getID(), mPatient.getName());
+        System.out.println("PATIENTMAINACTIIVTY THE USERNAME IS: " + mPatient.getuserName());
+
+        mPagerAdapter = new MainPagerAdapter(getSupportFragmentManager(), this, mPatient.getID(), mPatient.getuserName());
         viewPager.setAdapter(mPagerAdapter);
         TabLayout tab = (TabLayout)findViewById(R.id.tabs);
         tab.setTabGravity(TabLayout.GRAVITY_FILL);
         tab.setTabMode(TabLayout.MODE_FIXED);
         tab.setupWithViewPager(viewPager);
 
-        DownloadTrials task = new DownloadTrials(getApplicationContext(), mPatient.getName(), mPatient.getID(), mPagerAdapter);
+        DownloadTrials task = new DownloadTrials(getApplicationContext(), mPatient.getuserName(), mPatient.getID(), mPagerAdapter);
         task.execute();
     }
 

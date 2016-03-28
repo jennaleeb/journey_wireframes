@@ -48,21 +48,21 @@ public class AddPatient extends AsyncTask<Void, String, Void> {
         protected void onPostExecute(Void unused) {
 
              ArrayList<Patient> users = LocalDatabaseAccess.getallUsers(ct);
-            if (res){
-                m.clearlist();
 
-                for (Patient p: users){
+                if (res) {
+                    m.clearlist();
 
-                    m.addPatient(p);
+                    for (Patient p : users) {
+
+                        m.addPatient(p);
+                    }
+                    m.notifyDataSetChanged();
+                    Toast.makeText(ct, "Added patient", Toast.LENGTH_LONG).show();
+
+                } else {
+                    Toast.makeText(ct, "Patient does not exist", Toast.LENGTH_LONG).show();
+
                 }
-                m.notifyDataSetChanged();
-                Toast.makeText(ct, "Added patient", Toast.LENGTH_LONG).show();
-
-            }
-            else{
-                Toast.makeText(ct, "Patient does not exist", Toast.LENGTH_LONG).show();
-
-            }
 
 
             super.onPostExecute(unused);

@@ -40,6 +40,8 @@ public class MainPagerAdapter extends FragmentStatePagerAdapter {
                 mFragments[0] = TrendsFragment.newInstance(mUsername);
                 return mFragments[0];
             case 1:
+                System.out.println("MAINPAGERADAPTER THE USERNAME IS: " + mUsername);
+
                 mFragments[1] = PatientTrialsFragment.newInstance(mUserId, mUsername);
                 return mFragments[1];
         }

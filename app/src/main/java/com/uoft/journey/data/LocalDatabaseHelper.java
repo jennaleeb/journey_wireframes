@@ -21,6 +21,8 @@ public class LocalDatabaseHelper extends SQLiteOpenHelper {
     // Columns - User
     public static final String COLUMN_USER_ID = "id";
     public static final String COLUMN_USER_NAME = "name";
+    public static final String COLUMN_ACTUAL_NAME = "actualname";
+
     // Columns - Trial
     public static final String COLUMN_TRIAL_ID = "id";
     public static final String COLUMN_TRIAL_USER_ID = "userId";
@@ -63,7 +65,7 @@ public class LocalDatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         // Create the tables
-        db.execSQL("CREATE TABLE user (id INTEGER , name TEXT PRIMARY KEY );");
+        db.execSQL("CREATE TABLE user (id INTEGER , name TEXT PRIMARY KEY, actualname TEXT);");
         db.execSQL("CREATE TABLE trial (id INTEGER PRIMARY KEY, userId INTEGER, startTime TEXT, meanStrideTime REAL, standardDev REAL, coeffOfVar REAL, name TEXT);");
         db.execSQL("CREATE TABLE trialData (trialId INTEGER, elapsedTime INTEGER, xVal REAL, yVal REAL, zVal REAL, xProcessed REAL, yProcessed REAL, zProcessed REAL, FOREIGN KEY(trialId) REFERENCES trial(id));");
         db.execSQL("CREATE TABLE trialStep (trialId INTEGER, stepNum INTEGER, elapsedTime INTEGER, FOREIGN KEY(trialId) REFERENCES trial(id));");

@@ -9,14 +9,16 @@ import java.util.Date;
  */
 public class Patient {
 
-    private String mName;
+    private String muserName;
+    private String mactualName;
     private Date mDateAdmitted;
     private String mDateAdmittedString;
     private int mID;
 
-    public Patient(int id, String name, Date dateAdmitted) {
+    public Patient(int id, String username, Date dateAdmitted, String actualname) {
         mID = id;
-        mName = name;
+        muserName = username;
+        mactualName = actualname;
         mDateAdmitted = dateAdmitted;
     }
 
@@ -29,12 +31,20 @@ public class Patient {
         mID = ID;
     }
 
-    public String getName() {
-        return mName;
+    public String getuserName() {
+        return muserName;
     }
 
-    public void setName(String name) {
-        mName = name;
+    public void setuserName(String username) {
+        muserName = username;
+    }
+
+    public String getactualName() {
+        return mactualName;
+    }
+
+    public void setactualName(String name) {
+        mactualName = name;
     }
 
     public Date getDateAdmitted() {

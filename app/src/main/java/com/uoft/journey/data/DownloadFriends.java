@@ -18,15 +18,20 @@ public class DownloadFriends extends AsyncTask<Void, String, Void> {
 
         private Context ct;
         PatientListAdapter   m;
+        String newpatient;
 
-        public DownloadFriends(Context ctx, PatientListAdapter mp) {
+        public DownloadFriends(Context ctx, PatientListAdapter mp, String addpatient) {
             ct = ctx;
             m = mp;
+            newpatient = addpatient;
 
         }
 
         @Override
         protected Void doInBackground(Void... unused) {
+            if(newpatient!=null) {
+                ServerAccess.addFriend(ct, newpatient);
+            }
             ServerAccess.getFriends(ct);
             return (null);
         }

@@ -22,6 +22,7 @@ import com.uoft.journey.Journey;
 import com.uoft.journey.R;
 import com.uoft.journey.data.LocalDatabaseAccess;
 import com.uoft.journey.data.ServerAccess;
+import com.uoft.journey.ui.adapter.PatientListAdapter;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -43,12 +44,12 @@ public class LoginActivity extends AppCompatActivity {
     Button _loginButton;
     @Bind(R.id.link_signup)
     Button _signupLink;
-    @Bind(R.id.clinician)
-    CheckBox _clinician;
+
     ProgressDialog _auth;
     boolean _newUser;
     Journey mApp;
     BaasUser currUser;
+
 
 
     @Override
@@ -77,8 +78,13 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
+                Intent intent;
 
-                login(true);
+                intent = new Intent(LoginActivity.this, SignupActivity.class);
+                intent.putExtra("clinician","no");
+                startActivity(intent);
+
+              //  login(true);
 
             }
         });
@@ -101,10 +107,9 @@ public class LoginActivity extends AppCompatActivity {
 
         String email = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
-        Boolean clincian = _clinician.isChecked();
 
 
-        signupWithBaasBox(newUser, email, password, clincian);
+        signupWithBaasBox(newUser, email, password);
 
 
     }
@@ -117,14 +122,14 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void signupWithBaasBox(boolean newUser, String email, String password, Boolean clinician) {
+    private void signupWithBaasBox(boolean newUser, String email, String password) {
 
         BaasUser user = BaasUser.withUserName(email);
         user.setPassword(password);
 
 
 
-        _newUser = newUser;
+        /*_newUser = newUser;
 
         if (newUser) {
             //JsonObject extras = user.getScope(BaasUser.Scope.PRIVATE).put("clinician", clinician);
@@ -137,15 +142,16 @@ public class LoginActivity extends AppCompatActivity {
                 mApp.setType("patient");
             }
             mSignupOrLogin=user.signup(onComplete);
-        } else {
+        } else {*/
             mSignupOrLogin=user.login(onComplete);
-        }
+        //}
     }
 
     private final BaasHandler<BaasUser> onComplete =
             new BaasHandler<BaasUser>() {
                 @Override
                 public void handle(BaasResult<BaasUser> result) {
+                    String actual = null;
 
                     mSignupOrLogin = null;
                     if (result.isFailed()){
@@ -154,14 +160,15 @@ public class LoginActivity extends AppCompatActivity {
 
                     try {
                         currUser = result.get();
+                        actual = currUser.getScope(BaasUser.Scope.PUBLIC).getString("actualname");
                     } catch (BaasException e) {
                         e.printStackTrace();
                     }
-                    completeLogin(result.isSuccess());
+                    completeLogin(result.isSuccess(), actual);
                 }
             };
 
-    private void completeLogin(boolean success){
+    private void completeLogin(boolean success, String actual){
         mSignupOrLogin = null;
         if (success) {
            /* Intent intent = new Intent(this,MeasureActivity.class);
@@ -169,15 +176,19 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
             finish();*/
 
+            Boolean clinician;
             mApp.setUsername(_emailText.getText().toString());
-            if (currUser.getRoles().contains("clinician")) {
+            mApp.setPassword(_passwordText.getText().toString());
+            if (currUser.getScope(BaasUser.Scope.PUBLIC).getString("clinician").equals("yes")) {
                 mApp.setType("clinician");
+                clinician = true;
             }
             else{
                 mApp.setType("patient");
+                clinician = false;
             }
 
-            onLoginSuccess(_newUser);
+            onLoginSuccess(actual, clinician);
 
             //ServerAccess.addFriend(getApplicationContext(), 0);
 
@@ -194,20 +205,23 @@ public class LoginActivity extends AppCompatActivity {
         moveTaskToBack(true);
     }
 
-    public void onLoginSuccess(boolean newUser) {
+    public void onLoginSuccess(String actualname, Boolean clinician) {
         _loginButton.setEnabled(true);
-        if (newUser) {
+        /*if (newUser) {
             Toast.makeText(getBaseContext(), "Signup Successful ".concat(mApp.getType()), Toast.LENGTH_LONG).show();
 
-        } else {
+        } else {*/
             Toast.makeText(getBaseContext(), "Login Successful ".concat(mApp.getType()), Toast.LENGTH_LONG).show();
-        }
+       // }
         // Intent intent = new Intent(LoginActivity.this, PatientMainActivity.class);
-        LocalDatabaseAccess.addUser(getApplicationContext(), mApp.getUsername());
+        if(clinician == false)
+            LocalDatabaseAccess.addUser(getApplicationContext(), mApp.getUsername(),actualname );
         Intent intent;
 
         if (mApp.getType().equals("clinician")) {
             intent = new Intent(LoginActivity.this, PatientListActivity.class);
+            intent.putExtra("newpatient","no");
+
         }
         else{
             intent = new Intent(LoginActivity.this, PatientMainActivity.class);

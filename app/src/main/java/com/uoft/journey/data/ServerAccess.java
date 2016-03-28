@@ -50,11 +50,13 @@ public class ServerAccess {
                 }
             };
 
-    public static void addTrial(Context ctx, int trialID) {
+    public static void addTrial(Context ctx, int trialID, String username) {
         Journey mApp;
         mApp = ((Journey)ctx.getApplicationContext());
 
-        Trial tdata = LocalDatabaseAccess.getTrial(ctx, trialID, mApp.getUsername());
+        System.out.println("SERVERADDTRIAL THE USERNAME IS: "+ username);
+
+        Trial tdata = LocalDatabaseAccess.getTrial(ctx, trialID, username);
         tdata.setTrialData(null);
 
         if (tdata == null){
@@ -90,6 +92,17 @@ public class ServerAccess {
             }
         });
 
+        doc.grantAll(Grant.ALL, Role.REGISTERED, new BaasHandler<Void>() {
+            @Override
+            public void handle(BaasResult<Void> res) {
+                if (res.isSuccess()) {
+                    Log.d("LOG", "Permission granted");
+                } else {
+                    Log.e("LOG", "Error", res.error());
+                }
+            }
+        });
+
     }
 
 
@@ -112,10 +125,12 @@ public class ServerAccess {
     }*/
 
     public static void getTrialforUser(Context ctx, int userid, String username) {
-
+      //  \"mUsername\":\"jo4@gmail.com\",
+        //\"mTrialId\":1
         BaasQuery.Criteria filter = BaasQuery.builder()
-                .where("_author = ?")
-                .whereParams(username)
+               // .where("_author = ?")
+                .where(String.format("(data like '%%\"mUsername\":\"%s\"}%%' or data like '%%\"mUsername\":\"%s\",%%')", username, username))
+               // .whereParams(username)
                 .criteria();
         BaasResult<java.util.List<BaasDocument>> res = BaasDocument.fetchAllSync("Trials", filter);
         Gson gson = new Gson();
@@ -140,8 +155,9 @@ public class ServerAccess {
         BaasResult<BaasUser> res = user.followSync();
 
         if(res.isSuccess()) {
-            JsonObject profile = res.value().getScope(BaasUser.Scope.FRIEND);
-            LocalDatabaseAccess.addUser(ctx, res.value().getName());
+            JsonObject profile = res.value().getScope(BaasUser.Scope.PUBLIC);
+            String actual = profile.getString("actualname");
+            LocalDatabaseAccess.addUser(ctx, res.value().getName(), actual);
             Log.d("LOG", "Success adding friend: It's profile " + profile);
             return true;
         } else{
@@ -159,14 +175,15 @@ public class ServerAccess {
 
         BaasResult<java.util.List<BaasUser>> res = user.followingSync();
         for(BaasUser u: res.value()) {
-            LocalDatabaseAccess.addUser(ctx, u.getName());
+            String actual =  u.getScope(BaasUser.Scope.PUBLIC).getString("actualname");
+            LocalDatabaseAccess.addUser(ctx, u.getName(), actual);
         }
 
     }
 
     public static Boolean deleteTrial(int trialId, String username) {
         BaasQuery.Criteria filter = BaasQuery.builder()
-                .where(String.format("_author = \"%s\" and (data like '%%\"mTrialId\":%d}%%' or data like '%%\"mTrialId\":%d,%%')", username, trialId, trialId))
+                .where(String.format("(data like '%%\"mUsername\":\"%s\"}%%' or data like '%%\"mUsername\":\"%s\",%%') and (data like '%%\"mTrialId\":%d}%%' or data like '%%\"mTrialId\":%d,%%')", username, username, trialId, trialId))
                 .criteria();
 
         try {

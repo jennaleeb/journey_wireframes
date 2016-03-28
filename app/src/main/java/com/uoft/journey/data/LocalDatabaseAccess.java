@@ -23,7 +23,7 @@ import java.util.Locale;
 public class LocalDatabaseAccess {
 
     // Insert a new user
-    public static Integer addUser(Context ctx, String name) {
+    public static Integer addUser(Context ctx, String name, String actualname) {
         try {
             LocalDatabaseHelper db = LocalDatabaseHelper.getInstance(ctx.getApplicationContext());
             ContentValues cv=new ContentValues();
@@ -36,6 +36,8 @@ public class LocalDatabaseAccess {
 
             cv.put(LocalDatabaseHelper.COLUMN_USER_ID, nextId);
             cv.put(LocalDatabaseHelper.COLUMN_USER_NAME, name);
+            cv.put(LocalDatabaseHelper.COLUMN_ACTUAL_NAME, actualname);
+
             db.getWritableDatabase().insertWithOnConflict(LocalDatabaseHelper.TABLE_USER, null, cv, SQLiteDatabase.CONFLICT_IGNORE);
             return nextId;
         }
@@ -50,22 +52,27 @@ public class LocalDatabaseAccess {
         try {
             LocalDatabaseHelper db = LocalDatabaseHelper.getInstance(ctx.getApplicationContext());
             ContentValues cv=new ContentValues();
-            Cursor id = db.getReadableDatabase().rawQuery(String.format("SELECT %s, %s FROM %s WHERE %s='%s'", LocalDatabaseHelper.COLUMN_USER_ID, LocalDatabaseHelper.COLUMN_USER_NAME,
+            Cursor id = db.getReadableDatabase().rawQuery(String.format("SELECT %s,%s,%s FROM %s WHERE %s='%s'", LocalDatabaseHelper.COLUMN_USER_ID, LocalDatabaseHelper.COLUMN_USER_NAME, LocalDatabaseHelper.COLUMN_ACTUAL_NAME,
                     LocalDatabaseHelper.TABLE_USER, LocalDatabaseHelper.COLUMN_USER_NAME, name), null);
             int userId;
             String username;
+            String actualname;
             if(id.moveToFirst()) {
                 userId = id.getInt(0);
                 username = id.getString(1);
+                actualname = id.getString(2);
+
             }
             else {
                 userId = 1;
                 username = name;
+                actualname=name;
+
                 System.out.println("ERROR THE USER WAS NOT FOUND");
             }
             id.close();
 
-            return new Patient(userId, username, null);
+            return new Patient(userId, username, null,actualname);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -77,7 +84,7 @@ public class LocalDatabaseAccess {
         try {
             LocalDatabaseHelper db = LocalDatabaseHelper.getInstance(ctx.getApplicationContext());
             ContentValues cv=new ContentValues();
-            Cursor id = db.getReadableDatabase().rawQuery(String.format("SELECT %s,%s FROM %s", LocalDatabaseHelper.COLUMN_USER_ID, LocalDatabaseHelper.COLUMN_USER_NAME,
+            Cursor id = db.getReadableDatabase().rawQuery(String.format("SELECT %s,%s,%s FROM %s", LocalDatabaseHelper.COLUMN_USER_ID, LocalDatabaseHelper.COLUMN_USER_NAME, LocalDatabaseHelper.COLUMN_ACTUAL_NAME,
                     LocalDatabaseHelper.TABLE_USER), null);
 
 
@@ -85,7 +92,7 @@ public class LocalDatabaseAccess {
 
             while(id.moveToNext()) {
 
-                ans.add(new Patient(id.getInt(0), id.getString(1), null));
+                ans.add(new Patient(id.getInt(0), id.getString(1), null, id.getString(2)));
 
             }
             id.close();
@@ -100,6 +107,8 @@ public class LocalDatabaseAccess {
 
     // Insert a trial
     public static Integer addTrial(Context ctx, int userId, Date startTime, String user) {
+        System.out.println("ADDTRIAL THE USERNAME IS: ".concat(user));
+
         try {
             LocalDatabaseHelper db = LocalDatabaseHelper.getInstance(ctx.getApplicationContext());
             ContentValues cv=new ContentValues();
@@ -116,6 +125,8 @@ public class LocalDatabaseAccess {
             cv.put(LocalDatabaseHelper.COLUMN_TRIAL_START_TIME, df.format(startTime));
             cv.put(LocalDatabaseHelper.COLUMN_TRIAL_USER_NAME, user);
             db.getWritableDatabase().insert(LocalDatabaseHelper.TABLE_TRIAL, null, cv);
+            System.out.println("ADDTRIAL THE TRIALID IS: " + nextId);
+
             return nextId;
         }
         catch (Exception e) {
@@ -169,6 +180,8 @@ public class LocalDatabaseAccess {
     // Insert trial data
     public static Boolean addTrialData(Context ctx, int trialId, AccelerometerData data) {
         try {
+
+
             LocalDatabaseHelper db = LocalDatabaseHelper.getInstance(ctx.getApplicationContext());
             ContentValues cv=new ContentValues();
 
@@ -179,6 +192,7 @@ public class LocalDatabaseAccess {
                 cv.put(LocalDatabaseHelper.COLUMN_TRIAL_DATA_X_VAL, data.getAccelDataX()[i]);
                 cv.put(LocalDatabaseHelper.COLUMN_TRIAL_DATA_Y_VAL, data.getAccelDataY()[i]);
                 cv.put(LocalDatabaseHelper.COLUMN_TRIAL_DATA_Z_VAL, data.getAccelDataZ()[i]);
+
                 db.getWritableDatabase().insert(LocalDatabaseHelper.TABLE_TRIAL_DATA, null, cv);
             }
 
@@ -360,7 +374,11 @@ public class LocalDatabaseAccess {
     }
 
     public static Trial getTrial(Context ctx, int trialId, String username) {
+        System.out.println("GETTRIAL THE USERNAME IS: "+ username);
+        System.out.println("GETTRIAL THE TRIALID IS: "+trialId);
+
         try {
+
             LocalDatabaseHelper db = LocalDatabaseHelper.getInstance(ctx.getApplicationContext());
             Cursor data = db.getReadableDatabase().rawQuery(String.format("SELECT %s, %s, %s, %s, %s, %s FROM %s WHERE id=%d AND name='%s'", LocalDatabaseHelper.COLUMN_TRIAL_USER_ID,
                     LocalDatabaseHelper.COLUMN_TRIAL_START_TIME, LocalDatabaseHelper.COLUMN_TRIAL_MEAN_STRIDE_TIME, LocalDatabaseHelper.COLUMN_TRIAL_STANDARD_DEV,
@@ -387,6 +405,8 @@ public class LocalDatabaseAccess {
                 trial.setStepTimes(steps);
 
             trial.setPauseTimes(getTrialPauseTimes(ctx, trialId));
+
+            trial.setUsername(username);
 
             data.close();
             return trial;
