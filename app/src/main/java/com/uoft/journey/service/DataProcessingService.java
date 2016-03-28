@@ -5,18 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
 import com.uoft.journey.data.LocalDatabaseAccess;
-import com.uoft.journey.entity.AccelerometerData;
 import com.uoft.journey.entity.Trial;
-
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
 
 /**
  * Signal processing of accelerometer data
@@ -48,13 +42,28 @@ public class DataProcessingService extends Service {
     }
 
     private void sendResult(Trial data) {
-        Intent intent = new Intent();
+        final Intent intent = new Intent();
         intent.setAction(ACTION_PROCESSED_DATA);
         intent.putExtra(Trial.TRIAL_DATA_KEY, data);
-        isRunning = false;
-        mContext.sendBroadcast(intent);
-    }
 
+        final Handler h = new Handler();
+        final int delay = 1000; //milliseconds
+        final long firstTime = System.currentTimeMillis();
+
+        // Keep trying to send the result, in case the activity is paused
+        h.postDelayed(new Runnable(){
+            public void run(){
+                // Try for 100 seconds
+                if(isRunning && System.currentTimeMillis() - 100000 < firstTime) {
+                    mContext.sendBroadcast(intent);
+                    h.postDelayed(this, delay);
+                }
+                else {
+                    isRunning = false;
+                }
+            }
+        }, delay);
+    }
 
     @Nullable
     @Override

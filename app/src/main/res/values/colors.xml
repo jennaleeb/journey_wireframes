@@ -9,7 +9,8 @@
     <color name="colorDivider">#E0E0E0</color>
     <color name="windowBackground">#FFFFFF</color>
     <color name="navigationBarColor">#000000</color>
-    <color name="colorAccent">#FFFFFF</color>
+    <!--<color name="colorAccent">#FFFFFF</color>-->
+    <color name="colorAccent">#03A9F4</color>
     <color name="colorPressed">#000000</color>
     <color name="colorDisabled">#E0E0E0</color>
     <color name="colorGreen">#2ecc71</color>

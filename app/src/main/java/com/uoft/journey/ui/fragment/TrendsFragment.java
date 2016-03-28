@@ -115,13 +115,20 @@ public class TrendsFragment extends Fragment {
 
         YAxis leftAxis = mVariationChart.getAxisLeft();
 
-        LimitLine ll = new LimitLine(3f, "Target Max Variation");
-        ll.setLineColor(Color.RED);
+        LimitLine ll = new LimitLine(4f, "Good Variation (Max)");
+        ll.setLineColor(Color.GREEN);
         ll.setLineWidth(2f);
         ll.setTextColor(Color.BLACK);
         ll.setTextSize(10f);
 
+        LimitLine ll2 = new LimitLine(8f, "OK Variation (Max)");
+        ll2.setLineColor(Color.YELLOW);
+        ll2.setLineWidth(2f);
+        ll2.setTextColor(Color.BLACK);
+        ll2.setTextSize(10f);
+
         leftAxis.addLimitLine(ll);
+        leftAxis.addLimitLine(ll2);
 
         mMeanChart.setDragEnabled(true);
         mMeanChart.setScaleEnabled(true);
@@ -190,15 +197,20 @@ public class TrendsFragment extends Fragment {
 
         Trial mostRecent = mTrials.get(0);
         mTextRecent.setText(String.format("%.1f", mostRecent.getCoeffOfVar()));
-        if(mostRecent.getCoeffOfVar() <= 3.0f) {
-            mTextRecent.setBackgroundResource(R.drawable.round_text_green);
+
+        Trial.Level level = Trial.getLevel(mostRecent.getCoeffOfVar());
+        switch (level) {
+            case GOOD:
+                mTextRecent.setBackgroundResource(R.drawable.round_text_green);
+                break;
+            case OK:
+                mTextRecent.setBackgroundResource(R.drawable.round_text_yellow);
+                break;
+            case BAD:
+                mTextRecent.setBackgroundResource(R.drawable.round_text_red);
+                break;
         }
-        else if(mostRecent.getCoeffOfVar() <= 6.0f) {
-            mTextRecent.setBackgroundResource(R.drawable.round_text_yellow);
-        }
-        else {
-            mTextRecent.setBackgroundResource(R.drawable.round_text_red);
-        }
+
 
         // Show the latest trial date, or TODAY/YESTERDAY
         Calendar trialTime = Calendar.getInstance();
@@ -261,14 +273,17 @@ public class TrendsFragment extends Fragment {
     }
 
     private void setColour(Trial trial, ImageView circle) {
-        if(trial.getCoeffOfVar() <= 3.0) {
-            circle.setImageResource(R.drawable.green);
-        }
-        else if(trial.getCoeffOfVar() <= 6.0) {
-            circle.setImageResource(R.drawable.yellow);
-        }
-        else {
-            circle.setImageResource(R.drawable.red);
+        Trial.Level level = Trial.getLevel(trial.getCoeffOfVar());
+        switch (level) {
+            case GOOD:
+                circle.setImageResource(R.drawable.green);
+                break;
+            case OK:
+                circle.setImageResource(R.drawable.yellow);
+                break;
+            case BAD:
+                circle.setImageResource(R.drawable.red);
+                break;
         }
         circle.setVisibility(View.VISIBLE);
     }

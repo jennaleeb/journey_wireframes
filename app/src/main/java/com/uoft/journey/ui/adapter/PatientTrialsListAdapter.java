@@ -71,14 +71,17 @@ public class PatientTrialsListAdapter extends RecyclerView.Adapter<PatientTrials
             holder.strideTimeVar.setText(String.format("%.1f", mTrials.get(position).getCoeffOfVar()));
             holder.time.setText(df2.format(mTrials.get(position).getStartTime()));
 
-            if( mTrials.get(position).getCoeffOfVar() <= 3.0f) {
-                holder.strideTimeVar.setBackgroundResource(R.drawable.round_text_green);
-            }
-            else if( mTrials.get(position).getCoeffOfVar() <= 6.0f) {
-                holder.strideTimeVar.setBackgroundResource(R.drawable.round_text_yellow);
-            }
-            else {
-                holder.strideTimeVar.setBackgroundResource(R.drawable.round_text_red);
+            Trial.Level level = Trial.getLevel(mTrials.get(position).getCoeffOfVar());
+            switch (level) {
+                case GOOD:
+                    holder.strideTimeVar.setBackgroundResource(R.drawable.round_text_green);
+                    break;
+                case OK:
+                    holder.strideTimeVar.setBackgroundResource(R.drawable.round_text_yellow);
+                    break;
+                case BAD:
+                    holder.strideTimeVar.setBackgroundResource(R.drawable.round_text_red);
+                    break;
             }
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {

@@ -454,7 +454,7 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
             mFinished = true;
             stopProcessing();
             mTrial = trial;
-            System.out.println("MEASUREACCTIVITY3 THE USERNAME IS: "+ mUsername);
+            System.out.println("MEASUREACCTIVITY3 THE USERNAME IS: " + mUsername);
             mTrial.setUsername(mUsername);
 
             ServerAccess.addTrial(getApplicationContext(), mTrial.getTrialId(), mUsername);
@@ -466,12 +466,6 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void showResults() {
-//        ((TextView)findViewById(R.id.text_output_1_val)).setText(String.format("%ds", mTrial.getDuration() / 1000));
-//        ((TextView)findViewById(R.id.text_output_2_val)).setText(String.format("%d", mTrial.getNumberOfSteps()));
-//        ((TextView)findViewById(R.id.text_output_3_val)).setText(String.format("%.2fms", mTrial.getMeanStrideTime()));
-//        ((TextView)findViewById(R.id.text_output_4_val)).setText(String.format("%.2fms", mTrial.getStandardDev()));
-//        ((TextView)findViewById(R.id.text_output_5_val)).setText(String.format("%.2f", mTrial.getCoeffOfVar()));
-
         ((TextView)findViewById(R.id.text_output_1_val)).setText(String.format("%d", mTrial.getDuration() / 1000));
         ((TextView)findViewById(R.id.text_output_2_val)).setText(String.format("%d", mTrial.getNumberOfSteps()));
         ((TextView)findViewById(R.id.text_output_3_val)).setText(String.format("%.0f", mTrial.getMeanStrideTime()));
@@ -479,14 +473,17 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
         TextView stv = (TextView) findViewById(R.id.text_output_4_val);
         stv.setText(String.format("%.1f", mTrial.getCoeffOfVar()));
 
-        if( mTrial.getCoeffOfVar() <= 3.0f) {
-            stv.setBackgroundResource(R.drawable.round_text_green);
-        }
-        else if( mTrial.getCoeffOfVar() <= 6.0f) {
-            stv.setBackgroundResource(R.drawable.round_text_yellow);
-        }
-        else {
-            stv.setBackgroundResource(R.drawable.round_text_red);
+        Trial.Level level = Trial.getLevel(mTrial.getCoeffOfVar());
+        switch (level) {
+            case GOOD:
+                stv.setBackgroundResource(R.drawable.round_text_green);
+                break;
+            case OK:
+                stv.setBackgroundResource(R.drawable.round_text_yellow);
+                break;
+            case BAD:
+                stv.setBackgroundResource(R.drawable.round_text_red);
+                break;
         }
 
         findViewById(R.id.layout_output).setVisibility(View.VISIBLE);
@@ -530,6 +527,7 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
 
             @Override
             protected void onPostExecute(Trial result) {
+                DataProcessingService.isRunning = false;
                 outputProcessedResults(result);
             }
         }

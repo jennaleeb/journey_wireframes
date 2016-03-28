@@ -175,4 +175,16 @@ public class Trial implements Parcelable {
             return new Trial[size];
         }
     };
+
+    public enum Level { GOOD, OK, BAD }
+
+    public static Level getLevel(float value) {
+        if(value <= 4.0f) {
+            return Level.GOOD;
+        }
+        if(value <= 8.0f) {
+            return Level.OK;
+        }
+        return Level.BAD;
+    }
 }

@@ -43,8 +43,6 @@ public class PatientTrialsFragment extends Fragment implements PatientTrialsList
     private FloatingActionButton mAddButton;
     Journey mApp;
 
-
-
     public PatientTrialsFragment() {
         // Required empty public constructor
     }
