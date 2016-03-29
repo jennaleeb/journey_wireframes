@@ -157,7 +157,7 @@ public class ServerAccess {
         if(res.isSuccess()) {
             JsonObject profile = res.value().getScope(BaasUser.Scope.PUBLIC);
             String actual = profile.getString("actualname");
-            LocalDatabaseAccess.addUser(ctx, res.value().getName(), actual);
+            LocalDatabaseAccess.addUser(ctx, res.value().getName(), actual, res.value().getSignupDate());
             Log.d("LOG", "Success adding friend: It's profile " + profile);
             return true;
         } else{
@@ -176,7 +176,7 @@ public class ServerAccess {
         BaasResult<java.util.List<BaasUser>> res = user.followingSync();
         for(BaasUser u: res.value()) {
             String actual =  u.getScope(BaasUser.Scope.PUBLIC).getString("actualname");
-            LocalDatabaseAccess.addUser(ctx, u.getName(), actual);
+            LocalDatabaseAccess.addUser(ctx, u.getName(), actual, u.getSignupDate());
         }
 
     }

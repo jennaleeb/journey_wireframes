@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.uoft.journey.R;
 import com.uoft.journey.data.AddPatient;
@@ -101,7 +102,11 @@ public class PatientListActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        addPatient(input.getText().toString());
+                        if(!input.getText().toString().isEmpty())
+                            addPatient(input.getText().toString());
+                        else{
+                            Toast.makeText(getApplicationContext(), "Patient does not exist", Toast.LENGTH_LONG).show();
+                        }
                     }
 
                 });

@@ -23,7 +23,7 @@ import java.util.Locale;
 public class LocalDatabaseAccess {
 
     // Insert a new user
-    public static Integer addUser(Context ctx, String name, String actualname) {
+    public static Integer addUser(Context ctx, String name, String actualname, String date) {
         try {
             LocalDatabaseHelper db = LocalDatabaseHelper.getInstance(ctx.getApplicationContext());
             ContentValues cv=new ContentValues();
@@ -37,6 +37,7 @@ public class LocalDatabaseAccess {
             cv.put(LocalDatabaseHelper.COLUMN_USER_ID, nextId);
             cv.put(LocalDatabaseHelper.COLUMN_USER_NAME, name);
             cv.put(LocalDatabaseHelper.COLUMN_ACTUAL_NAME, actualname);
+            cv.put(LocalDatabaseHelper.COLUMN_USER_DATE, date);
 
             db.getWritableDatabase().insertWithOnConflict(LocalDatabaseHelper.TABLE_USER, null, cv, SQLiteDatabase.CONFLICT_IGNORE);
             return nextId;
@@ -52,27 +53,30 @@ public class LocalDatabaseAccess {
         try {
             LocalDatabaseHelper db = LocalDatabaseHelper.getInstance(ctx.getApplicationContext());
             ContentValues cv=new ContentValues();
-            Cursor id = db.getReadableDatabase().rawQuery(String.format("SELECT %s,%s,%s FROM %s WHERE %s='%s'", LocalDatabaseHelper.COLUMN_USER_ID, LocalDatabaseHelper.COLUMN_USER_NAME, LocalDatabaseHelper.COLUMN_ACTUAL_NAME,
-                    LocalDatabaseHelper.TABLE_USER, LocalDatabaseHelper.COLUMN_USER_NAME, name), null);
+            Cursor id = db.getReadableDatabase().rawQuery(String.format("SELECT %s,%s,%s,%s FROM %s WHERE %s='%s'", LocalDatabaseHelper.COLUMN_USER_ID, LocalDatabaseHelper.COLUMN_USER_NAME, LocalDatabaseHelper.COLUMN_ACTUAL_NAME,
+                    LocalDatabaseHelper.COLUMN_USER_DATE, LocalDatabaseHelper.TABLE_USER, LocalDatabaseHelper.COLUMN_USER_NAME, name), null);
             int userId;
             String username;
             String actualname;
+            String date;
             if(id.moveToFirst()) {
                 userId = id.getInt(0);
                 username = id.getString(1);
                 actualname = id.getString(2);
+                date = id.getString(3);
 
             }
             else {
                 userId = 1;
                 username = name;
                 actualname=name;
+                date = null;
 
                 System.out.println("ERROR THE USER WAS NOT FOUND");
             }
             id.close();
 
-            return new Patient(userId, username, null,actualname);
+            return new Patient(userId, username, date ,actualname);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -84,15 +88,15 @@ public class LocalDatabaseAccess {
         try {
             LocalDatabaseHelper db = LocalDatabaseHelper.getInstance(ctx.getApplicationContext());
             ContentValues cv=new ContentValues();
-            Cursor id = db.getReadableDatabase().rawQuery(String.format("SELECT %s,%s,%s FROM %s", LocalDatabaseHelper.COLUMN_USER_ID, LocalDatabaseHelper.COLUMN_USER_NAME, LocalDatabaseHelper.COLUMN_ACTUAL_NAME,
-                    LocalDatabaseHelper.TABLE_USER), null);
+            Cursor id = db.getReadableDatabase().rawQuery(String.format("SELECT %s,%s,%s,%s FROM %s", LocalDatabaseHelper.COLUMN_USER_ID, LocalDatabaseHelper.COLUMN_USER_NAME, LocalDatabaseHelper.COLUMN_ACTUAL_NAME,
+                    LocalDatabaseHelper.COLUMN_USER_DATE, LocalDatabaseHelper.TABLE_USER), null);
 
 
             ArrayList<Patient> ans = new ArrayList<Patient>();
 
             while(id.moveToNext()) {
 
-                ans.add(new Patient(id.getInt(0), id.getString(1), null, id.getString(2)));
+                ans.add(new Patient(id.getInt(0), id.getString(1), id.getString(3), id.getString(2)));
 
             }
             id.close();

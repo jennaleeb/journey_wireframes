@@ -150,20 +150,22 @@ public class SignupActivity extends AppCompatActivity {
                 public void handle(BaasResult<BaasUser> result) {
 
                     mSignupOrLogin = null;
+                    String date = null;
                     if (result.isFailed()){
                         Log.d("ERROR","ERROR",result.error());
                     }
 
                     try {
                         currUser = result.get();
+                        date = currUser.getSignupDate();
                     } catch (BaasException e) {
                         e.printStackTrace();
                     }
-                    completeLogin(result.isSuccess());
+                    completeLogin(result.isSuccess(), date);
                 }
             };
 
-    private void completeLogin(boolean success){
+    private void completeLogin(boolean success, String date){
         mSignupOrLogin = null;
         if (success) {
            /* Intent intent = new Intent(this,MeasureActivity.class);
@@ -179,7 +181,7 @@ public class SignupActivity extends AppCompatActivity {
                 } else {
                     mApp.setType("patient");
                 }
-                onSignupSuccess();
+                onSignupSuccess(date);
 
             }else{
                 //BaasUser.current().logout(onCompleteLogout);
@@ -216,7 +218,7 @@ public class SignupActivity extends AppCompatActivity {
             new BaasHandler<BaasUser>() {
                 @Override
                 public void handle(BaasResult<BaasUser> result) {
-
+                    String date = null;
                     mSignupOrLogin = null;
                     if (result.isFailed()){
                         Log.d("ERROR","ERROR",result.error());
@@ -224,15 +226,16 @@ public class SignupActivity extends AppCompatActivity {
 
                     try {
                         currUser = result.get();
+                        date = currUser.getSignupDate();
                     } catch (BaasException e) {
                         e.printStackTrace();
                     }
-                    onSignupSuccess();
+                    onSignupSuccess(date);
 
                 }
             };
 
-    public void onSignupSuccess() {
+    public void onSignupSuccess(String date) {
 
         if(!exisitingUserAdd) {
 
@@ -258,7 +261,7 @@ public class SignupActivity extends AppCompatActivity {
         }
         else{
             intent = new Intent(SignupActivity.this, PatientMainActivity.class);
-            LocalDatabaseAccess.addUser(getApplicationContext(), mApp.getUsername(), _nameText.getText().toString());
+            LocalDatabaseAccess.addUser(getApplicationContext(), mApp.getUsername(), _nameText.getText().toString(), date);
             intent.putExtra("patient", mApp.getUsername());
         }
 

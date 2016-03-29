@@ -11,11 +11,11 @@ public class Patient {
 
     private String muserName;
     private String mactualName;
-    private Date mDateAdmitted;
+    private String mDateAdmitted;
     private String mDateAdmittedString;
     private int mID;
 
-    public Patient(int id, String username, Date dateAdmitted, String actualname) {
+    public Patient(int id, String username, String dateAdmitted, String actualname) {
         mID = id;
         muserName = username;
         mactualName = actualname;
@@ -47,11 +47,11 @@ public class Patient {
         mactualName = name;
     }
 
-    public Date getDateAdmitted() {
+    public String getDateAdmitted() {
         return mDateAdmitted;
     }
 
-    public void setDateAdmitted (Date dateAdmitted) {
+    public void setDateAdmitted (String dateAdmitted) {
         mDateAdmitted = dateAdmitted;
     }
 

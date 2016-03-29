@@ -152,6 +152,7 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void handle(BaasResult<BaasUser> result) {
                     String actual = null;
+                    String date = null;
 
                     mSignupOrLogin = null;
                     if (result.isFailed()){
@@ -161,14 +162,15 @@ public class LoginActivity extends AppCompatActivity {
                     try {
                         currUser = result.get();
                         actual = currUser.getScope(BaasUser.Scope.PUBLIC).getString("actualname");
+                        date=currUser.getSignupDate();
                     } catch (BaasException e) {
                         e.printStackTrace();
                     }
-                    completeLogin(result.isSuccess(), actual);
+                    completeLogin(result.isSuccess(), actual, date);
                 }
             };
 
-    private void completeLogin(boolean success, String actual){
+    private void completeLogin(boolean success, String actual, String date){
         mSignupOrLogin = null;
         if (success) {
            /* Intent intent = new Intent(this,MeasureActivity.class);
@@ -188,7 +190,7 @@ public class LoginActivity extends AppCompatActivity {
                 clinician = false;
             }
 
-            onLoginSuccess(actual, clinician);
+            onLoginSuccess(actual, clinician, date);
 
             //ServerAccess.addFriend(getApplicationContext(), 0);
 
@@ -205,7 +207,7 @@ public class LoginActivity extends AppCompatActivity {
         moveTaskToBack(true);
     }
 
-    public void onLoginSuccess(String actualname, Boolean clinician) {
+    public void onLoginSuccess(String actualname, Boolean clinician, String date) {
         _loginButton.setEnabled(true);
         /*if (newUser) {
             Toast.makeText(getBaseContext(), "Signup Successful ".concat(mApp.getType()), Toast.LENGTH_LONG).show();
@@ -215,7 +217,7 @@ public class LoginActivity extends AppCompatActivity {
        // }
         // Intent intent = new Intent(LoginActivity.this, PatientMainActivity.class);
         if(clinician == false)
-            LocalDatabaseAccess.addUser(getApplicationContext(), mApp.getUsername(),actualname );
+            LocalDatabaseAccess.addUser(getApplicationContext(), mApp.getUsername(),actualname, date);
         Intent intent;
 
         if (mApp.getType().equals("clinician")) {

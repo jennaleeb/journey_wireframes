@@ -50,7 +50,9 @@ public class PatientListAdapter extends RecyclerView.Adapter<PatientListAdapter.
         Patient patient = mPatientList.get(i);
 
         patientListViewHolder.vName.setText(patient.getactualName());
-        patientListViewHolder.vDateStarted.setText(String.valueOf(patient.getDateAdmittedString()));
+        String full_date = patient.getDateAdmitted();
+        String[] parsed_date = full_date.split("T");
+        patientListViewHolder.vDateStarted.setText(String.valueOf(parsed_date[0]));
 
 
     }
