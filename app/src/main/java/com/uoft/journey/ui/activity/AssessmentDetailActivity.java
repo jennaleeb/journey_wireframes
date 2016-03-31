@@ -70,10 +70,10 @@ public class AssessmentDetailActivity extends AppCompatActivity {
         TextView stv = (TextView) findViewById(R.id.text_detail_4_val);
         stv.setText(String.format("%.1f", mTrial.getCoeffOfVar()));
 
-        if( mTrial.getCoeffOfVar() <= 3.0f) {
+        if( mTrial.getCoeffOfVar() <= 4.0f) {
             stv.setBackgroundResource(R.drawable.round_text_green);
         }
-        else if( mTrial.getCoeffOfVar() <= 6.0f) {
+        else if( mTrial.getCoeffOfVar() <= 8.0f) {
             stv.setBackgroundResource(R.drawable.round_text_yellow);
         }
         else {

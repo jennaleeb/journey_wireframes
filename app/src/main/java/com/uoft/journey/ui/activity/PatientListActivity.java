@@ -89,29 +89,11 @@ public class PatientListActivity extends AppCompatActivity {
         switch (v.getId()) {
             case R.id.add_patient_button:
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("Enter Patients email");
 
-                // Set up the input
-                final EditText input = new EditText(this);
+                builder.setTitle("Add Patient");
+                builder.setMessage("Existing patient? Find by entering their email. Otherwise, create new.");
 
-                input.setInputType(InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS);
-                builder.setView(input);
-
-                // Set up the buttons
-                builder.setPositiveButton("Current Patient", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        if(!input.getText().toString().isEmpty())
-                            addPatient(input.getText().toString());
-                        else{
-                            Toast.makeText(getApplicationContext(), "Patient does not exist", Toast.LENGTH_LONG).show();
-                        }
-                    }
-
-                });
-
-                builder.setNegativeButton("New Patient", new DialogInterface.OnClickListener() {
+                builder.setNegativeButton("CREATE NEW", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
@@ -121,6 +103,29 @@ public class PatientListActivity extends AppCompatActivity {
                     }
 
                 });
+
+
+                // Set up the input
+                final EditText input = new EditText(this);
+
+                input.setInputType(InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS);
+                builder.setView(input);
+
+                // Set up the buttons
+                builder.setPositiveButton("SEARCH EXISTING", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        if (!input.getText().toString().isEmpty())
+                            addPatient(input.getText().toString());
+                        else {
+                            Toast.makeText(getApplicationContext(), "Patient does not exist", Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+                });
+
+
 
                /* builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
