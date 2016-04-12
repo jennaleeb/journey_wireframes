@@ -89,12 +89,17 @@ public class DataProcessingService extends Service {
                 for(int i=0; i<steps.length; i++) {
                     stepTimes[i] = steps[i];
                 }
-                trial.setStepTimes(stepTimes);
-                trial.setPauseTimes(Gait.getPausePoints(stepTimes));
-                float mean = Gait.getMeanStepTime(stepTimes, trial.getPauseTimes());
-                float sd = Gait.getStandardDeviation(stepTimes, mean, trial.getPauseTimes());
-                float var = Gait.getCoefficientOfVariation(sd, mean);
-                trial.setStepAnalysis(mean, sd, var);
+
+                if (stepTimes.length > 0) {
+                    trial.setStepTimes(stepTimes);
+                    trial.setPauseTimes(Gait.getPausePoints(stepTimes));
+                    float mean = Gait.getMeanStepTime(stepTimes, trial.getPauseTimes());
+                    float sd = Gait.getStandardDeviation(stepTimes, mean, trial.getPauseTimes());
+                    float var = Gait.getCoefficientOfVariation(sd, mean);
+                    float sym = Gait.getGaitSymmetry(stepTimes, trial.getPauseTimes());
+                    trial.setStepAnalysis(mean, sd, var, sym);
+                }
+
 
                 // Save the processed data
                 LocalDatabaseAccess.updateTrial(mContext, trial);

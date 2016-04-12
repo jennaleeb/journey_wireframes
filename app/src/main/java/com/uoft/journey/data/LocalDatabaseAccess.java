@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.baasbox.android.BaasUser;
 import com.uoft.journey.entity.AccelerometerData;
 import com.uoft.journey.entity.Patient;
 import com.uoft.journey.entity.Trial;
@@ -151,8 +150,9 @@ public class LocalDatabaseAccess {
             cv.put(LocalDatabaseHelper.COLUMN_TRIAL_USER_ID, userId);
             cv.put(LocalDatabaseHelper.COLUMN_TRIAL_START_TIME, df.format(trial.getStartTime()));
             cv.put(LocalDatabaseHelper.COLUMN_TRIAL_MEAN_STRIDE_TIME, trial.getMeanStrideTime());
-            cv.put(LocalDatabaseHelper.COLUMN_TRIAL_STANDARD_DEV, trial.getCoeffOfVar());
+            cv.put(LocalDatabaseHelper.COLUMN_TRIAL_STANDARD_DEV, trial.getStandardDev());
             cv.put(LocalDatabaseHelper.COLUMN_TRIAL_COEFF_OF_VAR, trial.getCoeffOfVar());
+            cv.put(LocalDatabaseHelper.COLUMN_TRIAL_GAIT_SYMM, trial.getGaitSym());
             cv.put(LocalDatabaseHelper.COLUMN_TRIAL_USER_NAME, username);
             db.getWritableDatabase().insertWithOnConflict(LocalDatabaseHelper.TABLE_TRIAL, null, cv, SQLiteDatabase.CONFLICT_IGNORE);
             return true;
@@ -172,6 +172,7 @@ public class LocalDatabaseAccess {
             cv.put(LocalDatabaseHelper.COLUMN_TRIAL_MEAN_STRIDE_TIME, trial.getMeanStrideTime());
             cv.put(LocalDatabaseHelper.COLUMN_TRIAL_STANDARD_DEV, trial.getStandardDev());
             cv.put(LocalDatabaseHelper.COLUMN_TRIAL_COEFF_OF_VAR, trial.getCoeffOfVar());
+            cv.put(LocalDatabaseHelper.COLUMN_TRIAL_GAIT_SYMM, trial.getGaitSym());
             db.getWritableDatabase().update(LocalDatabaseHelper.TABLE_TRIAL, cv, LocalDatabaseHelper.COLUMN_TRIAL_ID + "=" + trial.getTrialId(), null);
             return true;
         }
@@ -283,7 +284,7 @@ public class LocalDatabaseAccess {
                 Trial trial = new Trial(data.getInt(0), startTime, null, data.getString(5));
 
                 if(!data.isNull(2)) {
-                    trial.setStepAnalysis(data.getFloat(2), data.getFloat(3), data.getFloat(4));
+                    trial.setStepAnalysis(data.getFloat(2), data.getFloat(3), data.getFloat(4), data.getFloat(5));
                 }
 
                 trial.setStepTimes(getTrialStepTimes(ctx, trial.getTrialId()));
@@ -384,9 +385,9 @@ public class LocalDatabaseAccess {
         try {
 
             LocalDatabaseHelper db = LocalDatabaseHelper.getInstance(ctx.getApplicationContext());
-            Cursor data = db.getReadableDatabase().rawQuery(String.format("SELECT %s, %s, %s, %s, %s, %s FROM %s WHERE id=%d AND name='%s'", LocalDatabaseHelper.COLUMN_TRIAL_USER_ID,
+            Cursor data = db.getReadableDatabase().rawQuery(String.format("SELECT %s, %s, %s, %s, %s, %s, %s FROM %s WHERE id=%d AND name='%s'", LocalDatabaseHelper.COLUMN_TRIAL_USER_ID,
                     LocalDatabaseHelper.COLUMN_TRIAL_START_TIME, LocalDatabaseHelper.COLUMN_TRIAL_MEAN_STRIDE_TIME, LocalDatabaseHelper.COLUMN_TRIAL_STANDARD_DEV,
-                    LocalDatabaseHelper.COLUMN_TRIAL_COEFF_OF_VAR, LocalDatabaseHelper.COLUMN_TRIAL_USER_NAME, LocalDatabaseHelper.TABLE_TRIAL, trialId, username), null);
+                    LocalDatabaseHelper.COLUMN_TRIAL_COEFF_OF_VAR,LocalDatabaseHelper.COLUMN_TRIAL_GAIT_SYMM, LocalDatabaseHelper.COLUMN_TRIAL_USER_NAME, LocalDatabaseHelper.TABLE_TRIAL, trialId, username), null);
 
             DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
             data.moveToNext();
@@ -397,7 +398,7 @@ public class LocalDatabaseAccess {
             Trial trial = new Trial(trialId, startTime, null, data.getString(5));
 
             if(!data.isNull(2)) {
-                trial.setStepAnalysis(data.getFloat(2), data.getFloat(3), data.getFloat(4));
+                trial.setStepAnalysis(data.getFloat(2), data.getFloat(3), data.getFloat(4), data.getFloat(5));
             }
 
             AccelerometerData accData = getTrialData(ctx, trialId);

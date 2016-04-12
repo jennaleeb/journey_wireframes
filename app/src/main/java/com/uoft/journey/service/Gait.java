@@ -12,7 +12,7 @@ public class Gait {
 
     private static float minThreshold = 9.4f; // Threshold for Y values, below which minima can be taken
     private static float maxThreshold = 9.8f; // Above this maxima can be taken
-
+    
     // A very simple low pass filter, smoothing value may need adjusting
     public static float[] simpleLowPassFilter(float[] data, float smoothing) {
         float value = data[0]; // start with the first input
@@ -293,6 +293,30 @@ public class Gait {
     // Coefficient of Variation of steps 100 * SD / mean
     public static float getCoefficientOfVariation(float standardDev, float mean) {
         return 100.0f * standardDev / mean;
+    }
+
+    public static float getGaitSymmetry(int[] stepTimes, List<int[]> pauseTimes){
+
+        int median = getMedian(stepTimes);
+
+        if (stepTimes.length > 0) {
+            // TODO: deal with pauses?
+            float foot1Time = 0;
+            float foot2Time = 0;
+
+            for(int i=0; i<stepTimes.length; i++){
+
+                if (i % 2 == 0){
+                    foot1Time += stepTimes[i];
+                } else {
+                    foot2Time += stepTimes[i];
+                }
+
+            }
+
+            return foot1Time / foot2Time;
+        }
+        return 0;
     }
 
     private static double[] convertFloatsToDoubles(float[] input)

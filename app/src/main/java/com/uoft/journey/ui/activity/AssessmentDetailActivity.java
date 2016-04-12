@@ -31,7 +31,8 @@ import java.util.Locale;
 public class AssessmentDetailActivity extends AppCompatActivity {
 
     private Trial mTrial;
-    private LineChart mGraph;
+    private LineChart mAccelGraph;
+    private LineChart mStepTimeGraph;
     private String mUsername;
 
     @Override
@@ -48,7 +49,8 @@ public class AssessmentDetailActivity extends AppCompatActivity {
         mUsername = extras.getString("user");
         getSupportActionBar().setTitle(String.format("Assessment %d", trialId));
         mTrial = DataService.getTrial(this, trialId, mUsername);
-        mGraph = (LineChart)findViewById(R.id.detail_graph);
+        mAccelGraph = (LineChart)findViewById(R.id.detail_graph);
+        mStepTimeGraph = (LineChart)findViewById(R.id.step_time_graph);
         setupGraph();
 
         if(mTrial != null) {
@@ -61,14 +63,16 @@ public class AssessmentDetailActivity extends AppCompatActivity {
     }
 
     private void populateTrial() {
-        DateFormat df = new SimpleDateFormat("dd MMM yyyy - hh:mm a", Locale.CANADA);
-        ((TextView)findViewById(R.id.text_detail_date)).setText(df.format(mTrial.getStartTime()));
-        ((TextView)findViewById(R.id.text_detail_1_val)).setText(String.format("%d", mTrial.getDuration() / 1000));
+        DateFormat df = new SimpleDateFormat("MMM dd yyyy", Locale.CANADA);
+        ((TextView)findViewById(R.id.text_detail_date)).setText(df.format(mTrial.getStartTime()) + " - " + String.format("%d", mTrial.getDuration() / 1000) + " sec");
         ((TextView)findViewById(R.id.text_detail_2_val)).setText(String.format("%d", mTrial.getNumberOfSteps()));
         ((TextView)findViewById(R.id.text_detail_3_val)).setText(String.format("%.0f", mTrial.getMeanStrideTime()));
 
         TextView stv = (TextView) findViewById(R.id.text_detail_4_val);
         stv.setText(String.format("%.1f", mTrial.getCoeffOfVar()));
+
+        ((TextView)findViewById(R.id.text_detail_5_val)).setText(String.format("%.1f", mTrial.getGaitSym()));
+
 
         if( mTrial.getCoeffOfVar() <= 4.0f) {
             stv.setBackgroundResource(R.drawable.round_text_green);
@@ -84,15 +88,15 @@ public class AssessmentDetailActivity extends AppCompatActivity {
     }
 
     private void setupGraph() {
-        mGraph.setDragEnabled(true);
-        mGraph.setScaleEnabled(true);
-        mGraph.setDrawGridBackground(false);
-        mGraph.setPinchZoom(true);
+        mAccelGraph.setDragEnabled(true);
+        mAccelGraph.setScaleEnabled(true);
+        mAccelGraph.setDrawGridBackground(false);
+        mAccelGraph.setPinchZoom(true);
         LineData data = new LineData();
         data.setValueTextColor(Color.RED);
-        mGraph.setData(data);
-        mGraph.setVisibleXRange(0, 100);
-        mGraph.setVisibleYRangeMaximum(100, YAxis.AxisDependency.LEFT);
+        mAccelGraph.setData(data);
+        mAccelGraph.setVisibleXRange(0, 100);
+        mAccelGraph.setVisibleYRangeMaximum(100, YAxis.AxisDependency.LEFT);
 
         // Y values
         LineDataSet setX = new LineDataSet(null, "movement");
@@ -107,21 +111,45 @@ public class AssessmentDetailActivity extends AppCompatActivity {
         setY.setDrawCircles(false);
         setY.setColor(Color.rgb(99, 240, 99));
         data.addDataSet(setY);
+
+        mStepTimeGraph.setDragEnabled(true);
+        mStepTimeGraph.setScaleEnabled(true);
+        mStepTimeGraph.setDrawGridBackground(false);
+        mStepTimeGraph.setPinchZoom(true);
+        mStepTimeGraph.setAutoScaleMinMaxEnabled(true);
+        LineData data2 = new LineData();
+        mStepTimeGraph.setData(data2);
+
+
+
+        // Step times
+        LineDataSet setZ = new LineDataSet(null, "step time");
+        setZ.setLineWidth(2.5f);
+        setZ.setDrawCircles(false);
+        setZ.setColor(Color.BLUE);
+        setZ.setDrawValues(false);
+        data2.addDataSet(setZ);
+
     }
 
     private void plotGraph() {
         try {
 
             AccelerometerData data = mTrial.getTrialData();
-            mGraph.clear();
+            mAccelGraph.clear();
+            mStepTimeGraph.clear();
+
             setupGraph();
-            LineData graphData = mGraph.getData();
+            LineData graphData = mAccelGraph.getData();
+
+            LineData graphData2 = mStepTimeGraph.getData();
 
             int nextStep = 0;
             for(int i=0; i< data.getProcessedY().length; i++) {
                 // Add timestamp to X-axis and line series values
                 graphData.addXValue(data.getElapsedTimestamps()[i] + "");
                 graphData.addEntry(new Entry(data.getProcessedY()[i], i), 0); // The processed Y data
+
 
                 boolean added = false;
                 if(mTrial.getStepTimes() != null) {
@@ -149,7 +177,7 @@ public class AssessmentDetailActivity extends AppCompatActivity {
 
                 // Show any pauses
                 if(mTrial.getPauseTimes() != null) {
-                    XAxis xAxis = mGraph.getXAxis();
+                    XAxis xAxis = mAccelGraph.getXAxis();
                     for(int j=0; j<mTrial.getPauseTimes().size(); j++) {
                         if(data.getElapsedTimestamps()[i] == mTrial.getPauseTimes().get(j)[0] ||
                                 (i < data.getElapsedTimestamps().length - 1 && data.getElapsedTimestamps()[i] < mTrial.getPauseTimes().get(j)[0] && data.getElapsedTimestamps()[i+1] > mTrial.getPauseTimes().get(j)[0] )) {
@@ -176,8 +204,19 @@ public class AssessmentDetailActivity extends AppCompatActivity {
 
             }
 
-            mGraph.notifyDataSetChanged();
-            mGraph.invalidate();
+
+
+            for(int i=0; i< mTrial.getNumberOfSteps(); i++) {
+                graphData2.addXValue(i + 1 + "");
+                graphData2.addEntry(new Entry((mTrial.getStepTimes()[i+1]-mTrial.getStepTimes()[i]), i),0);
+            }
+
+
+            mAccelGraph.notifyDataSetChanged();
+            mAccelGraph.invalidate();
+
+            mStepTimeGraph.notifyDataSetChanged();
+            mStepTimeGraph.invalidate();
 
         }catch (Exception e) {
             e.printStackTrace();

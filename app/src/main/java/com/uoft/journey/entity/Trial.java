@@ -20,6 +20,7 @@ public class Trial implements Parcelable {
     private float mMeanStrideTime;
     private float mStandardDev;
     private float mCoeffOfVar;
+    private float mGaitSym;
     private List<int[]> mPauseTimes;
 
     public Trial(int trialId, Date startTime, AccelerometerData data, String username) {
@@ -90,6 +91,10 @@ public class Trial implements Parcelable {
         return mCoeffOfVar;
     }
 
+    public float getGaitSym() {
+        return mGaitSym;
+    }
+
     public int getDuration() {
         if(mStepTimes != null && mStepTimes.length > 1)
             return mStepTimes[mStepTimes.length - 1];
@@ -116,10 +121,11 @@ public class Trial implements Parcelable {
         mPauseTimes = pauses;
     }
 
-    public void setStepAnalysis(float mean, float standardDev, float coeffOfVar) {
+    public void setStepAnalysis(float mean, float standardDev, float coeffOfVar, float gaitSym) {
         mMeanStrideTime = mean;
         mStandardDev = standardDev;
         mCoeffOfVar = coeffOfVar;
+        mGaitSym = gaitSym;
     }
 
     public void setUsername(String user){

@@ -31,6 +31,7 @@ public class LocalDatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_TRIAL_MEAN_STRIDE_TIME = "meanStrideTime";
     public static final String COLUMN_TRIAL_STANDARD_DEV = "standardDev";
     public static final String COLUMN_TRIAL_COEFF_OF_VAR = "coeffOfVar";
+    public static final String COLUMN_TRIAL_GAIT_SYMM = "gaitSymm";
     public static final String COLUMN_TRIAL_USER_NAME = "name";
     // Columns - TrialData
     public static final String COLUMN_TRIAL_DATA_TRIAL_ID = "trialId";
@@ -67,7 +68,7 @@ public class LocalDatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         // Create the tables
         db.execSQL("CREATE TABLE user (id INTEGER , name TEXT PRIMARY KEY, actualname TEXT, date TEXT);");
-        db.execSQL("CREATE TABLE trial (id INTEGER PRIMARY KEY, userId INTEGER, startTime TEXT, meanStrideTime REAL, standardDev REAL, coeffOfVar REAL, name TEXT);");
+        db.execSQL("CREATE TABLE trial (id INTEGER PRIMARY KEY, userId INTEGER, startTime TEXT, meanStrideTime REAL, standardDev REAL, coeffOfVar REAL, gaitSymm REAL, name TEXT);");
         db.execSQL("CREATE TABLE trialData (trialId INTEGER, elapsedTime INTEGER, xVal REAL, yVal REAL, zVal REAL, xProcessed REAL, yProcessed REAL, zProcessed REAL, FOREIGN KEY(trialId) REFERENCES trial(id));");
         db.execSQL("CREATE TABLE trialStep (trialId INTEGER, stepNum INTEGER, elapsedTime INTEGER, FOREIGN KEY(trialId) REFERENCES trial(id));");
         db.execSQL("CREATE TABLE trialPause (trialId INTEGER, startPause INTEGER, endPause INTEGER, FOREIGN KEY(trialId) REFERENCES trial(id));");
