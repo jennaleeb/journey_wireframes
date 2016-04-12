@@ -12,7 +12,7 @@ public class Gait {
 
     private static float minThreshold = 9.4f; // Threshold for Y values, below which minima can be taken
     private static float maxThreshold = 9.8f; // Above this maxima can be taken
-    
+
     // A very simple low pass filter, smoothing value may need adjusting
     public static float[] simpleLowPassFilter(float[] data, float smoothing) {
         float value = data[0]; // start with the first input
