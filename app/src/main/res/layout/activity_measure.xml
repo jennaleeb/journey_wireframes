@@ -8,6 +8,8 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:id="@+id/measure_screen"
+    android:onClick="screenTapped"
     tools:context="com.uoft.journey.ui.activity.MeasureActivity">
 
     <TextView
@@ -295,7 +297,7 @@
                     android:id="@+id/text_output_3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/average_time"
+                    android:text="@string/average_step_time"
                     android:layout_below="@+id/text_output_3_val"
                     android:layout_centerHorizontal="true"/>
 

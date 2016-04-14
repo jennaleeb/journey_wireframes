@@ -100,7 +100,7 @@
                     android:layout_height="75dp"
                     android:gravity="center"
                     android:background="@drawable/round_text_green"
-                    android:id="@+id/stride_var_value"
+                    android:id="@+id/step_var_value"
                     android:color="@color/colorWhiteTranslucent"
                     android:layout_gravity="center"
                     android:textSize="32sp"
@@ -110,7 +110,7 @@
                 <TextView android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
                           android:text="@string/stv"
-                          android:id="@+id/stride_var_label"
+                          android:id="@+id/step_var_label"
                           android:layout_gravity="center"/>
 
             </LinearLayout>

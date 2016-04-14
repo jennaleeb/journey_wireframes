@@ -15,12 +15,8 @@ import android.os.IBinder;
 import android.os.Message;
 
 import com.uoft.journey.data.LocalDatabaseAccess;
-import com.uoft.journey.data.LocalDatabaseHelper;
 import com.uoft.journey.entity.AccelerometerData;
-import com.uoft.journey.entity.Trial;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -55,12 +51,17 @@ public class SensorService extends Service implements SensorEventListener {
     private Handler mMetroHandler;
     private MetronomeAsyncTask metroTask;
 
+    // Sound for dual task
+    private Handler mSoundHandler;
+    private SoundAsynchTask soundTask;
+
     private Handler getHandler() {
         return new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 String message = (String)msg.obj;
                 // Do something on each beat???
+
 
             }
         };
@@ -183,6 +184,18 @@ public class SensorService extends Service implements SensorEventListener {
                     event.values[1],
                     event.values[2]);
             mLock.unlock();
+        }
+    }
+
+    private class SoundAsynchTask extends AsyncTask<Void,Void,String> {
+        SoundService sound;
+
+        SoundAsynchTask(){
+
+        }
+        @Override
+        protected String doInBackground(Void... params) {
+            return null;
         }
     }
 

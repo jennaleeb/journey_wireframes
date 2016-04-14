@@ -5,15 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.MediaPlayer;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -26,6 +23,7 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.uoft.journey.Journey;
 import com.uoft.journey.R;
@@ -70,6 +68,8 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
     Journey mApp;
     private String mUsername;
     //private Journey mApp;
+    private static final String TAG = "TOUCHDEBUGTAG";
+    long start_time, reaction_time;
 
 
     @Override
@@ -175,6 +175,9 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
             public void onFinish() {
                 mCountdown.setText("");
                 startDataCollect();
+
+                // time when
+                start_time = System.currentTimeMillis();
                 mCountdownTimeRemaining = -1;
             }
         };
@@ -468,7 +471,7 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
     private void showResults() {
         ((TextView)findViewById(R.id.text_output_1_val)).setText(String.format("%d", mTrial.getDuration() / 1000));
         ((TextView)findViewById(R.id.text_output_2_val)).setText(String.format("%d", mTrial.getNumberOfSteps()));
-        ((TextView)findViewById(R.id.text_output_3_val)).setText(String.format("%.0f", mTrial.getMeanStrideTime()));
+        ((TextView)findViewById(R.id.text_output_3_val)).setText(String.format("%.0f", mTrial.getMeanStepTime()));
 
         TextView stv = (TextView) findViewById(R.id.text_output_4_val);
         stv.setText(String.format("%.1f", mTrial.getCoeffOfVar()));
@@ -553,5 +556,11 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
             mp.release();
             mp=null;
         }
+    }
+
+    // Record when user taps the screen
+    // (or can add a touch listener)
+    public void screenTapped(View view) {
+        Toast.makeText(getApplicationContext(), "Screen tapped", Toast.LENGTH_SHORT).show();
     }
 }

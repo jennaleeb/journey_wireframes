@@ -93,11 +93,13 @@ public class DataProcessingService extends Service {
                 if (stepTimes.length > 0) {
                     trial.setStepTimes(stepTimes);
                     trial.setPauseTimes(Gait.getPausePoints(stepTimes));
-                    float mean = Gait.getMeanStepTime(stepTimes, trial.getPauseTimes());
-                    float sd = Gait.getStandardDeviation(stepTimes, mean, trial.getPauseTimes());
-                    float var = Gait.getCoefficientOfVariation(sd, mean);
+                    float mean_step = Gait.getMeanStepTime(stepTimes, trial.getPauseTimes());
+                    float sd = Gait.getStandardDeviation(stepTimes, mean_step, trial.getPauseTimes());
+                    float var = Gait.getCoefficientOfVariation(sd, mean_step);
                     float sym = Gait.getGaitSymmetry(stepTimes, trial.getPauseTimes());
-                    trial.setStepAnalysis(mean, sd, var, sym);
+                    float mean_stride = Gait.getMeanStrideTime(stepTimes, trial.getPauseTimes());
+                    float stride_time_var = Gait.getStrideTimeVar(stepTimes, mean_stride, trial.getPauseTimes());
+                    trial.setStepAnalysis(mean_step, sd, var, sym, mean_stride, stride_time_var);
                 }
 
 

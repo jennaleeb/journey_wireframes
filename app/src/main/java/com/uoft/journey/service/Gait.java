@@ -270,7 +270,55 @@ public class Gait {
         return 0;
     }
 
-    // Get the standard deviation of the steps
+    // Get mean stride time (calculated as the time between every other step identified)
+    public static float getMeanStrideTime(int[] stepTimes, List<int[]> pauseTimes) {
+        if (stepTimes.length > 0) {
+            float pauseTime = 0;
+            if(pauseTimes != null) {
+                for(int i=0; i<pauseTimes.size(); i++){
+                    pauseTime += (pauseTimes.get(i)[1] - pauseTimes.get(i)[0]);
+                }
+            }
+
+            float strideTimeSum = 0;
+
+            for(int i=2; i < (stepTimes.length - 1); i++) {
+                strideTimeSum += (stepTimes[i] - stepTimes[i-2]);
+            }
+
+            return ((strideTimeSum - pauseTime) / ((float) stepTimes.length - 2));
+
+
+        }
+        return 0;
+    }
+
+    public static float getStrideTimeVar(int[] steps, float mean, List<int[]> pauseTimes){
+        float sd = 0.0f;
+        float cv = 0.0f;
+
+        // Calculate the standard deviation
+        for(int i=2; i<steps.length-1; i++) {
+            float strideTime = steps[i] - steps[i-2];
+            for(int j=0; j<pauseTimes.size(); j++) {
+                if(pauseTimes.get(j)[0] > steps[i-2] && pauseTimes.get(j)[1] < steps[i])
+                    strideTime = mean;
+            }
+
+            sd += (mean - strideTime) * (mean - strideTime);
+        }
+
+        sd = sd / (steps.length-2);
+        cv = 100 * ( (float)Math.sqrt(sd) ) / mean;
+
+        return cv;
+    }
+
+
+
+
+
+    // Get the standard deviation of the step times
     public static float getStandardDeviation(int[] steps, float mean, List<int[]> pauseTimes) {
         float var = 0.0f;
         int median = getMedian(steps);
@@ -295,21 +343,26 @@ public class Gait {
         return 100.0f * standardDev / mean;
     }
 
-    public static float getGaitSymmetry(int[] stepTimes, List<int[]> pauseTimes){
+    public static float getGaitSymmetry(int[] steps, List<int[]> pauseTimes){
 
-        int median = getMedian(stepTimes);
+        int median = getMedian(steps);
 
-        if (stepTimes.length > 0) {
-            // TODO: deal with pauses?
+        if (steps.length > 0) {
             float foot1Time = 0;
             float foot2Time = 0;
 
-            for(int i=0; i<stepTimes.length; i++){
+            for(int i=0; i<steps.length; i++){
 
                 if (i % 2 == 0){
-                    foot1Time += stepTimes[i];
+                    foot1Time += steps[i];
                 } else {
-                    foot2Time += stepTimes[i];
+                    foot2Time += steps[i];
+                }
+
+                for(int j=0; j<pauseTimes.size(); j++) {
+                    if(pauseTimes.get(j)[0] > steps[i] && pauseTimes.get(j)[1] < steps[i+1])
+                        foot1Time += 0;
+                        foot2Time += 0;
                 }
 
             }

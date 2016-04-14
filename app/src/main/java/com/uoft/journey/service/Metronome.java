@@ -2,6 +2,7 @@ package com.uoft.journey.service;
 
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 /**
  * CODE FROM BeatKeeper https://github.com/MasterEx/BeatKeeper
@@ -26,6 +27,7 @@ public class Metronome {
     private double[] silenceSoundArray;
     private Message msg;
     private int currentBeat = 1;
+    private static final String TAG = "SOUNDDEBUGTAG";
 
     public Metronome(Handler handler) {
         audioGenerator.createPlayer();
@@ -54,6 +56,7 @@ public class Metronome {
         do {
             msg = new Message();
             msg.obj = ""+currentBeat;
+
             if(currentBeat == 1)
                 audioGenerator.writeSound(soundTockArray);
             else
@@ -64,6 +67,7 @@ public class Metronome {
             if(bpm > 120)
                 mHandler.sendMessage(msg);
             currentBeat++;
+            Log.d(TAG, "BEAT " + currentBeat);
             if(currentBeat > beat)
                 currentBeat = 1;
         } while(play);

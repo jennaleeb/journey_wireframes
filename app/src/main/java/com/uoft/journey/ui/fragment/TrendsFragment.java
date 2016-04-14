@@ -154,13 +154,13 @@ public class TrendsFragment extends Fragment {
                 DateFormat df = new SimpleDateFormat("dd MMM", Locale.CANADA);
                 xVals.add(df.format(trial.getStartTime()));
                 yValsVar.add(new BarEntry(trial.getCoeffOfVar(), Math.abs(i - mTrials.size()+1)));
-                yValsMean.add(new BarEntry(trial.getMeanStrideTime(), Math.abs(i-mTrials.size()+1)));
+                yValsMean.add(new BarEntry(trial.getMeanStepTime(), Math.abs(i-mTrials.size()+1)));
             }
 
             // Stride variation
             BarData data = new BarData(xVals);
             data.setValueTextColor(Color.rgb(161, 136, 127));
-            BarDataSet setVar = new BarDataSet(yValsVar, "Stride Variation");
+            BarDataSet setVar = new BarDataSet(yValsVar, "Step Variation");
             setVar.setBarSpacePercent(5);
             setVar.setColor(Color.rgb(161, 136, 127));
             data.addDataSet(setVar);
@@ -174,7 +174,7 @@ public class TrendsFragment extends Fragment {
             BarData data1 = new BarData(xVals);
             data1.setValueTextColor(Color.rgb(144, 164, 174));
 
-            BarDataSet setMean = new BarDataSet(yValsMean, "Average Stride Time");
+            BarDataSet setMean = new BarDataSet(yValsMean, "Average Step Time");
             setMean.setBarSpacePercent(5);
             setMean.setColor(Color.rgb(144, 164, 174));
             data1.addDataSet(setMean);

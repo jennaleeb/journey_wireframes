@@ -66,13 +66,14 @@ public class AssessmentDetailActivity extends AppCompatActivity {
         DateFormat df = new SimpleDateFormat("MMM dd yyyy", Locale.CANADA);
         ((TextView)findViewById(R.id.text_detail_date)).setText(df.format(mTrial.getStartTime()) + " - " + String.format("%d", mTrial.getDuration() / 1000) + " sec");
         ((TextView)findViewById(R.id.text_detail_2_val)).setText(String.format("%d", mTrial.getNumberOfSteps()));
-        ((TextView)findViewById(R.id.text_detail_3_val)).setText(String.format("%.0f", mTrial.getMeanStrideTime()));
+        ((TextView)findViewById(R.id.text_detail_3_val)).setText(String.format("%.0f", mTrial.getMeanStepTime()));
 
         TextView stv = (TextView) findViewById(R.id.text_detail_4_val);
         stv.setText(String.format("%.1f", mTrial.getCoeffOfVar()));
 
         ((TextView)findViewById(R.id.text_detail_5_val)).setText(String.format("%.1f", mTrial.getGaitSym()));
-
+        ((TextView)findViewById(R.id.text_detail_6_val)).setText(String.format("%.1f", mTrial.getMeanStrideTime()));
+        ((TextView)findViewById(R.id.text_detail_7_val)).setText(String.format("%.1f", mTrial.getStrideTimeVar()));
 
         if( mTrial.getCoeffOfVar() <= 4.0f) {
             stv.setBackgroundResource(R.drawable.round_text_green);
@@ -205,12 +206,18 @@ public class AssessmentDetailActivity extends AppCompatActivity {
             }
 
 
+            int[] steps = mTrial.getStepTimes();
 
-            for(int i=0; i< mTrial.getNumberOfSteps(); i++) {
-                graphData2.addXValue(i + 1 + "");
-                graphData2.addEntry(new Entry((mTrial.getStepTimes()[i+1]-mTrial.getStepTimes()[i]), i),0);
+            for(int i=0; i<steps.length-1; i++) {
+
+                // Try to avoid plotting pauses by checking if the difference between step times is large
+                if (steps[i+1] - steps[i] < mTrial.getMeanStepTime() * 1.5) {
+                    graphData2.addXValue(i + 1 + "");
+                    graphData2.addEntry(new Entry((steps[i+1] - steps[i]), i), 0);
+                }
+
+
             }
-
 
             mAccelGraph.notifyDataSetChanged();
             mAccelGraph.invalidate();
