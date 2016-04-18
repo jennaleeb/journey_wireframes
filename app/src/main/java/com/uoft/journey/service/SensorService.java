@@ -7,8 +7,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -49,11 +47,10 @@ public class SensorService extends Service implements SensorEventListener {
     private double beatSound = 2440;
     private double sound = 6440;
     private Handler mMetroHandler;
-    private MetronomeAsyncTask metroTask;
+    // private MetronomeAsyncTask metroTask;
 
     // Sound for dual task
     private Handler mSoundHandler;
-    private SoundAsynchTask soundTask;
 
     private Handler getHandler() {
         return new Handler() {
@@ -115,15 +112,19 @@ public class SensorService extends Service implements SensorEventListener {
         super.onCreate();
         mContext = getApplicationContext();
         mLock = new ReentrantLock();
-        metroTask = new MetronomeAsyncTask();
+
+        //metroTask = new MetronomeAsyncTask();
     }
 
     @Override
     public void onDestroy() {
         mHandler.removeMessages(HANDLER_SEND_DATA);
         mSensorManager.unregisterListener(this);
-        metroTask.stop();
-        metroTask = new MetronomeAsyncTask();
+
+        //metroTask.stop();
+        //metroTask = new MetronomeAsyncTask();
+
+
         isRunning = false;
         super.onDestroy();
     }
@@ -144,13 +145,13 @@ public class SensorService extends Service implements SensorEventListener {
         sendDataDelayed(TIME_DELAY_MILLIS);
         isRunning = true;
 
-        if(spm > 0) {
+        /**if(spm > 0) {
             // We want to run multiple async tasks, force this on Honeycomb or greater version
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
                 metroTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[]) null);
             else
                 metroTask.execute();
-        }
+        } **/
 
         return Service.START_STICKY;
     }
@@ -187,20 +188,9 @@ public class SensorService extends Service implements SensorEventListener {
         }
     }
 
-    private class SoundAsynchTask extends AsyncTask<Void,Void,String> {
-        SoundService sound;
-
-        SoundAsynchTask(){
-
-        }
-        @Override
-        protected String doInBackground(Void... params) {
-            return null;
-        }
-    }
 
 
-    private class MetronomeAsyncTask extends AsyncTask<Void,Void,String> {
+    /**private class MetronomeAsyncTask extends AsyncTask<Void,Void,String> {
         Metronome metronome;
 
         MetronomeAsyncTask() {
@@ -235,5 +225,5 @@ public class SensorService extends Service implements SensorEventListener {
                 metronome.setBeat(beat);
         }
 
-    }
+    } **/
 }

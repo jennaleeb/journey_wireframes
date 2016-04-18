@@ -28,6 +28,7 @@
     <string name="latest">Latest Assessment</string>
     <string name="step_count">STEP COUNT</string>
     <string name="metronome">Metronome</string>
+    <string name="secondary_task">Secondary Task</string>
     <string name="slow">SLOW</string>
     <string name="fast">FAST</string>
 
