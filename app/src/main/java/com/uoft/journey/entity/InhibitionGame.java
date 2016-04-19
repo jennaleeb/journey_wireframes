@@ -8,10 +8,19 @@ import java.util.Date;
 public class InhibitionGame {
     public static final String  TRIAL_DATA_KEY = "GAME_DATA_KEY";
     private String mUsername;
+    private int mGameId;
     private int mTrialId;
     private Date mStartTime;
+    private float mOmissionError;
+    private float mCommissionError;
     private int mMeanResponseTime;
-    private int mAccuracy;
+    private float mOverallAccuracy;
+
+    public InhibitionGame (int gameId, Date startTime, String username) {
+        mGameId = gameId;
+        mStartTime = startTime;
+        mUsername = username;
+    }
 
     public String getUsername() {
         return mUsername;
@@ -19,6 +28,14 @@ public class InhibitionGame {
 
     public void setUsername(String username) {
         mUsername = username;
+    }
+
+    public int getGameId() {
+        return mGameId;
+    }
+
+    public void setGameId(int gameId) {
+        mGameId = gameId;
     }
 
     public int getTrialId() {
@@ -37,6 +54,22 @@ public class InhibitionGame {
         mStartTime = startTime;
     }
 
+    public float getOmissionError() {
+        return mOmissionError;
+    }
+
+    public void setOmissionError(float omissionError) {
+        mOmissionError = omissionError;
+    }
+
+    public float getCommissionError() {
+        return mCommissionError;
+    }
+
+    public void setCommissionError(float commissionError) {
+        mCommissionError = commissionError;
+    }
+
     public int getMeanResponseTime() {
         return mMeanResponseTime;
     }
@@ -45,11 +78,11 @@ public class InhibitionGame {
         mMeanResponseTime = meanResponseTime;
     }
 
-    public int getAccuracy() {
-        return mAccuracy;
+    public float getOverallAccuracy() {
+        return mOverallAccuracy;
     }
 
-    public void setAccuracy(int accuracy) {
-        mAccuracy = accuracy;
+    public void setOverallAccuracy(float accuracy) {
+        mOverallAccuracy = accuracy;
     }
 }

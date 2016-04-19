@@ -11,6 +11,7 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -26,8 +27,10 @@ import android.widget.TextView;
 
 import com.uoft.journey.Journey;
 import com.uoft.journey.R;
+import com.uoft.journey.data.LocalDatabaseAccess;
 import com.uoft.journey.data.ServerAccess;
 import com.uoft.journey.entity.AccelerometerData;
+import com.uoft.journey.entity.InhibitionGame;
 import com.uoft.journey.entity.Trial;
 import com.uoft.journey.service.DataProcessingService;
 import com.uoft.journey.service.DataService;
@@ -72,6 +75,8 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
     private String mUsername;
     private static final String TAG = "TOUCHDEBUGTAG";
 
+    // Inhibition Game Vars
+    private InhibitionGame mInhibGame;
     private SoundService mSoundService;
     long start_time, reaction_time;
     private Handler soundHandler;
@@ -431,11 +436,29 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
             sound_on = false;
             if (true_stim_counter != 0) {
                 InhibitionGameStats inhibGameStats = new InhibitionGameStats(hitStats, true_stim_counter, false_stim_counter);
-                inhibGameStats.measureAccuracy();
-                inhibGameStats.meanResponseTime();
-                inhibGameStats.commissionError();
-                inhibGameStats.omissionError();
-                inhibGameStats.correctDetection();
+
+                Log.d(TAG, "true stim" + true_stim_counter);
+                Log.d(TAG, "false stim" + false_stim_counter);
+                Log.d(TAG, "RT: " + inhibGameStats.meanResponseTime());
+
+                // Create the game record
+                Calendar cal = Calendar.getInstance(TimeZone.getDefault());
+                Date start = cal.getTime();
+                int gameId = DataService.addNewInhibGame(
+                        this,
+                        mUserId,
+                        start,
+                        mUsername);
+
+                mInhibGame = new InhibitionGame(gameId, start, mUsername);
+                Log.d(TAG, "gameid: " + gameId);
+                mInhibGame.setMeanResponseTime(inhibGameStats.meanResponseTime());
+                mInhibGame.setOmissionError(inhibGameStats.omissionError());
+                mInhibGame.setCommissionError(inhibGameStats.commissionError());
+                mInhibGame.setOverallAccuracy(inhibGameStats.measureAccuracy());
+                mInhibGame.setTrialId(mTrial.getTrialId());
+                LocalDatabaseAccess.updateInhibGame(this, mInhibGame);
+
             }
 
 
@@ -542,6 +565,10 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
                 break;
         }
 
+        ((TextView)findViewById(R.id.text_output_5_val)).setText(String.format("%d", mInhibGame.getMeanResponseTime()));
+        ((TextView)findViewById(R.id.text_output_6_val)).setText(String.format("%.1f", mInhibGame.getOverallAccuracy()));
+        ((TextView)findViewById(R.id.text_output_7_val)).setText(String.format("%.1f", mInhibGame.getOmissionError()));
+       ((TextView)findViewById(R.id.text_output_8_val)).setText(String.format("%.1f", mInhibGame.getCommissionError()));
         findViewById(R.id.layout_output).setVisibility(View.VISIBLE);
         mBtnDone.setVisibility(View.VISIBLE);
         mBtnDone.setEnabled(true);

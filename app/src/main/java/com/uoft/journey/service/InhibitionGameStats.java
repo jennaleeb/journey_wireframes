@@ -1,5 +1,7 @@
 package com.uoft.journey.service;
 
+import org.apache.commons.math3.special.Erf;
+
 import java.util.List;
 
 /**
@@ -17,6 +19,7 @@ public class InhibitionGameStats {
         this.false_stim_counter = false_stim_counter;
     }
 
+
     // RT of correct hits only
     public int meanResponseTime() {
         int sum_rt = 0;
@@ -30,7 +33,7 @@ public class InhibitionGameStats {
     }
 
     // Omission error rate (# missed / # pos stim)
-    public int omissionError() {
+    public float omissionError() {
 
         int correct_hits = 0;
 
@@ -41,11 +44,12 @@ public class InhibitionGameStats {
 
         }
 
-        return (true_stim_counter - correct_hits) / true_stim_counter;
+        float om_err = (float) ( (true_stim_counter - correct_hits) * 100.0 / true_stim_counter);
+        return om_err;
     }
 
     // Commission error rate (# hit / # neg stim)
-    public int commissionError() {
+    public float commissionError() {
 
         int false_alarm_hits = 0;
 
@@ -56,27 +60,15 @@ public class InhibitionGameStats {
 
         }
 
-        return false_alarm_hits / false_stim_counter;
-    }
+        float com_err = (false_stim_counter != 0) ? (float) ( false_alarm_hits * 100.0 / false_stim_counter ) : 0.0f;
+        return com_err;
 
-    // Correct detection (# hit / # pos stim)
-    public int correctDetection() {
-        int correct_hits = 0;
-
-        for (int i=0; i<hitStats.size(); i++){
-            if (hitStats.get(i)[0] == 1) {
-                correct_hits++;
-            }
-
-        }
-
-        return correct_hits / true_stim_counter;
     }
 
 
 
     // Overall accuracy?
-    public int measureAccuracy() {
+    public float measureAccuracy() {
         int correct_hits = 0;
         int false_alarm_hits = 0;
 
@@ -89,6 +81,14 @@ public class InhibitionGameStats {
 
         }
 
-        return ( (correct_hits / true_stim_counter) - (false_alarm_hits / false_stim_counter));
+
+
+        // return ( (correct_hits / true_stim_counter) - (false_alarm_hits / false_stim_counter));
+        return (float) pToZ(0.5f);
+    }
+
+    public double pToZ(float p) {
+        double z = Math.sqrt(2) * Erf.erf(2*p);
+        return z;
     }
 }

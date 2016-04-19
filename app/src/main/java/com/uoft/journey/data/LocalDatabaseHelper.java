@@ -18,6 +18,7 @@ public class LocalDatabaseHelper extends SQLiteOpenHelper {
     public static final String TABLE_TRIAL_DATA = "trialData";
     public static final String TABLE_TRIAL_STEP = "trialStep";
     public static final String TABLE_TRIAL_PAUSE = "trialPause";
+    public static final String TABLE_INHIB_GAME = "inhibGame";
     // Columns - User
     public static final String COLUMN_USER_ID = "id";
     public static final String COLUMN_USER_NAME = "name";
@@ -53,6 +54,17 @@ public class LocalDatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_TRIAL_PAUSE_START = "startPause";
     public static final String COLUMN_TRIAL_PAUSE_END = "endPause";
 
+    // Columns - InhibGame
+    public static final String COLUMN_GAME_ID = "id";
+    public static final String COLUMN_GAME_USER_ID = "userId";
+    public static final String COLUMN_GAME_TRIAL_ID = "trialId";
+    public static final String COLUMN_GAME_START_TIME = "startTime";
+    public static final String COLUMN_GAME_OM_ERROR = "omissionError";
+    public static final String COLUMN_GAME_COM_ERROR = "commissionError";
+    public static final String COLUMN_GAME_MEAN_RT = "meanRT";
+    public static final String COLUMN_GAME_OVERALL_ACCURACY = "overallAccuracy";
+    public static final String COLUMN_GAME_USER_NAME = "name";
+
     private LocalDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, SCHEMA);
         mContext = context;
@@ -74,6 +86,7 @@ public class LocalDatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE trialData (trialId INTEGER, elapsedTime INTEGER, xVal REAL, yVal REAL, zVal REAL, xProcessed REAL, yProcessed REAL, zProcessed REAL, FOREIGN KEY(trialId) REFERENCES trial(id));");
         db.execSQL("CREATE TABLE trialStep (trialId INTEGER, stepNum INTEGER, elapsedTime INTEGER, FOREIGN KEY(trialId) REFERENCES trial(id));");
         db.execSQL("CREATE TABLE trialPause (trialId INTEGER, startPause INTEGER, endPause INTEGER, FOREIGN KEY(trialId) REFERENCES trial(id));");
+        db.execSQL("CREATE TABLE inhibGame (id INTEGER PRIMARY KEY, userId INTEGER, trialId INTEGER, startTime TEXT, omissionError REAL, commissionError REAL, meanRT REAL, overallAccuracy REAL, name TEXT);");
     }
 
     @Override

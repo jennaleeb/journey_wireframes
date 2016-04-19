@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.uoft.journey.entity.AccelerometerData;
+import com.uoft.journey.entity.InhibitionGame;
 import com.uoft.journey.entity.Patient;
 import com.uoft.journey.entity.Trial;
 
@@ -491,4 +492,137 @@ public class LocalDatabaseAccess {
             return false;
         }
     }
+
+    // Inhib Game Data
+
+    // Insert a trial
+    public static Integer addInhibGame(Context ctx, int userId, Date startTime, String user) {
+
+        try {
+            LocalDatabaseHelper db = LocalDatabaseHelper.getInstance(ctx.getApplicationContext());
+            ContentValues cv=new ContentValues();
+            Cursor max = db.getReadableDatabase().rawQuery(String.format("SELECT max(%s) FROM %s", LocalDatabaseHelper.COLUMN_GAME_ID, LocalDatabaseHelper.TABLE_INHIB_GAME), null);
+            int nextId = 1;
+            if(max.moveToFirst()) {
+                nextId += max.getInt(0);
+            }
+            max.close();
+
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
+
+            cv.put(LocalDatabaseHelper.COLUMN_GAME_ID, nextId);
+            cv.put(LocalDatabaseHelper.COLUMN_GAME_USER_ID, userId);
+            cv.put(LocalDatabaseHelper.COLUMN_GAME_START_TIME, df.format(startTime));
+            cv.put(LocalDatabaseHelper.COLUMN_GAME_USER_NAME, user);
+            db.getWritableDatabase().insert(LocalDatabaseHelper.TABLE_INHIB_GAME, null, cv);
+
+            return nextId;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
+    public static Boolean updateInhibGame(Context ctx, InhibitionGame game) {
+        try {
+            LocalDatabaseHelper db = LocalDatabaseHelper.getInstance(ctx.getApplicationContext());
+            ContentValues cv = new ContentValues();
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
+            cv.put(LocalDatabaseHelper.COLUMN_TRIAL_START_TIME, df.format(game.getStartTime()));
+            cv.put(LocalDatabaseHelper.COLUMN_GAME_TRIAL_ID, game.getTrialId());
+            cv.put(LocalDatabaseHelper.COLUMN_GAME_OM_ERROR, game.getOmissionError());
+            cv.put(LocalDatabaseHelper.COLUMN_GAME_COM_ERROR, game.getCommissionError());
+            cv.put(LocalDatabaseHelper.COLUMN_GAME_MEAN_RT, game.getMeanResponseTime());
+            cv.put(LocalDatabaseHelper.COLUMN_GAME_OVERALL_ACCURACY, game.getOverallAccuracy());
+            db.getWritableDatabase().update(LocalDatabaseHelper.TABLE_INHIB_GAME, cv, LocalDatabaseHelper.COLUMN_GAME_ID + "=" + game.getGameId(), null);
+            return true;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static InhibitionGame getInhibGame(Context ctx, int gameId, String username) {
+
+
+        try {
+
+            LocalDatabaseHelper db = LocalDatabaseHelper.getInstance(ctx.getApplicationContext());
+            Cursor data = db.getReadableDatabase().rawQuery(String.format("SELECT %s, %s, %s, %s, %s, %s, %s, %s FROM %s WHERE id=%d AND name='%s'",
+                    LocalDatabaseHelper.COLUMN_GAME_USER_ID,
+                    LocalDatabaseHelper.COLUMN_GAME_TRIAL_ID,
+                    LocalDatabaseHelper.COLUMN_TRIAL_START_TIME,
+                    LocalDatabaseHelper.COLUMN_GAME_OM_ERROR,
+                    LocalDatabaseHelper.COLUMN_GAME_COM_ERROR,
+                    LocalDatabaseHelper.COLUMN_GAME_MEAN_RT,
+                    LocalDatabaseHelper.COLUMN_GAME_OVERALL_ACCURACY,
+                    LocalDatabaseHelper.COLUMN_TRIAL_USER_NAME,
+                    LocalDatabaseHelper.TABLE_INHIB_GAME, gameId, username), null);
+
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
+            data.moveToNext();
+            Date startTime = null;
+            if(!data.isNull(2)) {
+                startTime = df.parse(data.getString(2));
+            }
+            InhibitionGame game = new InhibitionGame(gameId, startTime, data.getString(7));
+            game.setTrialId(data.getInt(1));
+            game.setOmissionError(data.getFloat(3));
+            game.setCommissionError(data.getFloat(4));
+            game.setMeanResponseTime(data.getInt(5));
+            game.setOverallAccuracy(data.getFloat(6));
+            game.setUsername(username);
+
+            data.close();
+            return game;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static InhibitionGame getInhibGameByTrial(Context ctx, int trialId, String username) {
+
+
+        try {
+
+            LocalDatabaseHelper db = LocalDatabaseHelper.getInstance(ctx.getApplicationContext());
+            Cursor data = db.getReadableDatabase().rawQuery(String.format("SELECT %s, %s, %s, %s, %s, %s, %s, %s, %s FROM %s WHERE trialId=%d AND name='%s'",
+                    LocalDatabaseHelper.COLUMN_GAME_ID,
+                    LocalDatabaseHelper.COLUMN_GAME_USER_ID,
+                    LocalDatabaseHelper.COLUMN_GAME_TRIAL_ID,
+                    LocalDatabaseHelper.COLUMN_TRIAL_START_TIME,
+                    LocalDatabaseHelper.COLUMN_GAME_OM_ERROR,
+                    LocalDatabaseHelper.COLUMN_GAME_COM_ERROR,
+                    LocalDatabaseHelper.COLUMN_GAME_MEAN_RT,
+                    LocalDatabaseHelper.COLUMN_GAME_OVERALL_ACCURACY,
+                    LocalDatabaseHelper.COLUMN_TRIAL_USER_NAME,
+                    LocalDatabaseHelper.TABLE_INHIB_GAME, trialId, username), null);
+
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
+            data.moveToNext();
+            Date startTime = null;
+            if(!data.isNull(3)) {
+                startTime = df.parse(data.getString(3));
+            }
+            InhibitionGame game = new InhibitionGame(data.getInt(0), startTime, data.getString(8));
+            game.setTrialId(data.getInt(2));
+            game.setOmissionError(data.getFloat(4));
+            game.setCommissionError(data.getFloat(5));
+            game.setMeanResponseTime(data.getInt(6));
+            game.setOverallAccuracy(data.getFloat(7));
+            game.setUsername(username);
+
+            data.close();
+            return game;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }
