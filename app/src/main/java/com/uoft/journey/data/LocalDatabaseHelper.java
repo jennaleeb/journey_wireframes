@@ -59,9 +59,14 @@ public class LocalDatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_GAME_USER_ID = "userId";
     public static final String COLUMN_GAME_TRIAL_ID = "trialId";
     public static final String COLUMN_GAME_START_TIME = "startTime";
+    public static final String COLUMN_GAME_HIT_COUNT = "hitCount";
+    public static final String COLUMN_GAME_MISS_COUNT = "missCount";
+    public static final String COLUMN_GAME_FALSE_ALARM_COUNT = "falseAlarmCount";
+    public static final String COLUMN_GAME_CORRECT_NEG_COUNT = "correctNegCount";
     public static final String COLUMN_GAME_OM_ERROR = "omissionError";
     public static final String COLUMN_GAME_COM_ERROR = "commissionError";
     public static final String COLUMN_GAME_MEAN_RT = "meanRT";
+    public static final String COLUMN_GAME_RT_SD = "stdevRT";
     public static final String COLUMN_GAME_OVERALL_ACCURACY = "overallAccuracy";
     public static final String COLUMN_GAME_USER_NAME = "name";
 
@@ -86,7 +91,7 @@ public class LocalDatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE trialData (trialId INTEGER, elapsedTime INTEGER, xVal REAL, yVal REAL, zVal REAL, xProcessed REAL, yProcessed REAL, zProcessed REAL, FOREIGN KEY(trialId) REFERENCES trial(id));");
         db.execSQL("CREATE TABLE trialStep (trialId INTEGER, stepNum INTEGER, elapsedTime INTEGER, FOREIGN KEY(trialId) REFERENCES trial(id));");
         db.execSQL("CREATE TABLE trialPause (trialId INTEGER, startPause INTEGER, endPause INTEGER, FOREIGN KEY(trialId) REFERENCES trial(id));");
-        db.execSQL("CREATE TABLE inhibGame (id INTEGER PRIMARY KEY, userId INTEGER, trialId INTEGER, startTime TEXT, omissionError REAL, commissionError REAL, meanRT REAL, overallAccuracy REAL, name TEXT);");
+        db.execSQL("CREATE TABLE inhibGame (id INTEGER PRIMARY KEY, userId INTEGER, trialId INTEGER, startTime TEXT, hitCount INTEGER, missCount INTEGER, falseAlarmCount INTEGER, correctNegCount INTEGER, omissionError REAL, commissionError REAL, meanRT REAL, stdevRT REAL, overallAccuracy REAL, name TEXT);");
     }
 
     @Override

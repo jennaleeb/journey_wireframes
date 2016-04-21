@@ -46,9 +46,6 @@ public class DataService {
         return LocalDatabaseAccess.addInhibGame(ctx, userId, startTime, username);
     }
 
-    public static InhibitionGame getInhibGame(Context ctx, int gameId, String username) {
-        return LocalDatabaseAccess.getInhibGame(ctx, gameId, username);
-    }
 
     public static InhibitionGame getGameByTrialId(Context ctx, int trialId, String username) {
         return LocalDatabaseAccess.getInhibGameByTrial(ctx, trialId, username);

@@ -60,7 +60,6 @@ public class ServerAccess {
         Trial tdata = LocalDatabaseAccess.getTrial(ctx, trialID, username);
 
         InhibitionGame game = LocalDatabaseAccess.getInhibGameByTrial(ctx, trialID, username);
-        int i = game.getTrialId();
 
         tdata.setTrialData(null);
 
@@ -73,7 +72,7 @@ public class ServerAccess {
 
         BaasDocument newTrial = new BaasDocument("Trials");
         newTrial.put("gameStats", (new Gson()).toJson(game));
-        newTrial.putString("data",gson.toJson(tdata));
+        newTrial.putString("data", gson.toJson(tdata));
 
 
 
@@ -144,13 +143,23 @@ public class ServerAccess {
 
 
         for (BaasDocument doc : res.value()) {
-            Log.d("LOG", "Doc: " + doc);
 
+            // Get trial data
             Trial t = gson.fromJson(doc.getString("data"), Trial.class);
 
-
             LocalDatabaseAccess.insertTrial(ctx, userid, t, username);
-            LocalDatabaseAccess.addTrialSteps(ctx,t.getTrialId(),t.getStepTimes(), t.getPauseTimes());
+            LocalDatabaseAccess.addTrialSteps(ctx, t.getTrialId(), t.getStepTimes(), t.getPauseTimes());
+
+            // Get game data
+            gson.fromJson(doc.getString("gameStats"), InhibitionGame.class);
+
+            InhibitionGame g = gson.fromJson(doc.getString("gameStats"), InhibitionGame.class);
+
+            if (g != null) {
+                LocalDatabaseAccess.insertInhibGame(ctx, userid, g, username);
+            }
+
+
         }
 
     }

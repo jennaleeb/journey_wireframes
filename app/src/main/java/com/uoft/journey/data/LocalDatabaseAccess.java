@@ -22,6 +22,8 @@ import java.util.Locale;
  */
 public class LocalDatabaseAccess {
 
+    public static final String TAG = "LOCALACCESSDEBUGTAG";
+
     // Insert a new user
     public static Integer addUser(Context ctx, String name, String actualname, String date) {
         try {
@@ -484,7 +486,7 @@ public class LocalDatabaseAccess {
             db.getWritableDatabase().delete(LocalDatabaseHelper.TABLE_TRIAL_STEP, LocalDatabaseHelper.COLUMN_TRIAL_STEP_TRIAL_ID + "=" + trialId, null);
             db.getWritableDatabase().delete(LocalDatabaseHelper.TABLE_TRIAL_DATA, LocalDatabaseHelper.COLUMN_TRIAL_DATA_TRIAL_ID + "=" + trialId, null);
             db.getWritableDatabase().delete(LocalDatabaseHelper.TABLE_TRIAL, LocalDatabaseHelper.COLUMN_TRIAL_ID + "=" + trialId, null);
-
+            db.getWritableDatabase().delete(LocalDatabaseHelper.TABLE_INHIB_GAME, LocalDatabaseHelper.COLUMN_GAME_TRIAL_ID + "=" + trialId, null);
             return true;
         }
         catch (Exception e) {
@@ -529,11 +531,16 @@ public class LocalDatabaseAccess {
             LocalDatabaseHelper db = LocalDatabaseHelper.getInstance(ctx.getApplicationContext());
             ContentValues cv = new ContentValues();
             DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
-            cv.put(LocalDatabaseHelper.COLUMN_TRIAL_START_TIME, df.format(game.getStartTime()));
+            cv.put(LocalDatabaseHelper.COLUMN_GAME_START_TIME, df.format(game.getStartTime()));
             cv.put(LocalDatabaseHelper.COLUMN_GAME_TRIAL_ID, game.getTrialId());
+            cv.put(LocalDatabaseHelper.COLUMN_GAME_HIT_COUNT, game.getHitCount());
+            cv.put(LocalDatabaseHelper.COLUMN_GAME_MISS_COUNT, game.getMissCount());
+            cv.put(LocalDatabaseHelper.COLUMN_GAME_FALSE_ALARM_COUNT, game.getFalseAlarmCount());
+            cv.put(LocalDatabaseHelper.COLUMN_GAME_CORRECT_NEG_COUNT, game.getCorrectNegCount());
             cv.put(LocalDatabaseHelper.COLUMN_GAME_OM_ERROR, game.getOmissionError());
             cv.put(LocalDatabaseHelper.COLUMN_GAME_COM_ERROR, game.getCommissionError());
             cv.put(LocalDatabaseHelper.COLUMN_GAME_MEAN_RT, game.getMeanResponseTime());
+            cv.put(LocalDatabaseHelper.COLUMN_GAME_RT_SD, game.getSDResponseTime());
             cv.put(LocalDatabaseHelper.COLUMN_GAME_OVERALL_ACCURACY, game.getOverallAccuracy());
             db.getWritableDatabase().update(LocalDatabaseHelper.TABLE_INHIB_GAME, cv, LocalDatabaseHelper.COLUMN_GAME_ID + "=" + game.getGameId(), null);
             return true;
@@ -550,15 +557,16 @@ public class LocalDatabaseAccess {
         try {
 
             LocalDatabaseHelper db = LocalDatabaseHelper.getInstance(ctx.getApplicationContext());
-            Cursor data = db.getReadableDatabase().rawQuery(String.format("SELECT %s, %s, %s, %s, %s, %s, %s, %s FROM %s WHERE id=%d AND name='%s'",
+            Cursor data = db.getReadableDatabase().rawQuery(String.format("SELECT %s, %s, %s, %s, %s, %s, %s, %s, %s FROM %s WHERE id=%d AND name='%s'",
                     LocalDatabaseHelper.COLUMN_GAME_USER_ID,
                     LocalDatabaseHelper.COLUMN_GAME_TRIAL_ID,
-                    LocalDatabaseHelper.COLUMN_TRIAL_START_TIME,
+                    LocalDatabaseHelper.COLUMN_GAME_START_TIME,
                     LocalDatabaseHelper.COLUMN_GAME_OM_ERROR,
                     LocalDatabaseHelper.COLUMN_GAME_COM_ERROR,
                     LocalDatabaseHelper.COLUMN_GAME_MEAN_RT,
+                    LocalDatabaseHelper.COLUMN_GAME_RT_SD,
                     LocalDatabaseHelper.COLUMN_GAME_OVERALL_ACCURACY,
-                    LocalDatabaseHelper.COLUMN_TRIAL_USER_NAME,
+                    LocalDatabaseHelper.COLUMN_GAME_USER_NAME,
                     LocalDatabaseHelper.TABLE_INHIB_GAME, gameId, username), null);
 
             DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
@@ -572,7 +580,8 @@ public class LocalDatabaseAccess {
             game.setOmissionError(data.getFloat(3));
             game.setCommissionError(data.getFloat(4));
             game.setMeanResponseTime(data.getInt(5));
-            game.setOverallAccuracy(data.getFloat(6));
+            game.setSDResponseTime(data.getFloat(6));
+            game.setOverallAccuracy(data.getFloat(7));
             game.setUsername(username);
 
             data.close();
@@ -590,16 +599,21 @@ public class LocalDatabaseAccess {
         try {
 
             LocalDatabaseHelper db = LocalDatabaseHelper.getInstance(ctx.getApplicationContext());
-            Cursor data = db.getReadableDatabase().rawQuery(String.format("SELECT %s, %s, %s, %s, %s, %s, %s, %s, %s FROM %s WHERE trialId=%d AND name='%s'",
+            Cursor data = db.getReadableDatabase().rawQuery(String.format("SELECT %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s FROM %s WHERE trialId=%d AND name='%s'",
                     LocalDatabaseHelper.COLUMN_GAME_ID,
                     LocalDatabaseHelper.COLUMN_GAME_USER_ID,
                     LocalDatabaseHelper.COLUMN_GAME_TRIAL_ID,
-                    LocalDatabaseHelper.COLUMN_TRIAL_START_TIME,
+                    LocalDatabaseHelper.COLUMN_GAME_START_TIME,
+                    LocalDatabaseHelper.COLUMN_GAME_HIT_COUNT,
+                    LocalDatabaseHelper.COLUMN_GAME_MISS_COUNT,
+                    LocalDatabaseHelper.COLUMN_GAME_FALSE_ALARM_COUNT,
+                    LocalDatabaseHelper.COLUMN_GAME_CORRECT_NEG_COUNT,
                     LocalDatabaseHelper.COLUMN_GAME_OM_ERROR,
                     LocalDatabaseHelper.COLUMN_GAME_COM_ERROR,
                     LocalDatabaseHelper.COLUMN_GAME_MEAN_RT,
+                    LocalDatabaseHelper.COLUMN_GAME_RT_SD,
                     LocalDatabaseHelper.COLUMN_GAME_OVERALL_ACCURACY,
-                    LocalDatabaseHelper.COLUMN_TRIAL_USER_NAME,
+                    LocalDatabaseHelper.COLUMN_GAME_USER_NAME,
                     LocalDatabaseHelper.TABLE_INHIB_GAME, trialId, username), null);
 
             DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
@@ -610,18 +624,49 @@ public class LocalDatabaseAccess {
             }
             InhibitionGame game = new InhibitionGame(data.getInt(0), startTime, data.getString(8));
             game.setTrialId(data.getInt(2));
-            game.setOmissionError(data.getFloat(4));
-            game.setCommissionError(data.getFloat(5));
-            game.setMeanResponseTime(data.getInt(6));
-            game.setOverallAccuracy(data.getFloat(7));
+            game.setHitCount(data.getInt(4));
+            game.setMissCount(data.getInt(5));
+            game.setFalseAlarmCount(data.getInt(6));
+            game.setCorrectNegCount(data.getInt(7));
+            game.setOmissionError(data.getFloat(8));
+            game.setCommissionError(data.getFloat(9));
+            game.setMeanResponseTime(data.getInt(10));
+            game.setSDResponseTime(data.getFloat(11));
+            game.setOverallAccuracy(data.getFloat(12));
             game.setUsername(username);
-
             data.close();
             return game;
         }
         catch (Exception e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    // Insert a game retreived from fromserver
+    public static Boolean insertInhibGame(Context ctx, int userId, InhibitionGame game, String username) {
+        try {
+            LocalDatabaseHelper db = LocalDatabaseHelper.getInstance(ctx.getApplicationContext());
+            ContentValues cv=new ContentValues();
+
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
+
+            cv.put(LocalDatabaseHelper.COLUMN_GAME_ID, game.getGameId());
+            cv.put(LocalDatabaseHelper.COLUMN_GAME_USER_ID, userId);
+            cv.put(LocalDatabaseHelper.COLUMN_GAME_TRIAL_ID, game.getTrialId());
+            cv.put(LocalDatabaseHelper.COLUMN_GAME_START_TIME, df.format(game.getStartTime()));
+            cv.put(LocalDatabaseHelper.COLUMN_GAME_OM_ERROR, game.getOmissionError());
+            cv.put(LocalDatabaseHelper.COLUMN_GAME_COM_ERROR, game.getCommissionError());
+            cv.put(LocalDatabaseHelper.COLUMN_GAME_MEAN_RT, game.getMeanResponseTime());
+            cv.put(LocalDatabaseHelper.COLUMN_GAME_RT_SD, game.getSDResponseTime());
+            cv.put(LocalDatabaseHelper.COLUMN_GAME_OVERALL_ACCURACY, game.getOverallAccuracy());
+            cv.put(LocalDatabaseHelper.COLUMN_GAME_USER_NAME, username);
+            db.getWritableDatabase().insertWithOnConflict(LocalDatabaseHelper.TABLE_INHIB_GAME, null, cv, SQLiteDatabase.CONFLICT_IGNORE);
+            return true;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
     }
 

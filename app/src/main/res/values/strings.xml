@@ -27,7 +27,7 @@
     <string name="stv">STV (%)</string>
     <string name="om_error">Omission Error (%)</string>
     <string name="com_error">Commission Error (%)</string>
-    <string name="mean_rt">Mean RT</string>
+    <string name="mean_rt">Mean RT (ms)</string>
     <string name="comb_accuracy">Combined Accuracy</string>
     <string name="latest">Latest Assessment</string>
     <string name="step_count">STEP COUNT</string>

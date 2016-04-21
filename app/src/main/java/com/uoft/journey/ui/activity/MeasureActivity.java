@@ -11,7 +11,6 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -338,9 +337,9 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
                 Vibrator v = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
                 v.vibrate(500);
 
-//                MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.notification0);
-//                mp.start();
-//                mp.setOnCompletionListener(this);
+               MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.notification0);
+               mp.start();
+               mp.setOnCompletionListener(this);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -349,7 +348,14 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
             // Start Sound Game
             if (mSoundCheck.isChecked()) {
                 sound_on = true;
-                playSound();
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        playSound();
+                    }
+                }, 2500);
+
                 hitStats = new ArrayList<long[]>();
             }
 
@@ -437,9 +443,6 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
             if (true_stim_counter != 0) {
                 InhibitionGameStats inhibGameStats = new InhibitionGameStats(hitStats, true_stim_counter, false_stim_counter);
 
-                Log.d(TAG, "true stim" + true_stim_counter);
-                Log.d(TAG, "false stim" + false_stim_counter);
-                Log.d(TAG, "RT: " + inhibGameStats.meanResponseTime());
 
                 // Create the game record
                 Calendar cal = Calendar.getInstance(TimeZone.getDefault());
@@ -451,8 +454,12 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
                         mUsername);
 
                 mInhibGame = new InhibitionGame(gameId, start, mUsername);
-                Log.d(TAG, "gameid: " + gameId);
+                mInhibGame.setHitCount(inhibGameStats.hitCount());
+                mInhibGame.setMissCount(inhibGameStats.missCount());
+                mInhibGame.setFalseAlarmCount(inhibGameStats.falseAlarmCount());
+                mInhibGame.setCorrectNegCount(inhibGameStats.correctNegCount());
                 mInhibGame.setMeanResponseTime(inhibGameStats.meanResponseTime());
+                mInhibGame.setSDResponseTime(inhibGameStats.responseTimeSD());
                 mInhibGame.setOmissionError(inhibGameStats.omissionError());
                 mInhibGame.setCommissionError(inhibGameStats.commissionError());
                 mInhibGame.setOverallAccuracy(inhibGameStats.measureAccuracy());
@@ -467,9 +474,9 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
                 Vibrator v = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
                 v.vibrate(500);
 
-//                MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.notification0);
-//                mp.start();
-//                mp.setOnCompletionListener(this);
+                MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.notification0);
+                mp.start();
+                mp.setOnCompletionListener(this);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -567,8 +574,8 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
 
         ((TextView)findViewById(R.id.text_output_5_val)).setText(String.format("%d", mInhibGame.getMeanResponseTime()));
         ((TextView)findViewById(R.id.text_output_6_val)).setText(String.format("%.1f", mInhibGame.getOverallAccuracy()));
-        ((TextView)findViewById(R.id.text_output_7_val)).setText(String.format("%.1f", mInhibGame.getOmissionError()));
-       ((TextView)findViewById(R.id.text_output_8_val)).setText(String.format("%.1f", mInhibGame.getCommissionError()));
+        ((TextView)findViewById(R.id.text_output_7_val)).setText(String.format("%.0f", mInhibGame.getOmissionError()));
+       ((TextView)findViewById(R.id.text_output_8_val)).setText(String.format("%.0f", mInhibGame.getCommissionError()));
         findViewById(R.id.layout_output).setVisibility(View.VISIBLE);
         mBtnDone.setVisibility(View.VISIBLE);
         mBtnDone.setEnabled(true);
@@ -641,10 +648,13 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
     // Record when user taps the screen
     // (or can add a touch listener)
     public void screenTapped(View view) {
-        reaction_time = System.currentTimeMillis() - start_time;
-        long i = mSoundService.sound_hit ? 1 : 0;
+        if(sound_on) {
+            reaction_time = System.currentTimeMillis() - start_time;
+            long i = mSoundService.sound_hit ? 1 : 0;
 
-        hitStats.add(new long[]{i, reaction_time});
+            hitStats.add(new long[]{i, reaction_time});
+        }
+
     }
 
     public void stimCounter() {
