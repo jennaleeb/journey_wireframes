@@ -55,21 +55,41 @@
                             android:layout_marginBottom="5dp">
 
                             <TextView
-                                android:id="@+id/text_detail_date"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:textSize="20sp"
+                                android:layout_marginTop="20dp"
+                                android:text="Gait Stats"
+                                android:gravity="center"
+                                android:id="@+id/text_gait_title"
+                                />
+
+                            <TextView
+                                android:id="@+id/text_detail_date"
+                                android:layout_below="@+id/text_gait_title"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
                                 android:gravity="center"
                                 />
 
+                            <View
+                                android:id="@+id/line3"
+                                android:layout_marginTop="20dp"
+                                android:layout_below="@+id/text_detail_date"
+                                android:layout_width="match_parent"
+                                android:layout_height= "1dp"
+                                android:layout_marginLeft="20dp"
+                                android:layout_marginRight="20dp"
+                                android:background="@color/colorDivider">
+                            </View>
+
                             <LinearLayout
                                 android:id="@+id/detail_top_row"
-                                android:layout_below="@+id/text_detail_date"
+                                android:layout_below="@+id/line3"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal"
                                 >
-
 
 
                                 <RelativeLayout
@@ -300,14 +320,34 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:textSize="20sp"
-                                android:text="@string/secondary_task"
+                                android:layout_marginTop="20dp"
+                                android:text="Go, No-Go Stats"
                                 android:gravity="center"
                                 android:id="@+id/text_secondary_task"
                                 />
 
+                            <TextView
+                                android:id="@+id/text_game_id"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/secondary_task"
+                                android:layout_below="@+id/text_secondary_task"
+                                android:layout_centerHorizontal="true"/>
+
+                            <View
+                                android:id="@+id/line2"
+                                android:layout_marginTop="20dp"
+                                android:layout_below="@+id/text_game_id"
+                                android:layout_width="match_parent"
+                                android:layout_height= "1dp"
+                                android:layout_marginLeft="20dp"
+                                android:layout_marginRight="20dp"
+                                android:background="@color/colorDivider">
+                            </View>
+
                             <LinearLayout
                                 android:id="@+id/detail_game_matrix_1"
-                                android:layout_below="@+id/text_secondary_task"
+                                android:layout_below="@+id/line2"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal"
@@ -417,7 +457,7 @@
                                         android:id="@+id/text_correct_neg"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="Correct Neg"
+                                        android:text="Correct Reject"
                                         android:layout_below="@+id/text_correct_neg_count_val"
                                         android:layout_centerHorizontal="true"/>
 

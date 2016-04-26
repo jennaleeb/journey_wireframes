@@ -78,7 +78,7 @@ public class AssessmentDetailActivity extends AppCompatActivity {
     }
 
     private void loadGameStats() {
-        ((TextView)findViewById(R.id.text_secondary_task)).setText("Trial " + mInhibGame.getTrialId() + ", Game " + mInhibGame.getGameId());
+        ((TextView)findViewById(R.id.text_game_id)).setText("Trial " + mInhibGame.getTrialId() + ", Game " + mInhibGame.getGameId());
         ((TextView)findViewById(R.id.text_hit_count_val)).setText(String.format("%d", mInhibGame.getHitCount()));
         ((TextView)findViewById(R.id.text_miss_count_val)).setText(String.format("%d", mInhibGame.getMissCount()));
         ((TextView)findViewById(R.id.text_false_alarm_count_val)).setText(String.format("%d", mInhibGame.getFalseAlarmCount()));

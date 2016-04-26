@@ -16,6 +16,7 @@ public class SoundService implements MediaPlayer.OnCompletionListener {
     private MediaPlayer mMediaPlayer;
     private int sound;
     public boolean sound_hit;
+    public int mLevel;
 
     public SoundService(){
 
@@ -70,15 +71,15 @@ public class SoundService implements MediaPlayer.OnCompletionListener {
 
     }
 
-    public int timeIntervalLogic(){
+    public int timeIntervalLogic(int level){
         int timeInterval = 0;
 
         // Generate random number between 0 and 10
         Random rand = new Random();
         int r = rand.nextInt((10 - 0) + 0) + 0;
 
-        // Time interval ranges from 1000ms to 2000ms
-        timeInterval = 1000 + r*100;
+        // Time interval ranges from 500ms to 3000ms
+        timeInterval = ( 2000 - 500 * level) + r*100;
 
         return timeInterval;
     }
@@ -93,6 +94,14 @@ public class SoundService implements MediaPlayer.OnCompletionListener {
         MediaPlayer mp = MediaPlayer.create(context, R.raw.miss_sound);
         mp.setOnCompletionListener(this);
         mp.start();
+    }
+
+    public int getLevel() {
+        return mLevel;
+    }
+
+    public void setLevel(int level) {
+        mLevel = level;
     }
 
 }

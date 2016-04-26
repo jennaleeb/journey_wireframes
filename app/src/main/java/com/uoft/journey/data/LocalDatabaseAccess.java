@@ -541,6 +541,8 @@ public class LocalDatabaseAccess {
             cv.put(LocalDatabaseHelper.COLUMN_GAME_COM_ERROR, game.getCommissionError());
             cv.put(LocalDatabaseHelper.COLUMN_GAME_MEAN_RT, game.getMeanResponseTime());
             cv.put(LocalDatabaseHelper.COLUMN_GAME_RT_SD, game.getSDResponseTime());
+            cv.put(LocalDatabaseHelper.COLUMN_GAME_MEAN_RT_FALSE_ALARM, game.getMeanFalseAlarmRT());
+            cv.put(LocalDatabaseHelper.COLUMN_GAME_RT_SD_FALSE_ALARM, game.getSDFalseAlarmRT());
             cv.put(LocalDatabaseHelper.COLUMN_GAME_OVERALL_ACCURACY, game.getOverallAccuracy());
             db.getWritableDatabase().update(LocalDatabaseHelper.TABLE_INHIB_GAME, cv, LocalDatabaseHelper.COLUMN_GAME_ID + "=" + game.getGameId(), null);
             return true;
@@ -599,7 +601,7 @@ public class LocalDatabaseAccess {
         try {
 
             LocalDatabaseHelper db = LocalDatabaseHelper.getInstance(ctx.getApplicationContext());
-            Cursor data = db.getReadableDatabase().rawQuery(String.format("SELECT %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s FROM %s WHERE trialId=%d AND name='%s'",
+            Cursor data = db.getReadableDatabase().rawQuery(String.format("SELECT %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s FROM %s WHERE trialId=%d AND name='%s'",
                     LocalDatabaseHelper.COLUMN_GAME_ID,
                     LocalDatabaseHelper.COLUMN_GAME_USER_ID,
                     LocalDatabaseHelper.COLUMN_GAME_TRIAL_ID,
@@ -612,6 +614,8 @@ public class LocalDatabaseAccess {
                     LocalDatabaseHelper.COLUMN_GAME_COM_ERROR,
                     LocalDatabaseHelper.COLUMN_GAME_MEAN_RT,
                     LocalDatabaseHelper.COLUMN_GAME_RT_SD,
+                    LocalDatabaseHelper.COLUMN_GAME_MEAN_RT_FALSE_ALARM,
+                    LocalDatabaseHelper.COLUMN_GAME_RT_SD_FALSE_ALARM,
                     LocalDatabaseHelper.COLUMN_GAME_OVERALL_ACCURACY,
                     LocalDatabaseHelper.COLUMN_GAME_USER_NAME,
                     LocalDatabaseHelper.TABLE_INHIB_GAME, trialId, username), null);
@@ -632,7 +636,9 @@ public class LocalDatabaseAccess {
             game.setCommissionError(data.getFloat(9));
             game.setMeanResponseTime(data.getInt(10));
             game.setSDResponseTime(data.getFloat(11));
-            game.setOverallAccuracy(data.getFloat(12));
+            game.setMeanFalseAlarmRT(data.getInt(12));
+            game.setSDFalseAlarmRT(data.getFloat(13));
+            game.setOverallAccuracy(data.getFloat(14));
             game.setUsername(username);
             data.close();
             return game;
@@ -659,6 +665,8 @@ public class LocalDatabaseAccess {
             cv.put(LocalDatabaseHelper.COLUMN_GAME_COM_ERROR, game.getCommissionError());
             cv.put(LocalDatabaseHelper.COLUMN_GAME_MEAN_RT, game.getMeanResponseTime());
             cv.put(LocalDatabaseHelper.COLUMN_GAME_RT_SD, game.getSDResponseTime());
+            cv.put(LocalDatabaseHelper.COLUMN_GAME_MEAN_RT_FALSE_ALARM, game.getMeanFalseAlarmRT());
+            cv.put(LocalDatabaseHelper.COLUMN_GAME_RT_SD_FALSE_ALARM, game.getSDFalseAlarmRT());
             cv.put(LocalDatabaseHelper.COLUMN_GAME_OVERALL_ACCURACY, game.getOverallAccuracy());
             cv.put(LocalDatabaseHelper.COLUMN_GAME_USER_NAME, username);
             db.getWritableDatabase().insertWithOnConflict(LocalDatabaseHelper.TABLE_INHIB_GAME, null, cv, SQLiteDatabase.CONFLICT_IGNORE);

@@ -223,7 +223,7 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
             mSoundService.play();
             start_time = System.currentTimeMillis();
             stimCounter();
-            soundHandler.postDelayed(soundRunnable, mSoundService.timeIntervalLogic());
+            soundHandler.postDelayed(soundRunnable, mSoundService.timeIntervalLogic(mSoundService.getLevel()));
         }
 
     }
@@ -435,8 +435,12 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
 
             short stepsPerMin = 0;
             if(mSoundCheck.isChecked()) {
-                stepsPerMin = (short)(40 + (mSoundSeek.getProgress() * 15));
+                //stepsPerMin = (short)(40 + (mSoundSeek.getProgress() * 15));
+
+                mSoundService.setLevel(mSoundSeek.getProgress());
             }
+
+
 
             // Call the service to start collecting accelerometer data
             Intent intent = new Intent(this, SensorService.class);
@@ -475,6 +479,8 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
                 mInhibGame.setCorrectNegCount(inhibGameStats.correctNegCount());
                 mInhibGame.setMeanResponseTime(inhibGameStats.meanResponseTime());
                 mInhibGame.setSDResponseTime(inhibGameStats.responseTimeSD());
+                mInhibGame.setMeanFalseAlarmRT(inhibGameStats.meanFalseAlarmResponseTime());
+                mInhibGame.setSDFalseAlarmRT(inhibGameStats.responseTimeFalseAlarmSD());
                 mInhibGame.setOmissionError(inhibGameStats.omissionError());
                 mInhibGame.setCommissionError(inhibGameStats.commissionError());
                 mInhibGame.setOverallAccuracy(inhibGameStats.measureAccuracy());

@@ -14,7 +14,7 @@
 
     <TextView
         android:id="@+id/text_new_title"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/new_title"
         android:textSize="24sp"
@@ -24,23 +24,39 @@
         android:layout_marginStart="5dp"
         android:layout_marginBottom="10dp"
         android:textColor="@color/textColorHeading"
-        />
+        android:gravity="center_horizontal"/>
 
     <RelativeLayout
         android:id="@+id/layout_timed"
         android:layout_below="@id/text_new_title"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="wrap_content"
         android:padding="5dp"
         android:background="@color/colorDivider"
-        android:layout_marginBottom="5dp">
+        android:layout_marginBottom="5dp" android:layout_marginTop="10dp">
 
-        <CheckBox
-            android:id="@+id/check_timed"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/timed_assessment"
-            android:layout_centerVertical="true"/>
+        <LinearLayout android:layout_width="wrap_content"
+                      android:layout_centerVertical="true"
+                      android:layout_height="wrap_content">
+
+            <CheckBox
+                android:id="@+id/check_timed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/timed_assessment"
+                />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/info_timed_assessment"
+
+                android:background="@android:drawable/ic_menu_info_details"/>
+
+        </LinearLayout>
+
 
         <Spinner
             android:id="@+id/spin_time"
@@ -49,8 +65,6 @@
             android:entries="@array/timed_intervals"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_marginEnd="5dp"
-            android:layout_marginRight="5dp"
             android:layout_centerVertical="true"
              />
 
@@ -103,7 +117,7 @@
                 android:id="@+id/seek_sound"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:max="5"/>
+                android:max="3"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -131,6 +145,7 @@
         android:id="@+id/button_start"
         android:layout_width="100dp"
         android:layout_height="100dp"
+        android:layout_marginTop="50dp"
         android:text="@string/start"
         android:background="@drawable/round_button"
         android:textColor="@color/textColorPrimary"

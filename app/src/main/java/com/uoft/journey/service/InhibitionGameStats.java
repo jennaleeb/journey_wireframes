@@ -86,6 +86,34 @@ public class InhibitionGameStats {
         return (float) rt_sd;
     }
 
+    // RT of false alarms
+    public int meanFalseAlarmResponseTime() {
+        int sum_rt = 0;
+
+        for (int i=0; i<hitStats.size(); i++){
+            if (hitStats.get(i)[0] == 0) {
+                sum_rt += hitStats.get(i)[1];
+            }
+
+        }
+        return ( (sum_rt != 0) ? sum_rt / falseAlarmCount() : 0 );
+    }
+
+    public float responseTimeFalseAlarmSD() {
+        int mean = meanFalseAlarmResponseTime();
+        double rt_sd = 0;
+
+        for (int i=0; i<hitStats.size(); i++){
+            if (hitStats.get(i)[0] == 0) {
+                rt_sd += (hitStats.get(i)[1] - mean * 1.0) * (hitStats.get(i)[1] - mean * 1.0);
+            }
+
+        }
+
+        rt_sd = Math.sqrt(rt_sd / falseAlarmCount());
+        return (float) rt_sd;
+    }
+
     // Omission error rate (# missed / # pos stim)
     public float omissionError() {
 

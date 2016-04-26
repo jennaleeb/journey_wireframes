@@ -18,6 +18,8 @@ public class InhibitionGame {
     private float mCommissionError;
     private int mMeanResponseTime;
     private float mSDResponseTime;
+    private int mMeanFalseAlarmRT;
+    private float mSDFalseAlarmRT;
     private float mOverallAccuracy;
 
     public InhibitionGame (int gameId, Date startTime, String username) {
@@ -120,6 +122,22 @@ public class InhibitionGame {
 
     public void setSDResponseTime(float SDResponseTime) {
         mSDResponseTime = SDResponseTime;
+    }
+
+    public int getMeanFalseAlarmRT() {
+        return mMeanFalseAlarmRT;
+    }
+
+    public void setMeanFalseAlarmRT(int meanFalseAlarmRT) {
+        mMeanFalseAlarmRT = meanFalseAlarmRT;
+    }
+
+    public float getSDFalseAlarmRT() {
+        return mSDFalseAlarmRT;
+    }
+
+    public void setSDFalseAlarmRT(float SDFalseAlarmRT) {
+        mSDFalseAlarmRT = SDFalseAlarmRT;
     }
 
     public float getOverallAccuracy() {
