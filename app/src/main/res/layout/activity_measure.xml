@@ -30,7 +30,7 @@
         android:id="@+id/layout_timed"
         android:layout_below="@id/text_new_title"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="80dp"
         android:padding="5dp"
         android:background="@color/colorDivider"
         android:layout_marginBottom="5dp">
@@ -60,24 +60,38 @@
         android:id="@+id/layout_metro"
         android:layout_below="@id/layout_timed"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="100dp"
         android:padding="5dp"
         android:background="@color/colorDivider"
         android:layout_marginBottom="5dp">
 
-        <CheckBox
-            android:id="@+id/check_sound"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/secondary_task"
-            android:layout_centerVertical="true"/>
+        <LinearLayout android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:id="@+id/layout_check_sound"
+                      android:orientation="horizontal">
+            <CheckBox
+                android:id="@+id/check_sound"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/secondary_task"
+                android:layout_centerVertical="true"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/info_game_instructions"
+                android:background="@android:drawable/ic_menu_info_details"/>
+
+        </LinearLayout>
+
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/check_sound"
-            android:layout_toEndOf="@+id/check_sound"
+            android:layout_below="@+id/layout_check_sound"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_marginEnd="5dp"

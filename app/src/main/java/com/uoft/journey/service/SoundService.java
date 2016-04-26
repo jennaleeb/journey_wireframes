@@ -82,5 +82,18 @@ public class SoundService implements MediaPlayer.OnCompletionListener {
 
         return timeInterval;
     }
+
+    public void playGo() {
+        MediaPlayer mp = MediaPlayer.create(context, R.raw.hit_sound);
+        mp.setOnCompletionListener(this);
+        mp.start();
+    }
+
+    public void playNoGo() {
+        MediaPlayer mp = MediaPlayer.create(context, R.raw.miss_sound);
+        mp.setOnCompletionListener(this);
+        mp.start();
+    }
+
 }
 

@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Vibrator;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.animation.Animation;
@@ -36,6 +37,7 @@ import com.uoft.journey.service.DataService;
 import com.uoft.journey.service.InhibitionGameStats;
 import com.uoft.journey.service.SensorService;
 import com.uoft.journey.service.SoundService;
+import com.uoft.journey.ui.fragment.GameInstructionsDialogFragment;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -83,7 +85,8 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
     private List<long[]> hitStats;
     private int true_stim_counter, false_stim_counter;
 
-
+    // Info dialog buttons
+    private ImageView mInfoGame;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,6 +137,8 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
         mSoundSeek = (SeekBar)findViewById(R.id.seek_sound);
         mSoundSeek.setEnabled(false);
         mSoundLayout = (RelativeLayout)findViewById(R.id.layout_metro);
+        mInfoGame = (ImageView)findViewById(R.id.info_game_instructions);
+        mInfoGame.setOnClickListener(this);
 
         // Assessment complete, so just show results
         if(mFinished) {
@@ -202,6 +207,13 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
 
         soundHandler = new Handler();
         mSoundService = new SoundService(getApplicationContext());
+
+    }
+
+    private void showGameInstructionsDialog() {
+        FragmentManager fm = getSupportFragmentManager();
+        GameInstructionsDialogFragment frag = GameInstructionsDialogFragment.newInstance(getApplicationContext());
+        frag.show(fm, "fragment_instructions_inhib_game");
     }
 
     public void playSound() {
@@ -307,6 +319,9 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onClick(View v) {
         switch(v.getId()){
+            case R.id.info_game_instructions:
+                showGameInstructionsDialog();
+                break;
             case R.id.button_start:
                 startCollecting();
                 break;
