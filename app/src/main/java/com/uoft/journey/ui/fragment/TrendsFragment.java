@@ -153,7 +153,7 @@ public class TrendsFragment extends Fragment {
                 Trial trial = mTrials.get(i);
                 DateFormat df = new SimpleDateFormat("dd MMM", Locale.CANADA);
                 xVals.add(df.format(trial.getStartTime()));
-                yValsVar.add(new BarEntry(trial.getCoeffOfVar(), Math.abs(i - mTrials.size()+1)));
+                yValsVar.add(new BarEntry(trial.getStepCV(), Math.abs(i - mTrials.size()+1)));
                 yValsMean.add(new BarEntry(trial.getMeanStepTime(), Math.abs(i-mTrials.size()+1)));
             }
 
@@ -196,9 +196,9 @@ public class TrendsFragment extends Fragment {
         }
 
         Trial mostRecent = mTrials.get(0);
-        mTextRecent.setText(String.format("%.1f", mostRecent.getCoeffOfVar()));
+        mTextRecent.setText(String.format("%.1f", mostRecent.getStepCV()));
 
-        Trial.Level level = Trial.getLevel(mostRecent.getCoeffOfVar());
+        Trial.Level level = Trial.getLevel(mostRecent.getStepCV());
         switch (level) {
             case GOOD:
                 mTextRecent.setBackgroundResource(R.drawable.round_text_green);
@@ -273,7 +273,7 @@ public class TrendsFragment extends Fragment {
     }
 
     private void setColour(Trial trial, ImageView circle) {
-        Trial.Level level = Trial.getLevel(trial.getCoeffOfVar());
+        Trial.Level level = Trial.getLevel(trial.getStepCV());
         switch (level) {
             case GOOD:
                 circle.setImageResource(R.drawable.green);

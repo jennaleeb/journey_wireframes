@@ -18,6 +18,7 @@
     <string name="keep_walking">Keep walking</string>
     <string name="assessments">Assessments</string>
     <string name="assessment">Assessment</string>
+    <string name="summary">SUMMARY</string>
     <string name="trends">Trends</string>
     <string name="variation_title">Step Time Variation</string>
     <string name="mean_title">Average Step Time</string>

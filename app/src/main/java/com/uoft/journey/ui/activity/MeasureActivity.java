@@ -573,14 +573,16 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void showResults() {
+        ((TextView)findViewById(R.id.text_new_title)).setText("SUMMARY");
+        (findViewById(R.id.line_title)).setVisibility(View.VISIBLE);
         ((TextView)findViewById(R.id.text_output_1_val)).setText(String.format("%d", mTrial.getDuration() / 1000));
         ((TextView)findViewById(R.id.text_output_2_val)).setText(String.format("%d", mTrial.getNumberOfSteps()));
         ((TextView)findViewById(R.id.text_output_3_val)).setText(String.format("%.0f", mTrial.getMeanStepTime()));
 
         TextView stv = (TextView) findViewById(R.id.text_output_4_val);
-        stv.setText(String.format("%.1f", mTrial.getCoeffOfVar()));
+        stv.setText(String.format("%.1f", mTrial.getStepCV()));
 
-        Trial.Level level = Trial.getLevel(mTrial.getCoeffOfVar());
+        Trial.Level level = Trial.getLevel(mTrial.getStepCV());
         switch (level) {
             case GOOD:
                 stv.setBackgroundResource(R.drawable.round_text_green);
@@ -593,10 +595,17 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
                 break;
         }
 
-        ((TextView)findViewById(R.id.text_output_5_val)).setText(String.format("%d", mInhibGame.getMeanResponseTime()));
-        ((TextView)findViewById(R.id.text_output_6_val)).setText(String.format("%.1f", mInhibGame.getOverallAccuracy()));
-        ((TextView)findViewById(R.id.text_output_7_val)).setText(String.format("%.0f", mInhibGame.getOmissionError()));
-       ((TextView)findViewById(R.id.text_output_8_val)).setText(String.format("%.0f", mInhibGame.getCommissionError()));
+        if (mInhibGame != null) {
+            (findViewById(R.id.game_first_row)).setVisibility(View.VISIBLE);
+            (findViewById(R.id.game_second_row)).setVisibility(View.VISIBLE);
+            (findViewById(R.id.trial_game_divider)).setVisibility(View.VISIBLE);
+            ((TextView)findViewById(R.id.text_output_5_val)).setText(String.format("%d", mInhibGame.getMeanResponseTime()));
+            ((TextView)findViewById(R.id.text_output_6_val)).setText(String.format("%.1f", mInhibGame.getOverallAccuracy()));
+            ((TextView)findViewById(R.id.text_output_7_val)).setText(String.format("%.0f", mInhibGame.getOmissionError()));
+            ((TextView)findViewById(R.id.text_output_8_val)).setText(String.format("%.0f", mInhibGame.getCommissionError()));
+        }
+
+
         findViewById(R.id.layout_output).setVisibility(View.VISIBLE);
         mBtnDone.setVisibility(View.VISIBLE);
         mBtnDone.setEnabled(true);

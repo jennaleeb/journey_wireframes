@@ -101,16 +101,16 @@ public class AssessmentDetailActivity extends AppCompatActivity {
         ((TextView)findViewById(R.id.text_detail_3_val)).setText(String.format("%.0f", mTrial.getMeanStepTime()));
 
         TextView stv = (TextView) findViewById(R.id.text_detail_4_val);
-        stv.setText(String.format("%.1f", mTrial.getCoeffOfVar()));
+        stv.setText(String.format("%.1f", mTrial.getStepCV()));
 
         ((TextView)findViewById(R.id.text_detail_5_val)).setText(String.format("%.1f", mTrial.getGaitSym()));
         ((TextView)findViewById(R.id.text_detail_6_val)).setText(String.format("%.1f", mTrial.getMeanStrideTime()));
-        ((TextView)findViewById(R.id.text_detail_7_val)).setText(String.format("%.1f", mTrial.getStrideTimeVar()));
+        ((TextView)findViewById(R.id.text_detail_7_val)).setText(String.format("%.1f", mTrial.getStrideCV()));
 
-        if( mTrial.getCoeffOfVar() <= 4.0f) {
+        if( mTrial.getStepCV() <= 4.0f) {
             stv.setBackgroundResource(R.drawable.round_text_green);
         }
-        else if( mTrial.getCoeffOfVar() <= 8.0f) {
+        else if( mTrial.getStepCV() <= 8.0f) {
             stv.setBackgroundResource(R.drawable.round_text_yellow);
         }
         else {

@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/new_title"
-        android:textSize="24sp"
+        android:textSize="22sp"
         android:layout_marginTop="5dp"
         android:layout_gravity="start"
         android:layout_marginLeft="5dp"
@@ -26,14 +26,27 @@
         android:textColor="@color/textColorHeading"
         android:gravity="center_horizontal"/>
 
+    <View
+        android:id="@+id/line_title"
+        android:visibility="gone"
+        android:layout_marginTop="15dp"
+        android:layout_below="@+id/text_new_title"
+        android:layout_width="match_parent"
+        android:layout_height= "1dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@color/colorDivider">
+    </View>
+
     <RelativeLayout
         android:id="@+id/layout_timed"
-        android:layout_below="@id/text_new_title"
+        android:layout_below="@id/line_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="5dp"
         android:background="@color/colorDivider"
-        android:layout_marginBottom="5dp" android:layout_marginTop="10dp">
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="10dp">
 
         <LinearLayout android:layout_width="wrap_content"
                       android:layout_centerVertical="true"
@@ -240,6 +253,7 @@
         android:visibility="invisible"
         android:layout_marginBottom="5dp">
 
+
         <LinearLayout
             android:id="@+id/output_first_row"
             android:layout_width="match_parent"
@@ -345,6 +359,7 @@
                     android:layout_centerHorizontal="true"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:textSize="32sp"
+                    android:textColor="@color/colorWhiteTranslucent"
                     android:layout_marginBottom="5dp"/>
 
                 <TextView
@@ -361,11 +376,25 @@
 
         </LinearLayout>
 
+        <View
+            android:id="@+id/trial_game_divider"
+            android:layout_marginTop="20dp"
+            android:layout_below="@+id/output_second_row"
+            android:layout_width="match_parent"
+            android:layout_height= "1dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:visibility="gone"
+            android:background="@color/colorDivider">
+        </View>
+
         <LinearLayout android:layout_width="match_parent"
                       android:layout_height="wrap_content"
-                      android:id="@+id/output_third_row"
-                      android:layout_below="@+id/output_second_row"
+                      android:id="@+id/game_first_row"
+                      android:visibility="gone"
+                      android:layout_below="@+id/trial_game_divider"
                       android:orientation="horizontal">
+
 
             <RelativeLayout
                 android:layout_width="0dp"
@@ -421,7 +450,9 @@
 
         <LinearLayout android:layout_width="match_parent"
                       android:layout_height="wrap_content"
-                      android:layout_below="@+id/output_third_row"
+                      android:id="@+id/game_second_row"
+                      android:visibility="gone"
+                      android:layout_below="@+id/game_first_row"
                       android:orientation="horizontal">
 
             <RelativeLayout

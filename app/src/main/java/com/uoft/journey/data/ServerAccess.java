@@ -59,6 +59,7 @@ public class ServerAccess {
 
         Trial tdata = LocalDatabaseAccess.getTrial(ctx, trialID, username);
 
+
         InhibitionGame game = LocalDatabaseAccess.getInhibGameByTrial(ctx, trialID, username);
 
         tdata.setTrialData(null);
@@ -71,7 +72,12 @@ public class ServerAccess {
         Gson gson = new Gson();
 
         BaasDocument newTrial = new BaasDocument("Trials");
-        newTrial.put("gameStats", (new Gson()).toJson(game));
+
+        // If the trial included a game...
+        if (game != null) {
+            newTrial.put("gameStats", (new Gson()).toJson(game));
+        }
+
         newTrial.putString("data", gson.toJson(tdata));
 
 

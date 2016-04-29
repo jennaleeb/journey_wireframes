@@ -68,10 +68,10 @@ public class PatientTrialsListAdapter extends RecyclerView.Adapter<PatientTrials
             holder.day.setText(df.format(mTrials.get(position).getStartTime()));
             holder.title.setText(String.format("Assessment %d", mTrials.get(position).getTrialId()));
             holder.stepCount.setText(String.valueOf(mTrials.get(position).getNumberOfSteps()));
-            holder.stepTimeVar.setText(String.format("%.1f", mTrials.get(position).getCoeffOfVar()));
+            holder.stepTimeVar.setText(String.format("%.1f", mTrials.get(position).getStepCV()));
             holder.time.setText(df2.format(mTrials.get(position).getStartTime()));
 
-            Trial.Level level = Trial.getLevel(mTrials.get(position).getCoeffOfVar());
+            Trial.Level level = Trial.getLevel(mTrials.get(position).getStepCV());
             switch (level) {
                 case GOOD:
                     holder.stepTimeVar.setBackgroundResource(R.drawable.round_text_green);

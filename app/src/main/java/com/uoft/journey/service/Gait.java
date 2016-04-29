@@ -293,9 +293,8 @@ public class Gait {
         return 0;
     }
 
-    public static float getStrideTimeVar(int[] steps, float mean, List<int[]> pauseTimes){
-        float sd = 0.0f;
-        float cv = 0.0f;
+    public static float getStrideSD(int[] steps, float mean, List<int[]> pauseTimes) {
+        float var = 0.0f;
 
         // Calculate the standard deviation
         for(int i=2; i<steps.length-1; i++) {
@@ -305,21 +304,47 @@ public class Gait {
                     strideTime = mean;
             }
 
-            sd += (mean - strideTime) * (mean - strideTime);
+            var += (mean - strideTime) * (mean - strideTime);
         }
 
-        sd = sd / (steps.length-2);
-        cv = 100 * ( (float)Math.sqrt(sd) ) / mean;
+        var = var / (steps.length-2);
 
-        return cv;
+        // Standard dev
+        return (float)Math.sqrt(var);
+
     }
+
+    public static float getStrideCV(float standardDev, float mean) {
+        return 100.0f * standardDev / mean;
+    }
+
+//    public static float getStrideCV(int[] steps, float mean, List<int[]> pauseTimes){
+//        float sd = 0.0f;
+//        float cv = 0.0f;
+//
+//        // Calculate the standard deviation
+//        for(int i=2; i<steps.length-1; i++) {
+//            float strideTime = steps[i] - steps[i-2];
+//            for(int j=0; j<pauseTimes.size(); j++) {
+//                if(pauseTimes.get(j)[0] > steps[i-2] && pauseTimes.get(j)[1] < steps[i])
+//                    strideTime = mean;
+//            }
+//
+//            sd += (mean - strideTime) * (mean - strideTime);
+//        }
+//
+//        sd = sd / (steps.length-2);
+//        cv = 100 * ( (float)Math.sqrt(sd) ) / mean;
+//
+//        return cv;
+//    }
 
 
 
 
 
     // Get the standard deviation of the step times
-    public static float getStandardDeviation(int[] steps, float mean, List<int[]> pauseTimes) {
+    public static float getStepSD(int[] steps, float mean, List<int[]> pauseTimes) {
         float var = 0.0f;
         int median = getMedian(steps);
         // Calculate the variance
@@ -339,7 +364,7 @@ public class Gait {
     }
 
     // Coefficient of Variation of steps 100 * SD / mean
-    public static float getCoefficientOfVariation(float standardDev, float mean) {
+    public static float getStepCV(float standardDev, float mean) {
         return 100.0f * standardDev / mean;
     }
 
