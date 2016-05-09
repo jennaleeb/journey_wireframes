@@ -18,6 +18,7 @@
     <string name="keep_walking">Keep walking</string>
     <string name="assessments">Assessments</string>
     <string name="assessment">Assessment</string>
+    <string name="summary">SUMMARY</string>
     <string name="trends">Trends</string>
     <string name="variation_title">Step Time Variation</string>
     <string name="mean_title">Average Step Time</string>
@@ -25,9 +26,14 @@
     <string name="last_5">Last 5 Assessments</string>
     <string name="home">Summary</string>
     <string name="stv">STV (%)</string>
+    <string name="om_error">Omission Error (%)</string>
+    <string name="com_error">Commission Error (%)</string>
+    <string name="mean_rt">Mean RT (ms)</string>
+    <string name="comb_accuracy">Combined Accuracy</string>
     <string name="latest">Latest Assessment</string>
     <string name="step_count">STEP COUNT</string>
     <string name="metronome">Metronome</string>
+    <string name="secondary_task">Secondary Task</string>
     <string name="slow">SLOW</string>
     <string name="fast">FAST</string>
 
@@ -41,6 +47,8 @@
     <string name="title_section3">Section 3</string>
     <string name="title_activity_add_new_assessment">add_new_assessment</string>
 
+    <string name="game_instructions1">"The Go, No-Go game is designed to introduce a cognitively-challenging task while walking.\n\nYou will hear two sounds:"</string>
+    <string name="game_instructions2">"Each time you hear the "GO" sound, tap the screen anywhere. When you hear the "NO-GO" sound, do not."</string>
     <string-array name="assessments_array">
         <item>STRIDE ANALYSIS</item>
         <item>TIMED UP AND GO</item>

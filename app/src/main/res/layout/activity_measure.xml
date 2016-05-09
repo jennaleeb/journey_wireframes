@@ -14,33 +14,62 @@
 
     <TextView
         android:id="@+id/text_new_title"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/new_title"
-        android:textSize="24sp"
+        android:textSize="22sp"
         android:layout_marginTop="5dp"
         android:layout_gravity="start"
         android:layout_marginLeft="5dp"
         android:layout_marginStart="5dp"
         android:layout_marginBottom="10dp"
         android:textColor="@color/textColorHeading"
-        />
+        android:gravity="center_horizontal"/>
+
+    <View
+        android:id="@+id/line_title"
+        android:visibility="gone"
+        android:layout_marginTop="15dp"
+        android:layout_below="@+id/text_new_title"
+        android:layout_width="match_parent"
+        android:layout_height= "1dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@color/colorDivider">
+    </View>
 
     <RelativeLayout
         android:id="@+id/layout_timed"
-        android:layout_below="@id/text_new_title"
+        android:layout_below="@id/line_title"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:padding="5dp"
         android:background="@color/colorDivider"
-        android:layout_marginBottom="5dp">
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="10dp">
 
-        <CheckBox
-            android:id="@+id/check_timed"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/timed_assessment"
-            android:layout_centerVertical="true"/>
+        <LinearLayout android:layout_width="wrap_content"
+                      android:layout_centerVertical="true"
+                      android:layout_height="wrap_content">
+
+            <CheckBox
+                android:id="@+id/check_timed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/timed_assessment"
+                />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/info_timed_assessment"
+
+                android:background="@android:drawable/ic_menu_info_details"/>
+
+        </LinearLayout>
+
 
         <Spinner
             android:id="@+id/spin_time"
@@ -49,8 +78,6 @@
             android:entries="@array/timed_intervals"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_marginEnd="5dp"
-            android:layout_marginRight="5dp"
             android:layout_centerVertical="true"
              />
 
@@ -60,24 +87,38 @@
         android:id="@+id/layout_metro"
         android:layout_below="@id/layout_timed"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="100dp"
         android:padding="5dp"
         android:background="@color/colorDivider"
         android:layout_marginBottom="5dp">
 
-        <CheckBox
-            android:id="@+id/check_metro"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/metronome"
-            android:layout_centerVertical="true"/>
+        <LinearLayout android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:id="@+id/layout_check_sound"
+                      android:orientation="horizontal">
+            <CheckBox
+                android:id="@+id/check_sound"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/secondary_task"
+                android:layout_centerVertical="true"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/info_game_instructions"
+                android:background="@android:drawable/ic_menu_info_details"/>
+
+        </LinearLayout>
+
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/check_metro"
-            android:layout_toEndOf="@+id/check_metro"
+            android:layout_below="@+id/layout_check_sound"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_marginEnd="5dp"
@@ -86,16 +127,16 @@
             android:layout_marginStart="5dp">
 
             <SeekBar
-                android:id="@+id/seek_metro"
+                android:id="@+id/seek_sound"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:max="5"/>
+                android:max="3"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_marginTop="2dp"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/seek_metro"
+                android:layout_below="@+id/seek_sound"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:text="@string/slow"/>
@@ -106,7 +147,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:layout_below="@+id/seek_metro"
+                android:layout_below="@+id/seek_sound"
                 android:text="@string/fast"/>
 
         </RelativeLayout>
@@ -117,6 +158,7 @@
         android:id="@+id/button_start"
         android:layout_width="100dp"
         android:layout_height="100dp"
+        android:layout_marginTop="50dp"
         android:text="@string/start"
         android:background="@drawable/round_button"
         android:textColor="@color/textColorPrimary"
@@ -211,8 +253,9 @@
         android:visibility="invisible"
         android:layout_marginBottom="5dp">
 
+
         <LinearLayout
-            android:id="@+id/output_top_row"
+            android:id="@+id/output_first_row"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -271,8 +314,8 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/output_bottom_row"
-            android:layout_below="@+id/output_top_row"
+            android:id="@+id/output_second_row"
+            android:layout_below="@+id/output_first_row"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -316,6 +359,7 @@
                     android:layout_centerHorizontal="true"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:textSize="32sp"
+                    android:textColor="@color/colorWhiteTranslucent"
                     android:layout_marginBottom="5dp"/>
 
                 <TextView
@@ -324,6 +368,139 @@
                     android:layout_height="wrap_content"
                     android:text="@string/stv"
                     android:layout_below="@+id/text_output_4_val"
+                    android:layout_centerHorizontal="true"/>
+
+            </RelativeLayout>
+
+
+
+        </LinearLayout>
+
+        <View
+            android:id="@+id/trial_game_divider"
+            android:layout_marginTop="20dp"
+            android:layout_below="@+id/output_second_row"
+            android:layout_width="match_parent"
+            android:layout_height= "1dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:visibility="gone"
+            android:background="@color/colorDivider">
+        </View>
+
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:id="@+id/game_first_row"
+                      android:visibility="gone"
+                      android:layout_below="@+id/trial_game_divider"
+                      android:orientation="horizontal">
+
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/text_output_5_val"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:gravity="center"
+                    android:layout_centerHorizontal="true"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textSize="32sp"
+                    android:layout_marginBottom="5dp"/>
+
+                <TextView
+                    android:id="@+id/text_output_5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/mean_rt"
+                    android:layout_below="@+id/text_output_5_val"
+                    android:layout_centerHorizontal="true"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/text_output_6_val"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:gravity="center"
+                    android:layout_centerHorizontal="true"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textSize="32sp"
+                    android:layout_marginBottom="5dp"/>
+
+                <TextView
+                    android:id="@+id/text_output_6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/comb_accuracy"
+                    android:layout_below="@+id/text_output_6_val"
+                    android:layout_centerHorizontal="true"/>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:id="@+id/game_second_row"
+                      android:visibility="gone"
+                      android:layout_below="@+id/game_first_row"
+                      android:orientation="horizontal">
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/text_output_7_val"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:gravity="center"
+                    android:layout_centerHorizontal="true"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textSize="32sp"
+                    android:layout_marginBottom="5dp"/>
+
+                <TextView
+                    android:id="@+id/text_output_7"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/om_error"
+                    android:layout_below="@+id/text_output_7_val"
+                    android:layout_centerHorizontal="true"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/text_output_8_val"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:gravity="center"
+                    android:layout_centerHorizontal="true"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textSize="32sp"
+                    android:layout_marginBottom="5dp"/>
+
+                <TextView
+                    android:id="@+id/text_output_8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/com_error"
+                    android:layout_below="@+id/text_output_8_val"
                     android:layout_centerHorizontal="true"/>
 
             </RelativeLayout>

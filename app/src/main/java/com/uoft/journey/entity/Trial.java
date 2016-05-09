@@ -18,11 +18,13 @@ public class Trial implements Parcelable {
     private AccelerometerData mTrialData;
     private int[] mStepTimes;
     private float mMeanStepTime;
-    private float mStandardDev;
-    private float mCoeffOfVar;
+    private float mStepSD;
+    private float mStepCV;
     private float mGaitSym;
+    private float mCadence;
     private float mMeanStrideTime;
-    private float mStrideTimeVar;
+    private float mStrideSD;
+    private float mStrideCV;
     private List<int[]> mPauseTimes;
 
     public Trial(int trialId, Date startTime, AccelerometerData data, String username) {
@@ -30,8 +32,8 @@ public class Trial implements Parcelable {
         mStartTime = startTime;
         mTrialData = data;
         mMeanStepTime = 0.0f;
-        mStandardDev = 0.0f;
-        mCoeffOfVar = 0.0f;
+        mStepSD = 0.0f;
+        mStepCV = 0.0f;
         mGaitSym = 0.0f;
         mMeanStrideTime = 0.0f;
         mPauseTimes = new ArrayList<>();
@@ -51,11 +53,12 @@ public class Trial implements Parcelable {
         }
 
         mGaitSym = parcel.readFloat();
-        mStrideTimeVar = parcel.readFloat();
+        mStrideSD = parcel.readFloat();
+        mStrideCV = parcel.readFloat();
         mMeanStrideTime = parcel.readFloat();
         mMeanStepTime = parcel.readFloat();
-        mStandardDev = parcel.readFloat();
-        mCoeffOfVar = parcel.readFloat();
+        mStepSD = parcel.readFloat();
+        mStepCV = parcel.readFloat();
         mUsername = parcel.readString();
 
         try {
@@ -90,12 +93,12 @@ public class Trial implements Parcelable {
         return mMeanStepTime;
     }
 
-    public float getStandardDev() {
-        return mStandardDev;
+    public float getStepSD() {
+        return mStepSD;
     }
 
-    public float getCoeffOfVar() {
-        return mCoeffOfVar;
+    public float getStepCV() {
+        return mStepCV;
     }
 
     public float getGaitSym() {
@@ -106,8 +109,12 @@ public class Trial implements Parcelable {
         return mMeanStrideTime;
     }
 
-    public float getStrideTimeVar() {
-        return mStrideTimeVar;
+    public float getStrideCV() {
+        return mStrideCV;
+    }
+
+    public float getStrideSD() {
+        return mStrideSD;
     }
 
     public int getDuration() {
@@ -124,6 +131,11 @@ public class Trial implements Parcelable {
         return 0;
     }
 
+    public float getCadence() {
+        // steps per minute
+        return (60 * getNumberOfSteps() / (getDuration() / 1000.0f) );
+    }
+
     public void setTrialData(AccelerometerData data) {
         mTrialData = data;
     }
@@ -136,13 +148,15 @@ public class Trial implements Parcelable {
         mPauseTimes = pauses;
     }
 
-    public void setStepAnalysis(float mean, float standardDev, float coeffOfVar, float gaitSym, float meanStride, float strideTimeVar) {
+    public void setStepAnalysis(float mean, float stepSD, float stepCV, float gaitSym, float cadence, float meanStride, float strideSD, float strideCV) {
         mMeanStepTime = mean;
-        mStandardDev = standardDev;
-        mCoeffOfVar = coeffOfVar;
+        mStepSD = stepSD;
+        mStepCV = stepCV;
         mGaitSym = gaitSym;
+        mCadence = cadence;
         mMeanStrideTime = meanStride;
-        mStrideTimeVar = strideTimeVar;
+        mStrideSD = strideSD;
+        mStrideCV = strideCV;
     }
 
     public void setUsername(String user){
@@ -179,11 +193,13 @@ public class Trial implements Parcelable {
         }
 
         dest.writeFloat(mGaitSym);
-        dest.writeFloat(mStrideTimeVar);
+        dest.writeFloat(mCadence);
+        dest.writeFloat(mStrideSD);
+        dest.writeFloat(mStrideCV);
         dest.writeFloat(mMeanStrideTime);
         dest.writeFloat(mMeanStepTime);
-        dest.writeFloat(mStandardDev);
-        dest.writeFloat(mCoeffOfVar);
+        dest.writeFloat(mStepSD);
+        dest.writeFloat(mStepCV);
         dest.writeString(mUsername);
 
         if(mPauseTimes != null) {

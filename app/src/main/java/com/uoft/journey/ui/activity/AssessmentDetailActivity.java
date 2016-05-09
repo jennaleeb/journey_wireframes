@@ -5,9 +5,11 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +23,7 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.uoft.journey.R;
 import com.uoft.journey.entity.AccelerometerData;
+import com.uoft.journey.entity.InhibitionGame;
 import com.uoft.journey.entity.Trial;
 import com.uoft.journey.service.DataService;
 
@@ -31,6 +34,7 @@ import java.util.Locale;
 public class AssessmentDetailActivity extends AppCompatActivity {
 
     private Trial mTrial;
+    private InhibitionGame mInhibGame;
     private LineChart mAccelGraph;
     private LineChart mStepTimeGraph;
     private String mUsername;
@@ -49,6 +53,9 @@ public class AssessmentDetailActivity extends AppCompatActivity {
         mUsername = extras.getString("user");
         getSupportActionBar().setTitle(String.format("Assessment %d", trialId));
         mTrial = DataService.getTrial(this, trialId, mUsername);
+
+        mInhibGame = DataService.getGameByTrialId(this, trialId, mUsername);
+
         mAccelGraph = (LineChart)findViewById(R.id.detail_graph);
         mStepTimeGraph = (LineChart)findViewById(R.id.step_time_graph);
         setupGraph();
@@ -60,6 +67,31 @@ public class AssessmentDetailActivity extends AppCompatActivity {
         else {
             Toast.makeText(this, "Failed to load assessment", Toast.LENGTH_SHORT).show();
         }
+
+        if (mInhibGame != null) {
+            loadGameStats();
+        }
+
+        else {
+            showBlankCard();
+        }
+    }
+
+    private void loadGameStats() {
+        ((TextView)findViewById(R.id.text_game_id)).setText("Trial " + mInhibGame.getTrialId() + ", Game " + mInhibGame.getGameId());
+        ((TextView)findViewById(R.id.text_hit_count_val)).setText(String.format("%d", mInhibGame.getHitCount()));
+        ((TextView)findViewById(R.id.text_miss_count_val)).setText(String.format("%d", mInhibGame.getMissCount()));
+        ((TextView)findViewById(R.id.text_false_alarm_count_val)).setText(String.format("%d", mInhibGame.getFalseAlarmCount()));
+        ((TextView)findViewById(R.id.text_correct_neg_count_val)).setText(String.format("%d", mInhibGame.getCorrectNegCount()));
+        ((TextView)findViewById(R.id.text_game_stat_1_val)).setText(String.format("%d", mInhibGame.getMeanResponseTime()));
+        ((TextView)findViewById(R.id.text_game_stat_2_val)).setText(String.format("%.3f", mInhibGame.getOverallAccuracy()));
+        ((TextView)findViewById(R.id.text_game_stat_3_val)).setText(String.format("%.0f", mInhibGame.getOmissionError()));
+        ((TextView)findViewById(R.id.text_game_stat_4_val)).setText(String.format("%.0f", mInhibGame.getCommissionError()));
+    }
+
+    private void showBlankCard() {
+        CardView card = (CardView)findViewById(R.id.card_game_stats);
+        card.setVisibility(View.GONE);
     }
 
     private void populateTrial() {
@@ -69,23 +101,22 @@ public class AssessmentDetailActivity extends AppCompatActivity {
         ((TextView)findViewById(R.id.text_detail_3_val)).setText(String.format("%.0f", mTrial.getMeanStepTime()));
 
         TextView stv = (TextView) findViewById(R.id.text_detail_4_val);
-        stv.setText(String.format("%.1f", mTrial.getCoeffOfVar()));
+        stv.setText(String.format("%.1f", mTrial.getStepCV()));
 
         ((TextView)findViewById(R.id.text_detail_5_val)).setText(String.format("%.1f", mTrial.getGaitSym()));
         ((TextView)findViewById(R.id.text_detail_6_val)).setText(String.format("%.1f", mTrial.getMeanStrideTime()));
-        ((TextView)findViewById(R.id.text_detail_7_val)).setText(String.format("%.1f", mTrial.getStrideTimeVar()));
+        ((TextView)findViewById(R.id.text_detail_7_val)).setText(String.format("%.1f", mTrial.getStrideCV()));
 
-        if( mTrial.getCoeffOfVar() <= 4.0f) {
+        if( mTrial.getStepCV() <= 4.0f) {
             stv.setBackgroundResource(R.drawable.round_text_green);
         }
-        else if( mTrial.getCoeffOfVar() <= 8.0f) {
+        else if( mTrial.getStepCV() <= 8.0f) {
             stv.setBackgroundResource(R.drawable.round_text_yellow);
         }
         else {
             stv.setBackgroundResource(R.drawable.round_text_red);
         }
 
-        //((TextView)findViewById(R.id.text_detail_4_val)).setText(String.format("%.1fms", mTrial.getStandardDev()));
     }
 
     private void setupGraph() {
@@ -134,77 +165,84 @@ public class AssessmentDetailActivity extends AppCompatActivity {
     }
 
     private void plotGraph() {
+
         try {
 
             AccelerometerData data = mTrial.getTrialData();
-            mAccelGraph.clear();
-            mStepTimeGraph.clear();
 
-            setupGraph();
-            LineData graphData = mAccelGraph.getData();
+            if (data.getProcessedY().length != 0) {
 
-            LineData graphData2 = mStepTimeGraph.getData();
+                mAccelGraph.clear();
+                mStepTimeGraph.clear();
 
-            int nextStep = 0;
-            for(int i=0; i< data.getProcessedY().length; i++) {
-                // Add timestamp to X-axis and line series values
-                graphData.addXValue(data.getElapsedTimestamps()[i] + "");
-                graphData.addEntry(new Entry(data.getProcessedY()[i], i), 0); // The processed Y data
+                setupGraph();
+                LineData graphData = mAccelGraph.getData();
+
+                int nextStep = 0;
+                for(int i=0; i< data.getProcessedY().length; i++) {
+                    // Add timestamp to X-axis and line series values
+                    graphData.addXValue(data.getElapsedTimestamps()[i] + "");
+                    graphData.addEntry(new Entry(data.getProcessedY()[i], i), 0); // The processed Y data
 
 
-                boolean added = false;
-                if(mTrial.getStepTimes() != null) {
-                    // Show the calculated maxima points
-                    while (nextStep < mTrial.getStepTimes().length) {
-                        if (mTrial.getStepTimes()[nextStep] == data.getElapsedTimestamps()[i]) {
-                            // Step found, add a 10 point
-                            graphData.addEntry(new Entry(10, i), 1);
+                    boolean added = false;
+                    if(mTrial.getStepTimes() != null) {
+                        // Show the calculated maxima points
+                        while (nextStep < mTrial.getStepTimes().length) {
+                            if (mTrial.getStepTimes()[nextStep] == data.getElapsedTimestamps()[i]) {
+                                // Step found, add a 10 point
+                                graphData.addEntry(new Entry(10, i), 1);
+                                nextStep++;
+                                added = true;
+                                break;
+                            }
+
+                            if (mTrial.getStepTimes()[nextStep] > data.getElapsedTimestamps()[i]) {
+                                break;
+                            }
+
                             nextStep++;
-                            added = true;
-                            break;
-                        }
-
-                        if (mTrial.getStepTimes()[nextStep] > data.getElapsedTimestamps()[i]) {
-                            break;
-                        }
-
-                        nextStep++;
-                    }
-                }
-                // Not a step so add zero point
-                if(!added) {
-                    graphData.addEntry(new Entry(0, i), 1);
-                }
-
-                // Show any pauses
-                if(mTrial.getPauseTimes() != null) {
-                    XAxis xAxis = mAccelGraph.getXAxis();
-                    for(int j=0; j<mTrial.getPauseTimes().size(); j++) {
-                        if(data.getElapsedTimestamps()[i] == mTrial.getPauseTimes().get(j)[0] ||
-                                (i < data.getElapsedTimestamps().length - 1 && data.getElapsedTimestamps()[i] < mTrial.getPauseTimes().get(j)[0] && data.getElapsedTimestamps()[i+1] > mTrial.getPauseTimes().get(j)[0] )) {
-
-                            LimitLine ll = new LimitLine(i, "Pause");
-                            ll.setLineColor(Color.YELLOW);
-                            ll.setLineWidth(2f);
-                            ll.setTextColor(Color.BLACK);
-                            ll.setTextSize(10f);
-                            ll.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
-                            xAxis.addLimitLine(ll);
-                        }
-
-                        if(data.getElapsedTimestamps()[i] == mTrial.getPauseTimes().get(j)[1] ||
-                                (i < data.getElapsedTimestamps().length - 1 && data.getElapsedTimestamps()[i] < mTrial.getPauseTimes().get(j)[1] && data.getElapsedTimestamps()[i+1] > mTrial.getPauseTimes().get(j)[1] )) {
-
-                            LimitLine ll2 = new LimitLine(i);
-                            ll2.setLineColor(Color.YELLOW);
-                            ll2.setLineWidth(2f);
-                            xAxis.addLimitLine(ll2);
                         }
                     }
-                }
+                    // Not a step so add zero point
+                    if(!added) {
+                        graphData.addEntry(new Entry(0, i), 1);
+                    }
 
+                    // Show any pauses
+                    if(mTrial.getPauseTimes() != null) {
+                        XAxis xAxis = mAccelGraph.getXAxis();
+                        for(int j=0; j<mTrial.getPauseTimes().size(); j++) {
+                            if(data.getElapsedTimestamps()[i] == mTrial.getPauseTimes().get(j)[0] ||
+                                    (i < data.getElapsedTimestamps().length - 1 && data.getElapsedTimestamps()[i] < mTrial.getPauseTimes().get(j)[0] && data.getElapsedTimestamps()[i+1] > mTrial.getPauseTimes().get(j)[0] )) {
+
+                                LimitLine ll = new LimitLine(i, "Pause");
+                                ll.setLineColor(Color.YELLOW);
+                                ll.setLineWidth(2f);
+                                ll.setTextColor(Color.BLACK);
+                                ll.setTextSize(10f);
+                                ll.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
+                                xAxis.addLimitLine(ll);
+                            }
+
+                            if(data.getElapsedTimestamps()[i] == mTrial.getPauseTimes().get(j)[1] ||
+                                    (i < data.getElapsedTimestamps().length - 1 && data.getElapsedTimestamps()[i] < mTrial.getPauseTimes().get(j)[1] && data.getElapsedTimestamps()[i+1] > mTrial.getPauseTimes().get(j)[1] )) {
+
+                                LimitLine ll2 = new LimitLine(i);
+                                ll2.setLineColor(Color.YELLOW);
+                                ll2.setLineWidth(2f);
+                                xAxis.addLimitLine(ll2);
+                            }
+                        }
+                    }
+
+                }
+            } else {
+                CardView card = (CardView)findViewById(R.id.card_accel_graph);
+                card.setVisibility(View.GONE);
             }
 
+            LineData graphData2 = mStepTimeGraph.getData();
 
             int[] steps = mTrial.getStepTimes();
 

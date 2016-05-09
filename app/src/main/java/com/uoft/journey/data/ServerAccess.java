@@ -16,6 +16,7 @@ import com.baasbox.android.SaveMode;
 import com.baasbox.android.json.JsonObject;
 import com.google.gson.Gson;
 import com.uoft.journey.Journey;
+import com.uoft.journey.entity.InhibitionGame;
 import com.uoft.journey.entity.Trial;
 
 /**
@@ -57,6 +58,10 @@ public class ServerAccess {
         System.out.println("SERVERADDTRIAL THE USERNAME IS: "+ username);
 
         Trial tdata = LocalDatabaseAccess.getTrial(ctx, trialID, username);
+
+
+        InhibitionGame game = LocalDatabaseAccess.getInhibGameByTrial(ctx, trialID, username);
+
         tdata.setTrialData(null);
 
         if (tdata == null){
@@ -67,7 +72,14 @@ public class ServerAccess {
         Gson gson = new Gson();
 
         BaasDocument newTrial = new BaasDocument("Trials");
-        newTrial.putString("data",gson.toJson(tdata));
+
+        // If the trial included a game...
+        if (game != null) {
+            newTrial.put("gameStats", (new Gson()).toJson(game));
+        }
+
+        newTrial.putString("data", gson.toJson(tdata));
+
 
 
         mAddToken = newTrial.save(SaveMode.IGNORE_VERSION,uploadHandler);
@@ -137,13 +149,23 @@ public class ServerAccess {
 
 
         for (BaasDocument doc : res.value()) {
-            Log.d("LOG", "Doc: " + doc);
 
+            // Get trial data
             Trial t = gson.fromJson(doc.getString("data"), Trial.class);
 
-
             LocalDatabaseAccess.insertTrial(ctx, userid, t, username);
-            LocalDatabaseAccess.addTrialSteps(ctx,t.getTrialId(),t.getStepTimes(), t.getPauseTimes());
+            LocalDatabaseAccess.addTrialSteps(ctx, t.getTrialId(), t.getStepTimes(), t.getPauseTimes());
+
+            // Get game data
+            gson.fromJson(doc.getString("gameStats"), InhibitionGame.class);
+
+            InhibitionGame g = gson.fromJson(doc.getString("gameStats"), InhibitionGame.class);
+
+            if (g != null) {
+                LocalDatabaseAccess.insertInhibGame(ctx, userid, g, username);
+            }
+
+
         }
 
     }

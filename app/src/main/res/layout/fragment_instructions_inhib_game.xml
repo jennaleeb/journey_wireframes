@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/game_instructions"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="GO, NO-GO GAME"
+        android:id="@+id/title"
+        android:textSize="28sp"
+        android:color="@color/textColorHeading"
+        android:layout_gravity="center_horizontal|bottom|top"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/game_instructions1"
+        android:id="@+id/textView3"
+        android:layout_gravity="center_horizontal"
+        android:textSize="16sp" android:layout_marginLeft="15dp" android:layout_marginRight="15dp"
+        android:layout_marginBottom="30dp" android:layout_marginTop="30dp"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal">
+        <Button
+            android:layout_width="20dp"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@android:drawable/ic_menu_slideshow"
+            android:text="GO"
+            android:id="@+id/button_go_sound"
+            android:background="@color/colorGreen"
+            android:textColor="@color/colorWhiteTranslucent"
+            android:layout_weight="1"
+            android:padding="10dp"
+            android:layout_margin="10dp"
+            android:elevation="2dp"
+            android:textSize="18sp"/>
+        <Button
+            android:layout_width="20dp"
+            android:layout_height="wrap_content"
+            android:text="NO-GO"
+            android:id="@+id/button_nogo_sound"
+            android:background="@color/colorRed"
+            android:textColor="@color/colorWhiteTranslucent"
+            android:layout_weight="1"
+            android:padding="10dp"
+            android:elevation="2dp"
+            android:layout_margin="10dp"
+            android:drawableLeft="@android:drawable/ic_menu_slideshow"
+            android:textSize="18sp"/>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/game_instructions2"
+        android:layout_gravity="center_horizontal"
+        android:textSize="16sp" android:layout_marginTop="30dp" android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"/>
+</LinearLayout>

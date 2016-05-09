@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Vibrator;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.animation.Animation;
@@ -23,19 +24,25 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.uoft.journey.Journey;
 import com.uoft.journey.R;
+import com.uoft.journey.data.LocalDatabaseAccess;
 import com.uoft.journey.data.ServerAccess;
 import com.uoft.journey.entity.AccelerometerData;
+import com.uoft.journey.entity.InhibitionGame;
 import com.uoft.journey.entity.Trial;
 import com.uoft.journey.service.DataProcessingService;
 import com.uoft.journey.service.DataService;
+import com.uoft.journey.service.InhibitionGameStats;
 import com.uoft.journey.service.SensorService;
+import com.uoft.journey.service.SoundService;
+import com.uoft.journey.ui.fragment.GameInstructionsDialogFragment;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 
 public class MeasureActivity extends AppCompatActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener, MediaPlayer.OnCompletionListener {
@@ -62,15 +69,24 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
     private RelativeLayout mTimedLayout;
     private long mTimedSecs = 0;
     private long mStartTime = 0;
-    private CheckBox mMetroCheck;
-    private SeekBar mMetroSeek;
-    private RelativeLayout mMetroLayout;
+    private CheckBox mSoundCheck;
+    private SeekBar mSoundSeek;
+    private RelativeLayout mSoundLayout;
     Journey mApp;
     private String mUsername;
-    //private Journey mApp;
     private static final String TAG = "TOUCHDEBUGTAG";
-    long start_time, reaction_time;
 
+    // Inhibition Game Vars
+    private InhibitionGame mInhibGame;
+    private SoundService mSoundService;
+    long start_time, reaction_time;
+    private Handler soundHandler;
+    private boolean sound_on = false;
+    private List<long[]> hitStats;
+    private int true_stim_counter, false_stim_counter;
+
+    // Info dialog buttons
+    private ImageView mInfoGame;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,11 +132,13 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
         mTimeSpinner = (Spinner)findViewById(R.id.spin_time);
         mTimeSpinner.setEnabled(false);
         mTimedLayout = (RelativeLayout)findViewById(R.id.layout_timed);
-        mMetroCheck = (CheckBox)findViewById(R.id.check_metro);
-        mMetroCheck.setOnCheckedChangeListener(this);
-        mMetroSeek = (SeekBar)findViewById(R.id.seek_metro);
-        mMetroSeek.setEnabled(false);
-        mMetroLayout = (RelativeLayout)findViewById(R.id.layout_metro);
+        mSoundCheck = (CheckBox)findViewById(R.id.check_sound);
+        mSoundCheck.setOnCheckedChangeListener(this);
+        mSoundSeek = (SeekBar)findViewById(R.id.seek_sound);
+        mSoundSeek.setEnabled(false);
+        mSoundLayout = (RelativeLayout)findViewById(R.id.layout_metro);
+        mInfoGame = (ImageView)findViewById(R.id.info_game_instructions);
+        mInfoGame.setOnClickListener(this);
 
         // Assessment complete, so just show results
         if(mFinished) {
@@ -130,7 +148,7 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
             mBtnStart.setVisibility(View.INVISIBLE);
             mInstructions.setVisibility(View.INVISIBLE);
             mTimedLayout.setVisibility(View.INVISIBLE);
-            mMetroLayout.setVisibility(View.INVISIBLE);
+            mSoundLayout.setVisibility(View.INVISIBLE);
             mStartWalking.setVisibility(View.INVISIBLE);
             showResults();
             return;
@@ -146,7 +164,7 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
             mBtnStart.setVisibility(View.INVISIBLE);
             mInstructions.setVisibility(View.INVISIBLE);
             mTimedLayout.setVisibility(View.INVISIBLE);
-            mMetroLayout.setVisibility(View.INVISIBLE);
+            mSoundLayout.setVisibility(View.INVISIBLE);
             if(SensorService.isRunning) {
                 mWalkImage.setVisibility(View.VISIBLE);
                 mWalkImage.startAnimation(mWalkAnim);
@@ -176,8 +194,6 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
                 mCountdown.setText("");
                 startDataCollect();
 
-                // time when
-                start_time = System.currentTimeMillis();
                 mCountdownTimeRemaining = -1;
             }
         };
@@ -188,7 +204,38 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
         // If countdown timer already running
         if(mCountdownTimeRemaining > 0)
             startCollecting();
+
+        soundHandler = new Handler();
+        mSoundService = new SoundService(getApplicationContext());
+
     }
+
+    private void showGameInstructionsDialog() {
+        FragmentManager fm = getSupportFragmentManager();
+        GameInstructionsDialogFragment frag = GameInstructionsDialogFragment.newInstance(getApplicationContext());
+        frag.show(fm, "fragment_instructions_inhib_game");
+    }
+
+    public void playSound() {
+
+        if (sound_on){
+
+            mSoundService.play();
+            start_time = System.currentTimeMillis();
+            stimCounter();
+            soundHandler.postDelayed(soundRunnable, mSoundService.timeIntervalLogic(mSoundService.getLevel()));
+        }
+
+    }
+
+    private Runnable soundRunnable = new Runnable() {
+        public void run() {
+
+                playSound();
+
+
+        }
+    };
 
     @Override
     public void onPause() {
@@ -272,6 +319,9 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onClick(View v) {
         switch(v.getId()){
+            case R.id.info_game_instructions:
+                showGameInstructionsDialog();
+                break;
             case R.id.button_start:
                 startCollecting();
                 break;
@@ -296,18 +346,34 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
 
     private void startDataCollect() {
         if(!SensorService.isRunning && !DataProcessingService.isRunning) {
+
             // Play alert sound and vibrate for 500 milliseconds
             try {
                 Vibrator v = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
                 v.vibrate(500);
 
-                MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.notification0);
-                mp.start();
-                mp.setOnCompletionListener(this);
+               MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.notification0);
+               mp.start();
+               mp.setOnCompletionListener(this);
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
+            // Start Sound Game
+            if (mSoundCheck.isChecked()) {
+                sound_on = true;
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        playSound();
+                    }
+                }, 2500);
+
+                hitStats = new ArrayList<long[]>();
+            }
+
 
             mBtnStop.setEnabled(true);
             mBtnStop.setVisibility(View.VISIBLE);
@@ -317,7 +383,7 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
             mWalkImage.startAnimation(mWalkAnim);
             mInstructions.setVisibility(View.INVISIBLE);
             mTimedLayout.setVisibility(View.INVISIBLE);
-            mMetroLayout.setVisibility(View.INVISIBLE);
+            mSoundLayout.setVisibility(View.INVISIBLE);
             mStartWalking.setText(R.string.keep_walking);
             mStartWalking.setVisibility(View.VISIBLE);
 
@@ -368,9 +434,13 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
             }
 
             short stepsPerMin = 0;
-            if(mMetroCheck.isChecked()) {
-                stepsPerMin = (short)(40 + (mMetroSeek.getProgress() * 15));
+            if(mSoundCheck.isChecked()) {
+                //stepsPerMin = (short)(40 + (mSoundSeek.getProgress() * 15));
+
+                mSoundService.setLevel(mSoundSeek.getProgress());
             }
+
+
 
             // Call the service to start collecting accelerometer data
             Intent intent = new Intent(this, SensorService.class);
@@ -386,6 +456,40 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
 
     private void stopCollecting() {
         if (SensorService.isRunning) {
+
+            // Turn off sound and generate game stats
+            sound_on = false;
+            if (true_stim_counter != 0) {
+                InhibitionGameStats inhibGameStats = new InhibitionGameStats(hitStats, true_stim_counter, false_stim_counter);
+
+
+                // Create the game record
+                Calendar cal = Calendar.getInstance(TimeZone.getDefault());
+                Date start = cal.getTime();
+                int gameId = DataService.addNewInhibGame(
+                        this,
+                        mUserId,
+                        start,
+                        mUsername);
+
+                mInhibGame = new InhibitionGame(gameId, start, mUsername);
+                mInhibGame.setHitCount(inhibGameStats.hitCount());
+                mInhibGame.setMissCount(inhibGameStats.missCount());
+                mInhibGame.setFalseAlarmCount(inhibGameStats.falseAlarmCount());
+                mInhibGame.setCorrectNegCount(inhibGameStats.correctNegCount());
+                mInhibGame.setMeanResponseTime(inhibGameStats.meanResponseTime());
+                mInhibGame.setSDResponseTime(inhibGameStats.responseTimeSD());
+                mInhibGame.setMeanFalseAlarmRT(inhibGameStats.meanFalseAlarmResponseTime());
+                mInhibGame.setSDFalseAlarmRT(inhibGameStats.responseTimeFalseAlarmSD());
+                mInhibGame.setOmissionError(inhibGameStats.omissionError());
+                mInhibGame.setCommissionError(inhibGameStats.commissionError());
+                mInhibGame.setOverallAccuracy(inhibGameStats.measureAccuracy());
+                mInhibGame.setTrialId(mTrial.getTrialId());
+                LocalDatabaseAccess.updateInhibGame(this, mInhibGame);
+
+            }
+
+
             // Play alert sound and vibrate for 500 milliseconds
             try {
                 Vibrator v = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
@@ -469,14 +573,16 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void showResults() {
+        ((TextView)findViewById(R.id.text_new_title)).setText("SUMMARY");
+        (findViewById(R.id.line_title)).setVisibility(View.VISIBLE);
         ((TextView)findViewById(R.id.text_output_1_val)).setText(String.format("%d", mTrial.getDuration() / 1000));
         ((TextView)findViewById(R.id.text_output_2_val)).setText(String.format("%d", mTrial.getNumberOfSteps()));
         ((TextView)findViewById(R.id.text_output_3_val)).setText(String.format("%.0f", mTrial.getMeanStepTime()));
 
         TextView stv = (TextView) findViewById(R.id.text_output_4_val);
-        stv.setText(String.format("%.1f", mTrial.getCoeffOfVar()));
+        stv.setText(String.format("%.1f", mTrial.getStepCV()));
 
-        Trial.Level level = Trial.getLevel(mTrial.getCoeffOfVar());
+        Trial.Level level = Trial.getLevel(mTrial.getStepCV());
         switch (level) {
             case GOOD:
                 stv.setBackgroundResource(R.drawable.round_text_green);
@@ -488,6 +594,17 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
                 stv.setBackgroundResource(R.drawable.round_text_red);
                 break;
         }
+
+        if (mInhibGame != null) {
+            (findViewById(R.id.game_first_row)).setVisibility(View.VISIBLE);
+            (findViewById(R.id.game_second_row)).setVisibility(View.VISIBLE);
+            (findViewById(R.id.trial_game_divider)).setVisibility(View.VISIBLE);
+            ((TextView)findViewById(R.id.text_output_5_val)).setText(String.format("%d", mInhibGame.getMeanResponseTime()));
+            ((TextView)findViewById(R.id.text_output_6_val)).setText(String.format("%.1f", mInhibGame.getOverallAccuracy()));
+            ((TextView)findViewById(R.id.text_output_7_val)).setText(String.format("%.0f", mInhibGame.getOmissionError()));
+            ((TextView)findViewById(R.id.text_output_8_val)).setText(String.format("%.0f", mInhibGame.getCommissionError()));
+        }
+
 
         findViewById(R.id.layout_output).setVisibility(View.VISIBLE);
         mBtnDone.setVisibility(View.VISIBLE);
@@ -542,8 +659,8 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
             mTimeSpinner.setEnabled(isChecked);
         }
 
-        if(buttonView.getId() == R.id.check_metro) {
-            mMetroSeek.setEnabled(isChecked);
+        if(buttonView.getId() == R.id.check_sound) {
+            mSoundSeek.setEnabled(isChecked);
         }
     }
 
@@ -561,6 +678,26 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
     // Record when user taps the screen
     // (or can add a touch listener)
     public void screenTapped(View view) {
-        Toast.makeText(getApplicationContext(), "Screen tapped", Toast.LENGTH_SHORT).show();
+        if(sound_on) {
+            reaction_time = System.currentTimeMillis() - start_time;
+            long i = mSoundService.sound_hit ? 1 : 0;
+
+            hitStats.add(new long[]{i, reaction_time});
+        }
+
     }
+
+    public void stimCounter() {
+        if (mSoundService.sound_hit) {
+            true_stim_counter ++;
+        } else {
+            false_stim_counter ++;
+        }
+    }
+
+
+
+
+
+
 }

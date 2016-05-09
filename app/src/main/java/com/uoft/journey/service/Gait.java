@@ -1,5 +1,7 @@
 package com.uoft.journey.service;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -12,6 +14,7 @@ public class Gait {
 
     private static float minThreshold = 9.4f; // Threshold for Y values, below which minima can be taken
     private static float maxThreshold = 9.8f; // Above this maxima can be taken
+    private static String TAG = "GAITEVENTTAG";
 
     // A very simple low pass filter, smoothing value may need adjusting
     public static float[] simpleLowPassFilter(float[] data, float smoothing) {
@@ -282,20 +285,22 @@ public class Gait {
 
             float strideTimeSum = 0;
 
-            for(int i=2; i < (stepTimes.length - 1); i++) {
+            for(int i=2; i < (stepTimes.length - 1); i+=2) {
                 strideTimeSum += (stepTimes[i] - stepTimes[i-2]);
             }
 
-            return ((strideTimeSum - pauseTime) / ((float) stepTimes.length - 2));
+            // Determine the denominator depending on if there is an even or odd number of step times
+            int length_stride_times = (stepTimes.length % 2 == 0) ?  ((stepTimes.length - 2) / 2) : ((stepTimes.length - 1) / 2);
+            Log.d(TAG, "mean_stride_time: " + ((strideTimeSum - pauseTime) / ((float) length_stride_times)));
+            return ((strideTimeSum - pauseTime) / ((float) length_stride_times));
 
 
         }
         return 0;
     }
 
-    public static float getStrideTimeVar(int[] steps, float mean, List<int[]> pauseTimes){
-        float sd = 0.0f;
-        float cv = 0.0f;
+    public static float getStrideSD(int[] steps, float mean, List<int[]> pauseTimes) {
+        float var = 0.0f;
 
         // Calculate the standard deviation
         for(int i=2; i<steps.length-1; i++) {
@@ -305,21 +310,47 @@ public class Gait {
                     strideTime = mean;
             }
 
-            sd += (mean - strideTime) * (mean - strideTime);
+            var += (mean - strideTime) * (mean - strideTime);
         }
 
-        sd = sd / (steps.length-2);
-        cv = 100 * ( (float)Math.sqrt(sd) ) / mean;
+        var = var / (steps.length-2);
 
-        return cv;
+        // Standard dev
+        return (float)Math.sqrt(var);
+
     }
+
+    public static float getStrideCV(float standardDev, float mean) {
+        return 100.0f * standardDev / mean;
+    }
+
+//    public static float getStrideCV(int[] steps, float mean, List<int[]> pauseTimes){
+//        float sd = 0.0f;
+//        float cv = 0.0f;
+//
+//        // Calculate the standard deviation
+//        for(int i=2; i<steps.length-1; i++) {
+//            float strideTime = steps[i] - steps[i-2];
+//            for(int j=0; j<pauseTimes.size(); j++) {
+//                if(pauseTimes.get(j)[0] > steps[i-2] && pauseTimes.get(j)[1] < steps[i])
+//                    strideTime = mean;
+//            }
+//
+//            sd += (mean - strideTime) * (mean - strideTime);
+//        }
+//
+//        sd = sd / (steps.length-2);
+//        cv = 100 * ( (float)Math.sqrt(sd) ) / mean;
+//
+//        return cv;
+//    }
 
 
 
 
 
     // Get the standard deviation of the step times
-    public static float getStandardDeviation(int[] steps, float mean, List<int[]> pauseTimes) {
+    public static float getStepSD(int[] steps, float mean, List<int[]> pauseTimes) {
         float var = 0.0f;
         int median = getMedian(steps);
         // Calculate the variance
@@ -339,7 +370,7 @@ public class Gait {
     }
 
     // Coefficient of Variation of steps 100 * SD / mean
-    public static float getCoefficientOfVariation(float standardDev, float mean) {
+    public static float getStepCV(float standardDev, float mean) {
         return 100.0f * standardDev / mean;
     }
 

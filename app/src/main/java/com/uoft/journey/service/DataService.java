@@ -5,6 +5,7 @@ import android.content.Context;
 import com.uoft.journey.data.LocalDatabaseAccess;
 import com.uoft.journey.data.ServerAccess;
 import com.uoft.journey.entity.AccelerometerData;
+import com.uoft.journey.entity.InhibitionGame;
 import com.uoft.journey.entity.Trial;
 
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import java.util.Date;
  */
 public class DataService {
 
+    // Gait Data
     public static int addNewTrial(Context ctx, int userId, Date startTime, String username) {
         return LocalDatabaseAccess.addTrial(ctx, userId, startTime, username);
     }
@@ -37,5 +39,15 @@ public class DataService {
             return ServerAccess.deleteTrial(trialId, username);
 
         return false;
+    }
+
+    // Inhibition Game Data
+    public static int addNewInhibGame(Context ctx, int userId, Date startTime, String username) {
+        return LocalDatabaseAccess.addInhibGame(ctx, userId, startTime, username);
+    }
+
+
+    public static InhibitionGame getGameByTrialId(Context ctx, int trialId, String username) {
+        return LocalDatabaseAccess.getInhibGameByTrial(ctx, trialId, username);
     }
 }
