@@ -1,5 +1,7 @@
 package com.uoft.journey.service;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -12,6 +14,7 @@ public class Gait {
 
     private static float minThreshold = 9.4f; // Threshold for Y values, below which minima can be taken
     private static float maxThreshold = 9.8f; // Above this maxima can be taken
+    private static String TAG = "GAITEVENTTAG";
 
     // A very simple low pass filter, smoothing value may need adjusting
     public static float[] simpleLowPassFilter(float[] data, float smoothing) {
@@ -282,11 +285,14 @@ public class Gait {
 
             float strideTimeSum = 0;
 
-            for(int i=2; i < (stepTimes.length - 1); i++) {
+            for(int i=2; i < (stepTimes.length - 1); i+=2) {
                 strideTimeSum += (stepTimes[i] - stepTimes[i-2]);
             }
 
-            return ((strideTimeSum - pauseTime) / ((float) stepTimes.length - 2));
+            // Determine the denominator depending on if there is an even or odd number of step times
+            int length_stride_times = (stepTimes.length % 2 == 0) ?  ((stepTimes.length - 2) / 2) : ((stepTimes.length - 1) / 2);
+            Log.d(TAG, "mean_stride_time: " + ((strideTimeSum - pauseTime) / ((float) length_stride_times)));
+            return ((strideTimeSum - pauseTime) / ((float) length_stride_times));
 
 
         }
