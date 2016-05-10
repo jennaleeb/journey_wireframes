@@ -340,7 +340,7 @@
                     android:id="@+id/text_output_3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/average_step_time"
+                    android:text="@string/average_stride_time"
                     android:layout_below="@+id/text_output_3_val"
                     android:layout_centerHorizontal="true"/>
 

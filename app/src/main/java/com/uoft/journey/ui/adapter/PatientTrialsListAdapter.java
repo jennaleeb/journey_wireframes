@@ -39,7 +39,7 @@ public class PatientTrialsListAdapter extends RecyclerView.Adapter<PatientTrials
         TextView title;
         TextView time;
         TextView stepCount;
-        TextView stepTimeVar;
+        TextView strideTimeVar;
 
         // Show each trial as a card
         ViewHolder(View itemView) {
@@ -49,7 +49,7 @@ public class PatientTrialsListAdapter extends RecyclerView.Adapter<PatientTrials
             time = (TextView)itemView.findViewById(R.id.card_time);
             title = (TextView)itemView.findViewById(R.id.card_title);
             stepCount = (TextView)itemView.findViewById(R.id.step_count_value);
-            stepTimeVar = (TextView)itemView.findViewById(R.id.step_var_value);
+            strideTimeVar = (TextView)itemView.findViewById(R.id.stride_var_value);
         }
     }
 
@@ -68,19 +68,19 @@ public class PatientTrialsListAdapter extends RecyclerView.Adapter<PatientTrials
             holder.day.setText(df.format(mTrials.get(position).getStartTime()));
             holder.title.setText(String.format("Assessment %d", mTrials.get(position).getTrialId()));
             holder.stepCount.setText(String.valueOf(mTrials.get(position).getNumberOfSteps()));
-            holder.stepTimeVar.setText(String.format("%.1f", mTrials.get(position).getStepCV()));
+            holder.strideTimeVar.setText(String.format("%.1f", mTrials.get(position).getStrideCV()));
             holder.time.setText(df2.format(mTrials.get(position).getStartTime()));
 
-            Trial.Level level = Trial.getLevel(mTrials.get(position).getStepCV());
+            Trial.Level level = Trial.getLevel(mTrials.get(position).getStrideCV());
             switch (level) {
                 case GOOD:
-                    holder.stepTimeVar.setBackgroundResource(R.drawable.round_text_green);
+                    holder.strideTimeVar.setBackgroundResource(R.drawable.round_text_green);
                     break;
                 case OK:
-                    holder.stepTimeVar.setBackgroundResource(R.drawable.round_text_yellow);
+                    holder.strideTimeVar.setBackgroundResource(R.drawable.round_text_yellow);
                     break;
                 case BAD:
-                    holder.stepTimeVar.setBackgroundResource(R.drawable.round_text_red);
+                    holder.strideTimeVar.setBackgroundResource(R.drawable.round_text_red);
                     break;
             }
 

@@ -303,7 +303,7 @@ public class Gait {
         float var = 0.0f;
 
         // Calculate the standard deviation
-        for(int i=2; i<steps.length-1; i++) {
+        for(int i=2; i<steps.length-1; i+=2) {
             float strideTime = steps[i] - steps[i-2];
             for(int j=0; j<pauseTimes.size(); j++) {
                 if(pauseTimes.get(j)[0] > steps[i-2] && pauseTimes.get(j)[1] < steps[i])

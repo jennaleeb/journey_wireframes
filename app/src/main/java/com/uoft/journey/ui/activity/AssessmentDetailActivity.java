@@ -98,23 +98,24 @@ public class AssessmentDetailActivity extends AppCompatActivity {
         DateFormat df = new SimpleDateFormat("MMM dd yyyy", Locale.CANADA);
         ((TextView)findViewById(R.id.text_detail_date)).setText(df.format(mTrial.getStartTime()) + " - " + String.format("%d", mTrial.getDuration() / 1000) + " sec");
         ((TextView)findViewById(R.id.text_detail_2_val)).setText(String.format("%d", mTrial.getNumberOfSteps()));
-        ((TextView)findViewById(R.id.text_detail_3_val)).setText(String.format("%.0f", mTrial.getMeanStepTime()));
-
-        TextView stv = (TextView) findViewById(R.id.text_detail_4_val);
-        stv.setText(String.format("%.1f", mTrial.getStepCV()));
-
         ((TextView)findViewById(R.id.text_detail_5_val)).setText(String.format("%.1f", mTrial.getGaitSym()));
         ((TextView)findViewById(R.id.text_detail_6_val)).setText(String.format("%.1f", mTrial.getMeanStrideTime()));
-        ((TextView)findViewById(R.id.text_detail_7_val)).setText(String.format("%.1f", mTrial.getStrideCV()));
 
-        if( mTrial.getStepCV() <= 4.0f) {
-            stv.setBackgroundResource(R.drawable.round_text_green);
-        }
-        else if( mTrial.getStepCV() <= 8.0f) {
-            stv.setBackgroundResource(R.drawable.round_text_yellow);
-        }
-        else {
-            stv.setBackgroundResource(R.drawable.round_text_red);
+        TextView stv = (TextView) findViewById(R.id.text_detail_7_val);
+        stv.setText(String.format("%.1f", mTrial.getStrideCV()));
+
+        Trial.Level level = Trial.getLevel(mTrial.getStrideCV());
+
+        switch (level) {
+            case GOOD:
+                stv.setBackgroundResource(R.drawable.round_text_green);
+                break;
+            case OK:
+                stv.setBackgroundResource(R.drawable.round_text_yellow);
+                break;
+            case BAD:
+                stv.setBackgroundResource(R.drawable.round_text_red);
+                break;
         }
 
     }

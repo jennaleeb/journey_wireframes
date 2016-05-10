@@ -100,7 +100,7 @@
                     android:layout_height="75dp"
                     android:gravity="center"
                     android:background="@drawable/round_text_green"
-                    android:id="@+id/step_var_value"
+                    android:id="@+id/stride_var_value"
                     android:color="@color/colorWhiteTranslucent"
                     android:layout_gravity="center"
                     android:textSize="32sp"

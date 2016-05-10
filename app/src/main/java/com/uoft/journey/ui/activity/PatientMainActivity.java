@@ -1,11 +1,18 @@
 package com.uoft.journey.ui.activity;
 
+import android.annotation.TargetApi;
+import android.app.ActivityManager;
 import android.content.Intent;
+import android.os.Build;
+import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.PopupMenu;
 
 import com.uoft.journey.Journey;
 import com.uoft.journey.R;
@@ -89,5 +96,44 @@ public class PatientMainActivity extends AppCompatActivity implements ViewPager.
     public void onPause(){
         super.onPause();
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Menu with options icon.
+        getMenuInflater().inflate(R.menu.menu_options, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        View options = findViewById(R.id.options);
+        // Handle menu item clicks, only one option in this case
+        if (id == R.id.options) {
+            PopupMenu dropDownMenu = new PopupMenu(getApplicationContext(), options);
+            dropDownMenu.getMenuInflater().inflate(R.menu.logout, dropDownMenu.getMenu());
+
+            dropDownMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+
+                @TargetApi(Build.VERSION_CODES.KITKAT)
+                @Override
+                public boolean onMenuItemClick(MenuItem menuItem) {
+                    // Logout stuff
+                    if (Build.VERSION_CODES.KITKAT <= Build.VERSION.SDK_INT) {
+                        ((ActivityManager) getApplicationContext().getSystemService(ACTIVITY_SERVICE))
+                                .clearApplicationUserData(); // note: it has a return value!
+
+                    } else {
+
+                    }
+
+                    return true;
+                }
+            });
+            dropDownMenu.show();
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

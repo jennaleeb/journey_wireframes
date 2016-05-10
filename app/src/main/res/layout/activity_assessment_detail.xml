@@ -189,6 +189,7 @@
                                         android:layout_centerHorizontal="true"
                                         android:textAppearance="?android:attr/textAppearanceLarge"
                                         android:textSize="32sp"
+                                        android:textColor="@color/colorWhiteTranslucent"
                                         android:layout_marginBottom="5dp"/>
 
                                     <TextView
@@ -197,67 +198,6 @@
                                         android:layout_height="wrap_content"
                                         android:text="@string/stv"
                                         android:layout_below="@+id/text_detail_7_val"
-                                        android:layout_centerHorizontal="true"/>
-
-                                </RelativeLayout>
-
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:id="@+id/detail_bottom_row"
-                                android:layout_below="@+id/detail_middle_row"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:layout_marginTop="5dp">
-
-                                <RelativeLayout
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1">
-
-                                    <TextView
-                                        android:id="@+id/text_detail_3_val"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="75dp"
-                                        android:gravity="center"
-                                        android:layout_centerHorizontal="true"
-                                        android:textAppearance="?android:attr/textAppearanceLarge"
-                                        android:textSize="32sp"
-                                        android:layout_marginBottom="5dp"/>
-
-                                    <TextView
-                                        android:id="@+id/text_detail_3"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="@string/average_step_time"
-                                        android:layout_below="@+id/text_detail_3_val"
-                                        android:layout_centerHorizontal="true"/>
-
-                                </RelativeLayout>
-
-                                <RelativeLayout
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1">
-
-                                    <TextView
-                                        android:id="@+id/text_detail_4_val"
-                                        android:textColor="@color/colorWhiteTranslucent"
-                                        android:layout_width="75dp"
-                                        android:layout_height="75dp"
-                                        android:gravity="center"
-                                        android:layout_centerHorizontal="true"
-                                        android:textAppearance="?android:attr/textAppearanceLarge"
-                                        android:textSize="32sp"
-                                        android:layout_marginBottom="5dp"/>
-
-                                    <TextView
-                                        android:id="@+id/text_detail_4"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="@string/stv"
-                                        android:layout_below="@+id/text_detail_4_val"
                                         android:layout_centerHorizontal="true"/>
 
                                 </RelativeLayout>

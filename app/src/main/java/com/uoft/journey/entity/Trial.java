@@ -221,10 +221,10 @@ public class Trial implements Parcelable {
     public enum Level { GOOD, OK, BAD }
 
     public static Level getLevel(float value) {
-        if(value <= 4.0f) {
+        if(value <= 5.0f) {
             return Level.GOOD;
         }
-        if(value <= 8.0f) {
+        if(value <= 10.0f) {
             return Level.OK;
         }
         return Level.BAD;

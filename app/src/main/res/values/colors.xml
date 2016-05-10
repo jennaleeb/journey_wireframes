@@ -3,7 +3,7 @@
 <resources>
     <color name="colorPrimary">#536DFE</color>
     <color name="colorPrimaryTranslucent">#80125688</color>
-    <color name="colorPrimaryDark">#125688</color>
+    <color name="colorPrimaryDark">#424242</color>
     <color name="textColorPrimary">#FFFFFF</color>
     <color name="textColorHeading">#212121</color>
     <color name="colorDivider">#E0E0E0</color>
