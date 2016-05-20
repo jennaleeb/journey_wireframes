@@ -36,6 +36,9 @@
     <string name="secondary_task">Secondary Task</string>
     <string name="slow">SLOW</string>
     <string name="fast">FAST</string>
+    <string name="remove_step">Remove Step?</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
 
 
     <string name="hello_world">Hello world!</string>

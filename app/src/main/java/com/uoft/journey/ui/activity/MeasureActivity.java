@@ -577,7 +577,7 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
         (findViewById(R.id.line_title)).setVisibility(View.VISIBLE);
         ((TextView)findViewById(R.id.text_output_1_val)).setText(String.format("%d", mTrial.getDuration() / 1000));
         ((TextView)findViewById(R.id.text_output_2_val)).setText(String.format("%d", mTrial.getNumberOfSteps()));
-        ((TextView)findViewById(R.id.text_output_3_val)).setText(String.format("%.0f", mTrial.getMeanStrideTime()));
+        ((TextView)findViewById(R.id.text_output_3_val)).setText(String.format("%.1f", mTrial.getMeanStrideTime()));
 
         TextView stv = (TextView) findViewById(R.id.text_output_4_val);
         stv.setText(String.format("%.1f", mTrial.getStrideCV()));

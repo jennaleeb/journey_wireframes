@@ -277,6 +277,7 @@ public class LocalDatabaseAccess {
         }
     }
 
+
     // Get the list of trials for user
     public static ArrayList<Trial> getTrialsForUser(Context ctx, String username) {
         try {

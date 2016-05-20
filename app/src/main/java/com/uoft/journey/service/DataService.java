@@ -29,8 +29,20 @@ public class DataService {
         return LocalDatabaseAccess.getTrial(ctx, trialId, username);
     }
 
+    public static int[] getTrialStepTimes(Context ctx, int trialId) {
+        return LocalDatabaseAccess.getTrialStepTimes(ctx, trialId);
+    }
+
     public static ArrayList<Trial> getTrialsForUser(Context ctx, String username) {
         return LocalDatabaseAccess.getTrialsForUser(ctx, username);
+    }
+
+    public static boolean updateTrial(Context ctx, Trial trial, String username) {
+        boolean success = LocalDatabaseAccess.updateTrial(ctx, trial);
+        if(success)
+            return ServerAccess.updateTrial(ctx, trial.getTrialId(), username);
+
+        return false;
     }
 
     public static boolean deleteTrial(Context ctx, int trialId, String username) {
@@ -50,4 +62,5 @@ public class DataService {
     public static InhibitionGame getGameByTrialId(Context ctx, int trialId, String username) {
         return LocalDatabaseAccess.getInhibGameByTrial(ctx, trialId, username);
     }
+
 }

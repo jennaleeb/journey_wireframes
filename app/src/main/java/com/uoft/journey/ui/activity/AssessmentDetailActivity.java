@@ -1,16 +1,20 @@
 package com.uoft.journey.ui.activity;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,23 +25,32 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.uoft.journey.R;
+import com.uoft.journey.data.LocalDatabaseAccess;
 import com.uoft.journey.entity.AccelerometerData;
 import com.uoft.journey.entity.InhibitionGame;
 import com.uoft.journey.entity.Trial;
 import com.uoft.journey.service.DataService;
+import com.uoft.journey.service.Gait;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Locale;
 
-public class AssessmentDetailActivity extends AppCompatActivity {
+public class AssessmentDetailActivity extends AppCompatActivity implements OnChartValueSelectedListener {
 
     private Trial mTrial;
     private InhibitionGame mInhibGame;
     private LineChart mAccelGraph;
     private LineChart mStepTimeGraph;
     private String mUsername;
+    private Button mDeleteStepButton;
+    public static String TAG = "GraphDetailTag";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +66,7 @@ public class AssessmentDetailActivity extends AppCompatActivity {
         mUsername = extras.getString("user");
         getSupportActionBar().setTitle(String.format("Assessment %d", trialId));
         mTrial = DataService.getTrial(this, trialId, mUsername);
+        int[] steps = DataService.getTrialStepTimes(this, trialId);
 
         mInhibGame = DataService.getGameByTrialId(this, trialId, mUsername);
 
@@ -121,6 +135,8 @@ public class AssessmentDetailActivity extends AppCompatActivity {
     }
 
     private void setupGraph() {
+        mAccelGraph.setTouchEnabled(true);
+        mAccelGraph.setOnChartValueSelectedListener(this);
         mAccelGraph.setDragEnabled(true);
         mAccelGraph.setScaleEnabled(true);
         mAccelGraph.setDrawGridBackground(false);
@@ -269,6 +285,121 @@ public class AssessmentDetailActivity extends AppCompatActivity {
         }
     }
 
+    // Click listener for values in the graph
+    @Override
+    public void onValueSelected(Entry e, int dataSetIndex, Highlight h) {
+
+        if (dataSetIndex == 1) {
+            final int[] stepsOriginal = mTrial.getStepTimes();
+
+            // Get data point from graph
+            int data_selected = mTrial.getTrialData().getElapsedTimestamps()[e.getXIndex()];
+
+            // Convert int[] to Integer[] so we can look up element by value
+            Integer[] stepTimesInteger = new Integer[mTrial.getStepTimes().length];
+            int i = 0;
+            for (int value : stepsOriginal) {
+                stepTimesInteger[i++] = Integer.valueOf(value);
+            }
+
+            // Find index of the step time from Integer version of stepsOriginal (stepTimesInteger)
+            final ArrayList<Integer> stepTimesIntegerList = new ArrayList<Integer>(Arrays.asList(stepTimesInteger));
+            final int index_to_remove = Arrays.asList(stepTimesInteger).indexOf(data_selected);
+            Log.d(TAG, "data index: " + index_to_remove);
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.remove_step)
+                    .setMessage("Step Time: " + data_selected + "ms, index: " + index_to_remove );
+
+            builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+
+                    stepTimesIntegerList.remove(index_to_remove);
+
+                    int[] new_step_times = new int[stepsOriginal.length - 1];
+                    for (int j = 0; j < stepsOriginal.length - 1; j++) {
+                        new_step_times[j] = stepTimesIntegerList.get(j);
+                    }
+
+                    updateStepTimes(new_step_times);
+                }
+            });
+            builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                }
+            });
+
+            builder.show();
+
+        }
+
+
+    }
+
+    public void updateStepTimes(int[] new_step_times) {
+
+        // Update the step times and recalculate metrics
+        LocalDatabaseAccess.addTrialSteps(this, mTrial.getTrialId(), new_step_times, mTrial.getPauseTimes());
+
+        mTrial.setStepTimes(new_step_times);
+
+        float mean_step = Gait.getMeanStepTime(new_step_times, mTrial.getPauseTimes());
+        float step_sd = Gait.getStepSD(new_step_times, mean_step, mTrial.getPauseTimes());
+        float step_cv = Gait.getStepCV(step_sd, mean_step);
+        float sym = Gait.getGaitSymmetry(new_step_times, mTrial.getPauseTimes());
+        float mean_stride = Gait.getMeanStrideTime(new_step_times, mTrial.getPauseTimes());
+        float cadence = mTrial.getCadence();
+        float stride_sd = Gait.getStrideSD(new_step_times, mean_stride, mTrial.getPauseTimes());
+        float stride_cv = Gait.getStrideCV(stride_sd, mean_stride);
+        mTrial.setStepAnalysis(mean_step, step_sd, step_cv, sym, cadence, mean_stride, stride_sd, stride_cv);
+
+        LocalDatabaseAccess.updateTrial(this, mTrial);
+
+        UpdateTask task = new UpdateTask(mTrial, mUsername, this);
+        task.execute();
+
+        finish();
+        startActivity(getIntent());
+    }
+
+    private class UpdateTask extends AsyncTask<Void, Void, Boolean> {
+
+        private Trial trial;
+        private String username;
+        private Context context;
+
+        public UpdateTask(Trial the_trial, String user, Context ctx) {
+            trial = the_trial;
+            username = user;
+            context = ctx;
+        }
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            return DataService.updateTrial(context, trial, username);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean success) {
+            updateComplete(success);
+            super.onPostExecute(success);
+        }
+    }
+
+    public void updateComplete(boolean success) {
+        if(success) {
+            Toast.makeText(this, "Assessment updated", Toast.LENGTH_SHORT).show();
+            this.finish();
+        }
+        else {
+            Toast.makeText(this, "Failed to update assessment, try again.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onNothingSelected() {
+
+    }
+
     @Override
     public void onPause(){
         super.onPause();
@@ -303,6 +434,8 @@ public class AssessmentDetailActivity extends AppCompatActivity {
             Toast.makeText(this, "Failed to delete assessment, try again.", Toast.LENGTH_SHORT).show();
         }
     }
+
+
 
     private class DeleteTask extends AsyncTask<Void, Void, Boolean> {
         private int trialId;

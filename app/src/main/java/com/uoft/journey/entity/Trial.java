@@ -53,6 +53,7 @@ public class Trial implements Parcelable {
         }
 
         mGaitSym = parcel.readFloat();
+        mCadence = parcel.readFloat();
         mStrideSD = parcel.readFloat();
         mStrideCV = parcel.readFloat();
         mMeanStrideTime = parcel.readFloat();

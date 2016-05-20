@@ -46,4 +46,5 @@ dependencies {
     compile 'pl.edu.icm:JLargeArrays:1.6'
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.android.support:support-v4:23.2.1'
+
 }

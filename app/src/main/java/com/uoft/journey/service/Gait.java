@@ -85,6 +85,7 @@ public class Gait {
     public static Integer[] localMaximaTimesUsingWindow(float[] data, int[] times) {
         ArrayList<Integer> stepTimes = new ArrayList<>();
         ArrayList<Integer> peaks = new ArrayList<>();
+        ArrayList<Float> peakAmplitudes = new ArrayList<>();
         int windowSize = getWindow(data, times);
 
         // Identify the peaks
@@ -93,6 +94,7 @@ public class Gait {
                 peaks.add(i);
             }
         }
+
 
         float prevLeft = 0;
         float prevRight = 0;
@@ -169,13 +171,34 @@ public class Gait {
                     }
                 }
 
+
+
                 stepTimes.add(times[i]);
+                peakAmplitudes.add(data[i]);
                 prevLeft = minLeft;
                 prevRight = minRight;
                 prevIndex = i;
                 prevNumIndex = numIndex;
             }
         }
+
+        // Check if the it is above the threshold (fix?)
+        float sum_amplitude = 0;
+
+        for (int i=0; i < peakAmplitudes.size(); i++) {
+            sum_amplitude += peakAmplitudes.get(i);
+        }
+
+        float avg_amplitude = sum_amplitude / peakAmplitudes.size();
+
+//        for (int i=0; i < stepTimes.size(); i++) {
+//            if (data[i] < avg_amplitude * .75) {
+//                stepTimes.remove(i);
+//            }
+//        }
+
+        Log.d(TAG, "avg Amp: " + avg_amplitude);
+
 
         return stepTimes.toArray(new Integer[stepTimes.size()]);
     }
@@ -231,19 +254,34 @@ public class Gait {
             return pauseTimes;
         }
 
+        /** Remove pause functionality during validation period
         int median = getMedian(times);
         for(int i=0; i < times.length - 1; i++) {
             // Step is longer the twice the media so record a pause
-            if(times[i+1] - times[i] > median * 1.8) {
+            float scaling_factor = 1.8f;
+            if(times[i+1] - times[i] > median * scaling_factor) {
                 // Create the pause in the middle of the steps
                 int[] pause = new int[2];
                 pause[0] = times[i] + (median/2);
                 pause[1] = times[i+1] - (median/2);
                 pauseTimes.add(pause);
             }
-        }
+        } **/
 
         return pauseTimes;
+    }
+
+    private static int getMedianList(ArrayList<Integer> times) {
+        int[] items = new int[times.size() - 1];
+        for(int i=0; i<times.size()-1; i++) {
+            items[i] = times.get(i + 1) - times.get(i);
+        }
+
+        Arrays.sort(items);
+        if(items.length % 2 == 0)
+            return (items[items.length/2] + items[items.length/2 - 1])/2;
+        else
+            return items[items.length/2];
     }
 
     private static int getMedian(int[] times) {
@@ -258,6 +296,7 @@ public class Gait {
         else
             return items[items.length/2];
     }
+
 
     public static float getMeanStepTime(int[] stepTimes, List<int[]> pauseTimes) {
         if (stepTimes.length > 0) {
@@ -291,7 +330,6 @@ public class Gait {
 
             // Determine the denominator depending on if there is an even or odd number of step times
             int length_stride_times = (stepTimes.length % 2 == 0) ?  ((stepTimes.length - 2) / 2) : ((stepTimes.length - 1) / 2);
-            Log.d(TAG, "mean_stride_time: " + ((strideTimeSum - pauseTime) / ((float) length_stride_times)));
             return ((strideTimeSum - pauseTime) / ((float) length_stride_times));
 
 
@@ -403,7 +441,18 @@ public class Gait {
         return 0;
     }
 
-    private static double[] convertFloatsToDoubles(float[] input)
+    public static float getRMS(float[] data, float data_mean) {
+        float sum = 0.0f;
+
+        for(int i=0; i<data.length; i++) {
+            sum += (data[i] - data_mean) * (data[i] - data_mean);
+        }
+
+        return (float) Math.sqrt( sum / (data.length) );
+
+    }
+
+    public static double[] convertFloatsToDoubles(float[] input)
     {
         if (input == null)
         {

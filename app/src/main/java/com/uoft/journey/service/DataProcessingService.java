@@ -18,6 +18,7 @@ import com.uoft.journey.entity.Trial;
 public class DataProcessingService extends Service {
 
     public static final String  ACTION_PROCESSED_DATA = "com.uoft.journey.action.PROCESSED_DATA";
+    public static final String TAG = "Data Processing Tag - ";
 
     private SignalProcessTask mTask;
     private Context mContext;
@@ -104,6 +105,20 @@ public class DataProcessingService extends Service {
                     trial.setStepAnalysis(mean_step, step_sd, step_cv, sym, cadence, mean_stride, stride_sd, stride_cv);
                 }
 
+                // Experimenting with RMS
+//                float RMS = Gait.getRMS(trial.getTrialData().getProcessedY(), trial.getTrialData().getMeanAccelValue(trial.getTrialData().getProcessedY()));
+//                Log.d(TAG, "a[0] " + trial.getTrialData().getProcessedY()[0]);
+//                Log.d(TAG, "a[n] " + trial.getTrialData().getProcessedY()[trial.getTrialData().getProcessedY().length - 1]);
+//                Log.d(TAG, "N = " + trial.getTrialData().getProcessedY().length);
+//                Log.d(TAG, "RMS: " + RMS );
+//
+//                // Experimenting with Fourier Transform and Harmonic ratio
+//                float[] data = trial.getTrialData().getProcessedY();
+//                DoubleFFT_1D fft1 = new DoubleFFT_1D(data.length);
+//                fft1.realForward(Gait.convertFloatsToDoubles(data));
+//
+//                DoubleFFT_1D fft2 = new DoubleFFT_1D(data.length);
+//                fft2.realForwardFull(Gait.convertFloatsToDoubles(data));
 
                 // Save the processed data
                 LocalDatabaseAccess.updateTrial(mContext, trial);

@@ -19,6 +19,8 @@ import com.uoft.journey.Journey;
 import com.uoft.journey.entity.InhibitionGame;
 import com.uoft.journey.entity.Trial;
 
+import java.util.List;
+
 /**
  * Methods for reading and writing to server
  */
@@ -27,6 +29,7 @@ public class ServerAccess {
 
 
     private static RequestToken mAddToken;
+    private static String TAG = "SERVERTAG";
     // private RequestToken mAddToken;
 
     private static final BaasHandler<BaasDocument> uploadHandler =
@@ -78,7 +81,7 @@ public class ServerAccess {
             newTrial.put("gameStats", (new Gson()).toJson(game));
         }
 
-        newTrial.putString("data", gson.toJson(tdata));
+        newTrial.put("data", gson.toJson(tdata));
 
 
 
@@ -202,6 +205,47 @@ public class ServerAccess {
         }
 
     }
+
+    public static Boolean updateTrial(Context ctx, int trialId, String username) {
+
+
+        BaasQuery.Criteria filter = BaasQuery.builder()
+                .where(String.format("(data like '%%\"mUsername\":\"%s\"}%%' or data like '%%\"mUsername\":\"%s\",%%') and (data like '%%\"mTrialId\":%d}%%' or data like '%%\"mTrialId\":%d,%%')", username, username, trialId, trialId))
+                .criteria();
+
+        try {
+
+            BaasResult<List<BaasDocument>> res = BaasDocument.fetchAllSync("Trials", filter);
+            // Will only be one trial
+            for (BaasDocument doc : res.value()) {
+
+                Trial new_trial = LocalDatabaseAccess.getTrial(ctx, trialId, username);
+                new_trial.setTrialData(null);
+
+                Gson gson = new Gson();
+
+                doc.put("data", gson.toJson(new_trial));
+
+                doc.save(SaveMode.IGNORE_VERSION, new BaasHandler<BaasDocument>() {
+                    @Override
+                    public void handle(BaasResult<BaasDocument> res) {
+                        if (res.isSuccess()) {
+                            Log.d("LOG", "Document saved " + res.value().getId());
+                        } else {
+                            Log.e("LOG", "Error", res.error());
+                        }
+                    }
+                });
+            }
+            return true;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            Log.d(TAG, "updateTrial()", e);
+            return false;
+        }
+    }
+
 
     public static Boolean deleteTrial(int trialId, String username) {
         BaasQuery.Criteria filter = BaasQuery.builder()

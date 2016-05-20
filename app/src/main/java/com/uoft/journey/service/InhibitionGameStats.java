@@ -125,7 +125,12 @@ public class InhibitionGameStats {
     public float commissionError() {
 
         float com_err = (false_stim_counter != 0) ? (float) ( falseAlarmCount() * 100.0 / false_stim_counter ) : 0.0f;
-        return com_err;
+
+        // Don't go over 100%
+        if (com_err > 100) {
+            return 100.0f;
+        }
+        else return com_err;
 
     }
 

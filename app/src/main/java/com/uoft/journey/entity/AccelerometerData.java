@@ -206,5 +206,14 @@ public class AccelerometerData implements Parcelable {
         }
     };
 
+    public float getMeanAccelValue(float[] data) {
+        float sum = 0.0f;
+        for (int i = 0; i < data.length; i++) {
+            sum += data[i];
+        }
+
+        return (sum / data.length);
+    }
+
 
 }
