@@ -37,6 +37,7 @@ public class LocalDatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_TRIAL_MEAN_STRIDE_TIME = "meanStrideTime";
     public static final String COLUMN_TRIAL_STRIDE_SD = "strideSD";
     public static final String COLUMN_TRIAL_STRIDE_CV = "strideCV";
+    public static final String COLUMN_TRIAL_GAME_PLAYED = "gamePlayed";
     public static final String COLUMN_TRIAL_USER_NAME = "name";
     // Columns - TrialData
     public static final String COLUMN_TRIAL_DATA_TRIAL_ID = "trialId";
@@ -72,6 +73,7 @@ public class LocalDatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_GAME_MEAN_RT_FALSE_ALARM = "meanRTFalseAlarm";
     public static final String COLUMN_GAME_RT_SD_FALSE_ALARM = "stdevRTFalseAlarm";
     public static final String COLUMN_GAME_OVERALL_ACCURACY = "overallAccuracy";
+    public static final String COLUMN_GAME_LEVEL = "gameLevel";
     public static final String COLUMN_GAME_USER_NAME = "name";
 
     private LocalDatabaseHelper(Context context) {
@@ -91,11 +93,11 @@ public class LocalDatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         // Create the tables
         db.execSQL("CREATE TABLE user (id INTEGER , name TEXT PRIMARY KEY, actualname TEXT, date TEXT);");
-        db.execSQL("CREATE TABLE trial (id INTEGER PRIMARY KEY, userId INTEGER, startTime TEXT, meanStepTime REAL, stepSD REAL, stepCV REAL, gaitSymm REAL, cadence REAL, meanStrideTime REAL, strideSD REAL, strideCV REAL, name TEXT);");
+        db.execSQL("CREATE TABLE trial (id INTEGER PRIMARY KEY, userId INTEGER, startTime TEXT, meanStepTime REAL, stepSD REAL, stepCV REAL, gaitSymm REAL, cadence REAL, meanStrideTime REAL, strideSD REAL, strideCV REAL, gamePlayed INTEGER, name TEXT);");
         db.execSQL("CREATE TABLE trialData (trialId INTEGER, elapsedTime INTEGER, xVal REAL, yVal REAL, zVal REAL, xProcessed REAL, yProcessed REAL, zProcessed REAL, FOREIGN KEY(trialId) REFERENCES trial(id));");
         db.execSQL("CREATE TABLE trialStep (trialId INTEGER, stepNum INTEGER, elapsedTime INTEGER, FOREIGN KEY(trialId) REFERENCES trial(id));");
         db.execSQL("CREATE TABLE trialPause (trialId INTEGER, startPause INTEGER, endPause INTEGER, FOREIGN KEY(trialId) REFERENCES trial(id));");
-        db.execSQL("CREATE TABLE inhibGame (id INTEGER PRIMARY KEY, userId INTEGER, trialId INTEGER, startTime TEXT, hitCount INTEGER, missCount INTEGER, falseAlarmCount INTEGER, correctNegCount INTEGER, omissionError REAL, commissionError REAL, meanRT REAL, stdevRT REAL, meanRTFalseAlarm REAL, stdevRTFalseAlarm REAL, overallAccuracy REAL, name TEXT);");
+        db.execSQL("CREATE TABLE inhibGame (id INTEGER PRIMARY KEY, userId INTEGER, trialId INTEGER, startTime TEXT, hitCount INTEGER, missCount INTEGER, falseAlarmCount INTEGER, correctNegCount INTEGER, omissionError REAL, commissionError REAL, meanRT REAL, stdevRT REAL, meanRTFalseAlarm REAL, stdevRTFalseAlarm REAL, overallAccuracy REAL, gameLevel INTEGER, name TEXT);");
     }
 
     @Override

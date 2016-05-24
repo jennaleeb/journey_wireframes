@@ -16,7 +16,7 @@
         android:elevation="2dp"
         android:id="@+id/linearLayout" >
 
-    <LinearLayout
+    <RelativeLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -24,25 +24,38 @@
         android:background="@color/colorSubHeader"
         >
 
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:id="@+id/icon_game_played"
+            android:visibility="gone"
+            android:background="@android:drawable/ic_menu_slideshow"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left|center_vertical"
+            android:layout_alignParentStart="true"/>
+
         <TextView
             android:id="@+id/card_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="18sp"
+            android:layout_gravity="left|center_vertical"
+            android:layout_toRightOf="@+id/icon_game_played"
             android:paddingLeft="5dp"
-            android:layout_weight="1"/>
+            />
+
 
         <TextView
             android:id="@+id/card_day"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:gravity="end"
+            android:gravity="right|end|center_vertical"
             android:textSize="18sp"
             android:paddingRight="5dp"
-            android:layout_weight="1"/>
+            android:layout_alignParentEnd="true"/>
 
-    </LinearLayout>
+    </RelativeLayout>
 
 
         <View

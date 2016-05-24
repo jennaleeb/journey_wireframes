@@ -103,6 +103,7 @@ public class DataProcessingService extends Service {
                     float stride_sd = Gait.getStrideSD(stepTimes, mean_stride, trial.getPauseTimes());
                     float stride_cv = Gait.getStrideCV(stride_sd, mean_stride);
                     trial.setStepAnalysis(mean_step, step_sd, step_cv, sym, cadence, mean_stride, stride_sd, stride_cv);
+                    trial.getGame_played();
                 }
 
                 // Experimenting with RMS

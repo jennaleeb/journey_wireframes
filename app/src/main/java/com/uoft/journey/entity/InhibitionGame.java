@@ -21,6 +21,7 @@ public class InhibitionGame {
     private int mMeanFalseAlarmRT;
     private float mSDFalseAlarmRT;
     private float mOverallAccuracy;
+    private int mLevel;
 
     public InhibitionGame (int gameId, Date startTime, String username) {
         mGameId = gameId;
@@ -146,5 +147,13 @@ public class InhibitionGame {
 
     public void setOverallAccuracy(float accuracy) {
         mOverallAccuracy = accuracy;
+    }
+
+    public int getLevel() {
+        return mLevel;
+    }
+
+    public void setLevel(int level) {
+        mLevel = level;
     }
 }

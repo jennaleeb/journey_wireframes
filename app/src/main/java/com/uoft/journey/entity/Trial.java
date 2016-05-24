@@ -25,6 +25,7 @@ public class Trial implements Parcelable {
     private float mMeanStrideTime;
     private float mStrideSD;
     private float mStrideCV;
+    private int game_played;
     private List<int[]> mPauseTimes;
 
     public Trial(int trialId, Date startTime, AccelerometerData data, String username) {
@@ -52,6 +53,7 @@ public class Trial implements Parcelable {
             parcel.readIntArray(mStepTimes);
         }
 
+        game_played = parcel.readInt();
         mGaitSym = parcel.readFloat();
         mCadence = parcel.readFloat();
         mStrideSD = parcel.readFloat();
@@ -193,6 +195,7 @@ public class Trial implements Parcelable {
             dest.writeInt(-1);
         }
 
+        dest.writeInt(game_played);
         dest.writeFloat(mGaitSym);
         dest.writeFloat(mCadence);
         dest.writeFloat(mStrideSD);
@@ -229,5 +232,13 @@ public class Trial implements Parcelable {
             return Level.OK;
         }
         return Level.BAD;
+    }
+
+    public int getGame_played() {
+        return game_played;
+    }
+
+    public void setGame_played(int game_played) {
+        this.game_played = game_played;
     }
 }

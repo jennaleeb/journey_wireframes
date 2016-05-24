@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.uoft.journey.R;
@@ -37,6 +38,7 @@ public class PatientTrialsListAdapter extends RecyclerView.Adapter<PatientTrials
         CardView cv;
         TextView day;
         TextView title;
+        ImageView game_icon;
         TextView time;
         TextView stepCount;
         TextView strideTimeVar;
@@ -48,6 +50,7 @@ public class PatientTrialsListAdapter extends RecyclerView.Adapter<PatientTrials
             day = (TextView)itemView.findViewById(R.id.card_day);
             time = (TextView)itemView.findViewById(R.id.card_time);
             title = (TextView)itemView.findViewById(R.id.card_title);
+            game_icon = (ImageView)itemView.findViewById(R.id.icon_game_played);
             stepCount = (TextView)itemView.findViewById(R.id.step_count_value);
             strideTimeVar = (TextView)itemView.findViewById(R.id.stride_var_value);
         }
@@ -67,6 +70,12 @@ public class PatientTrialsListAdapter extends RecyclerView.Adapter<PatientTrials
         if(mTrials != null && mTrials.size() > position) {
             holder.day.setText(df.format(mTrials.get(position).getStartTime()));
             holder.title.setText(String.format("Assessment %d", mTrials.get(position).getTrialId()));
+
+            // Show icon if trial included a game
+            if (mTrials.get(position).getGame_played() == 1) {
+                holder.game_icon.setVisibility(View.VISIBLE);
+            }
+
             holder.stepCount.setText(String.valueOf(mTrials.get(position).getNumberOfSteps()));
             holder.strideTimeVar.setText(String.format("%.1f", mTrials.get(position).getStrideCV()));
             holder.time.setText(df2.format(mTrials.get(position).getStartTime()));

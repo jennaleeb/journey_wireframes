@@ -56,6 +56,7 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
     private int mUserId;
     private ProgressBar mProgress;
     private TextView mProcessingText;
+    private int mGameLevel;
     private TextView mCountdown;
     private TextView mInstructions;
     private ImageView mWalkImage;
@@ -437,7 +438,8 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
             if(mSoundCheck.isChecked()) {
                 //stepsPerMin = (short)(40 + (mSoundSeek.getProgress() * 15));
 
-                mSoundService.setLevel(mSoundSeek.getProgress());
+                mGameLevel = mSoundSeek.getProgress();
+                mSoundService.setLevel(mGameLevel);
             }
 
 
@@ -473,6 +475,7 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
                         mUsername);
 
                 mInhibGame = new InhibitionGame(gameId, start, mUsername);
+                mInhibGame.setLevel(mGameLevel);
                 mInhibGame.setHitCount(inhibGameStats.hitCount());
                 mInhibGame.setMissCount(inhibGameStats.missCount());
                 mInhibGame.setFalseAlarmCount(inhibGameStats.falseAlarmCount());
@@ -486,6 +489,9 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
                 mInhibGame.setOverallAccuracy(inhibGameStats.measureAccuracy());
                 mInhibGame.setTrialId(mTrial.getTrialId());
                 LocalDatabaseAccess.updateInhibGame(this, mInhibGame);
+
+                mTrial.setGame_played(1);
+                LocalDatabaseAccess.updateTrial(this, mTrial);
 
             }
 
