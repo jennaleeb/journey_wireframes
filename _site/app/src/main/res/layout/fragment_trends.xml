@@ -1,0 +1,218 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="true"
+    tools:context="com.uoft.journey.ui.fragment.TrendsFragment">
+
+    <RelativeLayout
+        android:id="@+id/layout_home"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <ProgressBar
+            android:id="@+id/pb_home"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="50dp"
+            android:visibility="invisible" />
+
+        <LinearLayout
+            android:id="@+id/layout_cards"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/card_main"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                >
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:layout_marginBottom="10dp">
+
+                    <TextView
+                        android:id="@+id/text_latest_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
+                        android:textSize="18sp"
+                        android:text="@string/latest"/>
+
+                    <TextView
+                        android:id="@+id/text_last_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
+                        android:layout_marginTop="10dp"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="16sp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_below="@+id/text_latest_title"
+                        />
+
+                    <TextView
+                        android:id="@+id/text_recent"
+                        android:layout_width="150dp"
+                        android:textColor="@color/colorWhiteTranslucent"
+                        android:layout_height="150dp"
+                        android:layout_below="@+id/text_last_date"
+                        android:textSize="40sp"
+                        android:gravity="center"
+                        android:layout_centerHorizontal="true"
+                        />
+
+                    <TextView
+                        android:id="@+id/text_stv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:layout_below="@+id/text_recent"
+                        android:textSize="20sp"
+                        android:gravity="center"
+                        android:layout_centerHorizontal="true"
+                        android:text="@string/stv"
+                        android:layout_marginBottom="10dp"
+                        />
+
+                    <TextView
+                        android:id="@+id/text_var_last"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="2dp"
+                        android:layout_marginStart="10dp"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="12sp"
+                        android:layout_below="@+id/text_stv"
+                        android:text="@string/last_5"
+                        android:layout_centerHorizontal="true"/>
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_centerHorizontal="true"
+                        android:layout_below="@+id/text_var_last"
+                        android:id="@+id/history_container">
+                        <ImageView
+                            android:id="@+id/circle_var_1"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_margin="5dp"
+                            android:src="@drawable/green"
+                            android:visibility="invisible"/>
+                        <ImageView
+                            android:id="@+id/circle_var_2"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_margin="5dp"
+                            android:src="@drawable/green"
+                            android:visibility="invisible"
+                            android:layout_toEndOf="@+id/circle_var_1"
+                            android:layout_toRightOf="@+id/circle_var_1"/>
+                        <ImageView
+                            android:id="@+id/circle_var_3"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_margin="5dp"
+                            android:src="@drawable/green"
+                            android:visibility="invisible"
+                            android:layout_toEndOf="@+id/circle_var_2"
+                            android:layout_toRightOf="@+id/circle_var_2"/>
+                        <ImageView
+                            android:id="@+id/circle_var_4"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_margin="5dp"
+                            android:src="@drawable/green"
+                            android:visibility="invisible"
+                            android:layout_toEndOf="@+id/circle_var_3"
+                            android:layout_toRightOf="@+id/circle_var_3"/>
+                        <ImageView
+                            android:id="@+id/circle_var_5"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_margin="5dp"
+                            android:src="@drawable/green"
+                            android:visibility="invisible"
+                            android:layout_toEndOf="@+id/circle_var_4"
+                            android:layout_toRightOf="@+id/circle_var_4"/>
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/card_var"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                >
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:layout_marginBottom="10dp">
+
+                    <TextView
+                        android:id="@+id/text_var_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
+                        android:textSize="18sp"
+                        android:text="@string/variation_title"/>
+
+                    <com.github.mikephil.charting.charts.BarChart
+                        android:id="@+id/chart_variation"
+                        android:layout_below="@+id/text_var_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:layout_marginTop="20dp"
+                        />
+                </RelativeLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/card_mean"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                >
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:layout_marginBottom="10dp">
+
+                    <TextView
+                        android:id="@+id/text_mean_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
+                        android:textSize="18sp"
+                        android:text="@string/mean_title"/>
+
+                    <com.github.mikephil.charting.charts.BarChart
+                        android:id="@+id/chart_mean"
+                        android:layout_below="@+id/text_mean_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:layout_marginTop="20dp"
+                        />
+
+                </RelativeLayout>
+            </android.support.v7.widget.CardView>
+        </LinearLayout>
+    </RelativeLayout>
+</ScrollView>

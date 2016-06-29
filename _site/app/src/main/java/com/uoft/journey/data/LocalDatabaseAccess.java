@@ -160,7 +160,6 @@ public class LocalDatabaseAccess {
             cv.put(LocalDatabaseHelper.COLUMN_TRIAL_MEAN_STRIDE_TIME, trial.getMeanStrideTime());
             cv.put(LocalDatabaseHelper.COLUMN_TRIAL_STRIDE_SD, trial.getStrideSD());
             cv.put(LocalDatabaseHelper.COLUMN_TRIAL_STRIDE_CV, trial.getStrideCV());
-            cv.put(LocalDatabaseHelper.COLUMN_TRIAL_GAME_PLAYED, trial.getGame_played());
             cv.put(LocalDatabaseHelper.COLUMN_TRIAL_USER_NAME, username);
             db.getWritableDatabase().insertWithOnConflict(LocalDatabaseHelper.TABLE_TRIAL, null, cv, SQLiteDatabase.CONFLICT_IGNORE);
             return true;
@@ -185,7 +184,6 @@ public class LocalDatabaseAccess {
             cv.put(LocalDatabaseHelper.COLUMN_TRIAL_MEAN_STRIDE_TIME, trial.getMeanStrideTime());
             cv.put(LocalDatabaseHelper.COLUMN_TRIAL_STRIDE_SD, trial.getStrideSD());
             cv.put(LocalDatabaseHelper.COLUMN_TRIAL_STRIDE_CV, trial.getStrideCV());
-            cv.put(LocalDatabaseHelper.COLUMN_TRIAL_GAME_PLAYED, trial.getGame_played());
             db.getWritableDatabase().update(LocalDatabaseHelper.TABLE_TRIAL, cv, LocalDatabaseHelper.COLUMN_TRIAL_ID + "=" + trial.getTrialId(), null);
             return true;
         }
@@ -279,12 +277,11 @@ public class LocalDatabaseAccess {
         }
     }
 
-
     // Get the list of trials for user
     public static ArrayList<Trial> getTrialsForUser(Context ctx, String username) {
         try {
             LocalDatabaseHelper db = LocalDatabaseHelper.getInstance(ctx.getApplicationContext());
-            Cursor data = db.getReadableDatabase().rawQuery(String.format("SELECT %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s FROM %s WHERE name='%s' ORDER BY %s DESC",
+            Cursor data = db.getReadableDatabase().rawQuery(String.format("SELECT %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s FROM %s WHERE name='%s' ORDER BY %s DESC",
                     LocalDatabaseHelper.COLUMN_TRIAL_ID,
                     LocalDatabaseHelper.COLUMN_TRIAL_START_TIME,
                     LocalDatabaseHelper.COLUMN_TRIAL_MEAN_STEP_TIME,
@@ -295,7 +292,6 @@ public class LocalDatabaseAccess {
                     LocalDatabaseHelper.COLUMN_TRIAL_MEAN_STRIDE_TIME,
                     LocalDatabaseHelper.COLUMN_TRIAL_STRIDE_SD,
                     LocalDatabaseHelper.COLUMN_TRIAL_STRIDE_CV,
-                    LocalDatabaseHelper.COLUMN_TRIAL_GAME_PLAYED,
                     LocalDatabaseHelper.COLUMN_TRIAL_USER_NAME,
                     LocalDatabaseHelper.TABLE_TRIAL, username,
                     LocalDatabaseHelper.COLUMN_TRIAL_START_TIME), null);
@@ -315,7 +311,6 @@ public class LocalDatabaseAccess {
 
                 trial.setStepTimes(getTrialStepTimes(ctx, trial.getTrialId()));
                 trial.setPauseTimes(getTrialPauseTimes(ctx, trial.getTrialId()));
-                trial.setGame_played(data.getInt(10));
                 trials.add(trial);
 
             }
@@ -412,7 +407,7 @@ public class LocalDatabaseAccess {
         try {
 
             LocalDatabaseHelper db = LocalDatabaseHelper.getInstance(ctx.getApplicationContext());
-            Cursor data = db.getReadableDatabase().rawQuery(String.format("SELECT %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s FROM %s WHERE id=%d AND name='%s'",
+            Cursor data = db.getReadableDatabase().rawQuery(String.format("SELECT %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s FROM %s WHERE id=%d AND name='%s'",
                     LocalDatabaseHelper.COLUMN_TRIAL_USER_ID,
                     LocalDatabaseHelper.COLUMN_TRIAL_START_TIME,
                     LocalDatabaseHelper.COLUMN_TRIAL_MEAN_STEP_TIME,
@@ -423,7 +418,6 @@ public class LocalDatabaseAccess {
                     LocalDatabaseHelper.COLUMN_TRIAL_MEAN_STRIDE_TIME,
                     LocalDatabaseHelper.COLUMN_TRIAL_STRIDE_SD,
                     LocalDatabaseHelper.COLUMN_TRIAL_STRIDE_CV,
-                    LocalDatabaseHelper.COLUMN_TRIAL_GAME_PLAYED,
                     LocalDatabaseHelper.COLUMN_TRIAL_USER_NAME,
                     LocalDatabaseHelper.TABLE_TRIAL, trialId, username), null);
 
@@ -448,7 +442,7 @@ public class LocalDatabaseAccess {
                 trial.setStepTimes(steps);
 
             trial.setPauseTimes(getTrialPauseTimes(ctx, trialId));
-            trial.setGame_played(data.getInt(10));
+
             trial.setUsername(username);
 
             data.close();
@@ -575,8 +569,7 @@ public class LocalDatabaseAccess {
             cv.put(LocalDatabaseHelper.COLUMN_GAME_MEAN_RT_FALSE_ALARM, game.getMeanFalseAlarmRT());
             cv.put(LocalDatabaseHelper.COLUMN_GAME_RT_SD_FALSE_ALARM, game.getSDFalseAlarmRT());
             cv.put(LocalDatabaseHelper.COLUMN_GAME_OVERALL_ACCURACY, game.getOverallAccuracy());
-            cv.put(LocalDatabaseHelper.COLUMN_GAME_LEVEL, game.getLevel());
-                    db.getWritableDatabase().update(LocalDatabaseHelper.TABLE_INHIB_GAME, cv, LocalDatabaseHelper.COLUMN_GAME_ID + "=" + game.getGameId(), null);
+            db.getWritableDatabase().update(LocalDatabaseHelper.TABLE_INHIB_GAME, cv, LocalDatabaseHelper.COLUMN_GAME_ID + "=" + game.getGameId(), null);
             return true;
         }
         catch (Exception e) {
@@ -591,7 +584,7 @@ public class LocalDatabaseAccess {
         try {
 
             LocalDatabaseHelper db = LocalDatabaseHelper.getInstance(ctx.getApplicationContext());
-            Cursor data = db.getReadableDatabase().rawQuery(String.format("SELECT %s, %s, %s, %s, %s, %s, %s, %s, %s, %s FROM %s WHERE id=%d AND name='%s'",
+            Cursor data = db.getReadableDatabase().rawQuery(String.format("SELECT %s, %s, %s, %s, %s, %s, %s, %s, %s FROM %s WHERE id=%d AND name='%s'",
                     LocalDatabaseHelper.COLUMN_GAME_USER_ID,
                     LocalDatabaseHelper.COLUMN_GAME_TRIAL_ID,
                     LocalDatabaseHelper.COLUMN_GAME_START_TIME,
@@ -600,7 +593,6 @@ public class LocalDatabaseAccess {
                     LocalDatabaseHelper.COLUMN_GAME_MEAN_RT,
                     LocalDatabaseHelper.COLUMN_GAME_RT_SD,
                     LocalDatabaseHelper.COLUMN_GAME_OVERALL_ACCURACY,
-                    LocalDatabaseHelper.COLUMN_GAME_LEVEL,
                     LocalDatabaseHelper.COLUMN_GAME_USER_NAME,
                     LocalDatabaseHelper.TABLE_INHIB_GAME, gameId, username), null);
 
@@ -617,7 +609,6 @@ public class LocalDatabaseAccess {
             game.setMeanResponseTime(data.getInt(5));
             game.setSDResponseTime(data.getFloat(6));
             game.setOverallAccuracy(data.getFloat(7));
-            game.setLevel(data.getInt(8));
             game.setUsername(username);
 
             data.close();
@@ -635,7 +626,7 @@ public class LocalDatabaseAccess {
         try {
 
             LocalDatabaseHelper db = LocalDatabaseHelper.getInstance(ctx.getApplicationContext());
-            Cursor data = db.getReadableDatabase().rawQuery(String.format("SELECT %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s FROM %s WHERE trialId=%d AND name='%s'",
+            Cursor data = db.getReadableDatabase().rawQuery(String.format("SELECT %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s FROM %s WHERE trialId=%d AND name='%s'",
                     LocalDatabaseHelper.COLUMN_GAME_ID,
                     LocalDatabaseHelper.COLUMN_GAME_USER_ID,
                     LocalDatabaseHelper.COLUMN_GAME_TRIAL_ID,
@@ -647,12 +638,10 @@ public class LocalDatabaseAccess {
                     LocalDatabaseHelper.COLUMN_GAME_OM_ERROR,
                     LocalDatabaseHelper.COLUMN_GAME_COM_ERROR,
                     LocalDatabaseHelper.COLUMN_GAME_MEAN_RT,
-                    LocalDatabaseHelper.COLUMN_GAME_MEDIAN_RT,
                     LocalDatabaseHelper.COLUMN_GAME_RT_SD,
                     LocalDatabaseHelper.COLUMN_GAME_MEAN_RT_FALSE_ALARM,
                     LocalDatabaseHelper.COLUMN_GAME_RT_SD_FALSE_ALARM,
                     LocalDatabaseHelper.COLUMN_GAME_OVERALL_ACCURACY,
-                    LocalDatabaseHelper.COLUMN_GAME_LEVEL,
                     LocalDatabaseHelper.COLUMN_GAME_USER_NAME,
                     LocalDatabaseHelper.TABLE_INHIB_GAME, trialId, username), null);
 
@@ -671,12 +660,10 @@ public class LocalDatabaseAccess {
             game.setOmissionError(data.getFloat(8));
             game.setCommissionError(data.getFloat(9));
             game.setMeanResponseTime(data.getInt(10));
-            game.setMedianResponseTime(data.getLong(11));
-            game.setSDResponseTime(data.getFloat(12));
-            game.setMeanFalseAlarmRT(data.getInt(13));
-            game.setSDFalseAlarmRT(data.getFloat(14));
-            game.setOverallAccuracy(data.getFloat(15));
-            game.setLevel(data.getInt(16));
+            game.setSDResponseTime(data.getFloat(11));
+            game.setMeanFalseAlarmRT(data.getInt(12));
+            game.setSDFalseAlarmRT(data.getFloat(13));
+            game.setOverallAccuracy(data.getFloat(14));
             game.setUsername(username);
             data.close();
             return game;
@@ -702,12 +689,10 @@ public class LocalDatabaseAccess {
             cv.put(LocalDatabaseHelper.COLUMN_GAME_OM_ERROR, game.getOmissionError());
             cv.put(LocalDatabaseHelper.COLUMN_GAME_COM_ERROR, game.getCommissionError());
             cv.put(LocalDatabaseHelper.COLUMN_GAME_MEAN_RT, game.getMeanResponseTime());
-            cv.put(LocalDatabaseHelper.COLUMN_GAME_MEDIAN_RT, game.getMedianResponseTime());
             cv.put(LocalDatabaseHelper.COLUMN_GAME_RT_SD, game.getSDResponseTime());
             cv.put(LocalDatabaseHelper.COLUMN_GAME_MEAN_RT_FALSE_ALARM, game.getMeanFalseAlarmRT());
             cv.put(LocalDatabaseHelper.COLUMN_GAME_RT_SD_FALSE_ALARM, game.getSDFalseAlarmRT());
             cv.put(LocalDatabaseHelper.COLUMN_GAME_OVERALL_ACCURACY, game.getOverallAccuracy());
-            cv.put(LocalDatabaseHelper.COLUMN_GAME_LEVEL, game.getLevel());
             cv.put(LocalDatabaseHelper.COLUMN_GAME_USER_NAME, username);
             db.getWritableDatabase().insertWithOnConflict(LocalDatabaseHelper.TABLE_INHIB_GAME, null, cv, SQLiteDatabase.CONFLICT_IGNORE);
             return true;

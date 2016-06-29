@@ -1,0 +1,77 @@
+<resources>
+    <string name="app_name">Journey</string>
+    <string name="start_new">New Assessment</string>
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+    <string name="done">Done</string>
+    <string name="processing">Processing..,</string>
+    <string name="instructions">Place the phone in the harness and press START when you are ready to begin</string>
+    <string name="new_title">New Assessment</string>
+    <string name="details_title">Assessment Details</string>
+    <string name="duration">DURATION (s)</string>
+    <string name="number_steps">Number of steps</string>
+    <string name="average_step_time">AVG. STEP (ms)</string>
+    <string name="average_stride_time">AVG. STRIDE (ms)</string>
+    <string name="standard_dev">Standard deviation</string>
+    <string name="variation">Coefficient of Variation</string>
+    <string name="start_walking">Start walking</string>
+    <string name="keep_walking">Keep walking</string>
+    <string name="assessments">Assessments</string>
+    <string name="assessment">Assessment</string>
+    <string name="summary">SUMMARY</string>
+    <string name="trends">Trends</string>
+    <string name="variation_title">Step Time Variation</string>
+    <string name="mean_title">Average Step Time</string>
+    <string name="timed_assessment">Timed Assessment</string>
+    <string name="last_5">Last 5 Assessments</string>
+    <string name="home">Summary</string>
+    <string name="stv">STV (%)</string>
+    <string name="om_error">Omission Error (%)</string>
+    <string name="com_error">Commission Error (%)</string>
+    <string name="mean_rt">Mean RT (ms)</string>
+    <string name="comb_accuracy">Combined Accuracy</string>
+    <string name="latest">Latest Assessment</string>
+    <string name="step_count">STEP COUNT</string>
+    <string name="metronome">Metronome</string>
+    <string name="secondary_task">Secondary Task</string>
+    <string name="slow">SLOW</string>
+    <string name="fast">FAST</string>
+
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_patient_list">PatientListActivity</string>
+
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+    <string name="title_activity_add_new_assessment">add_new_assessment</string>
+
+    <string name="game_instructions1">"The Go, No-Go game is designed to introduce a cognitively-challenging task while walking.\n\nYou will hear two sounds:"</string>
+    <string name="game_instructions2">"Each time you hear the "GO" sound, tap the screen anywhere. When you hear the "NO-GO" sound, do not."</string>
+    <string-array name="assessments_array">
+        <item>STRIDE ANALYSIS</item>
+        <item>TIMED UP AND GO</item>
+        <item>BERG BALANCE SCORE</item>
+        <item>Picture</item>
+        <item>Video</item>
+        <item>Comment</item>
+    </string-array>
+
+    <string-array name="timed_intervals">
+        <item>5 seconds</item>
+        <item>10 seconds</item>
+        <item>20 seconds</item>
+        <item>30 seconds</item>
+        <item>60 seconds</item>
+        <item>90 seconds</item>
+        <item>2 minutes</item>
+        <item>3 minutes</item>
+        <item>4 minutes</item>
+        <item>5 minutes</item>
+    </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+</resources>

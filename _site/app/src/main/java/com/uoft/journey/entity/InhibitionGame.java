@@ -17,12 +17,10 @@ public class InhibitionGame {
     private float mOmissionError;
     private float mCommissionError;
     private int mMeanResponseTime;
-    private long mMedianResponseTime;
     private float mSDResponseTime;
     private int mMeanFalseAlarmRT;
     private float mSDFalseAlarmRT;
     private float mOverallAccuracy;
-    private int mLevel;
 
     public InhibitionGame (int gameId, Date startTime, String username) {
         mGameId = gameId;
@@ -118,14 +116,6 @@ public class InhibitionGame {
         mMeanResponseTime = meanResponseTime;
     }
 
-    public long getMedianResponseTime() {
-        return mMedianResponseTime;
-    }
-
-    public void setMedianResponseTime(long medianResponseTime) {
-        mMedianResponseTime = medianResponseTime;
-    }
-
     public float getSDResponseTime() {
         return mSDResponseTime;
     }
@@ -156,13 +146,5 @@ public class InhibitionGame {
 
     public void setOverallAccuracy(float accuracy) {
         mOverallAccuracy = accuracy;
-    }
-
-    public int getLevel() {
-        return mLevel;
-    }
-
-    public void setLevel(int level) {
-        mLevel = level;
     }
 }

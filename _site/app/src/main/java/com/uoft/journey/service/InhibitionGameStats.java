@@ -4,8 +4,8 @@ import android.util.Log;
 
 import org.apache.commons.math3.special.Erf;
 
-import java.util.Arrays;
 import java.util.List;
+
 /**
  * Created by jenna on 16-04-15.
  */
@@ -58,7 +58,7 @@ public class InhibitionGameStats {
     }
 
 
-    // Mean RT of correct hits only
+    // RT of correct hits only
     public int meanResponseTime() {
         int sum_rt = 0;
 
@@ -69,33 +69,6 @@ public class InhibitionGameStats {
 
         }
         return ( (sum_rt != 0) ? sum_rt / hitCount() : 0 );
-    }
-
-    // Median RT of correct hits
-    public long medianResponseTime() {
-        long median = 0;
-        long[] correct_rts = new long[hitCount()];
-        for (int i=0; i<hitStats.size()-1; i++){
-            if (hitStats.get(i)[0] == 1) {
-                correct_rts[i] = hitStats.get(i)[1];
-            } else {
-                i -= 1;
-            }
-
-        }
-
-        Arrays.sort(correct_rts);
-
-        int middle = ((correct_rts.length) / 2);
-        if(correct_rts.length % 2 == 0){
-            long medianA = correct_rts[middle];
-            long medianB = correct_rts[middle-1];
-            median = (medianA + medianB) / 2;
-        } else{
-            median = correct_rts[middle + 1];
-        }
-
-        return median;
     }
 
     public float responseTimeSD() {
@@ -152,12 +125,7 @@ public class InhibitionGameStats {
     public float commissionError() {
 
         float com_err = (false_stim_counter != 0) ? (float) ( falseAlarmCount() * 100.0 / false_stim_counter ) : 0.0f;
-
-        // Don't go over 100%
-        if (com_err > 100) {
-            return 100.0f;
-        }
-        else return com_err;
+        return com_err;
 
     }
 

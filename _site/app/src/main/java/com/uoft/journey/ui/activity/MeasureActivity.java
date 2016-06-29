@@ -56,7 +56,6 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
     private int mUserId;
     private ProgressBar mProgress;
     private TextView mProcessingText;
-    private int mGameLevel;
     private TextView mCountdown;
     private TextView mInstructions;
     private ImageView mWalkImage;
@@ -438,8 +437,7 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
             if(mSoundCheck.isChecked()) {
                 //stepsPerMin = (short)(40 + (mSoundSeek.getProgress() * 15));
 
-                mGameLevel = mSoundSeek.getProgress();
-                mSoundService.setLevel(mGameLevel);
+                mSoundService.setLevel(mSoundSeek.getProgress());
             }
 
 
@@ -475,13 +473,11 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
                         mUsername);
 
                 mInhibGame = new InhibitionGame(gameId, start, mUsername);
-                mInhibGame.setLevel(mGameLevel);
                 mInhibGame.setHitCount(inhibGameStats.hitCount());
                 mInhibGame.setMissCount(inhibGameStats.missCount());
                 mInhibGame.setFalseAlarmCount(inhibGameStats.falseAlarmCount());
                 mInhibGame.setCorrectNegCount(inhibGameStats.correctNegCount());
                 mInhibGame.setMeanResponseTime(inhibGameStats.meanResponseTime());
-                mInhibGame.setMedianResponseTime(inhibGameStats.medianResponseTime());
                 mInhibGame.setSDResponseTime(inhibGameStats.responseTimeSD());
                 mInhibGame.setMeanFalseAlarmRT(inhibGameStats.meanFalseAlarmResponseTime());
                 mInhibGame.setSDFalseAlarmRT(inhibGameStats.responseTimeFalseAlarmSD());
@@ -490,9 +486,6 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
                 mInhibGame.setOverallAccuracy(inhibGameStats.measureAccuracy());
                 mInhibGame.setTrialId(mTrial.getTrialId());
                 LocalDatabaseAccess.updateInhibGame(this, mInhibGame);
-
-                mTrial.setGame_played(1);
-                LocalDatabaseAccess.updateTrial(this, mTrial);
 
             }
 
@@ -584,12 +577,12 @@ public class MeasureActivity extends AppCompatActivity implements View.OnClickLi
         (findViewById(R.id.line_title)).setVisibility(View.VISIBLE);
         ((TextView)findViewById(R.id.text_output_1_val)).setText(String.format("%d", mTrial.getDuration() / 1000));
         ((TextView)findViewById(R.id.text_output_2_val)).setText(String.format("%d", mTrial.getNumberOfSteps()));
-        ((TextView)findViewById(R.id.text_output_3_val)).setText(String.format("%.1f", mTrial.getMeanStrideTime()));
+        ((TextView)findViewById(R.id.text_output_3_val)).setText(String.format("%.0f", mTrial.getMeanStepTime()));
 
         TextView stv = (TextView) findViewById(R.id.text_output_4_val);
-        stv.setText(String.format("%.1f", mTrial.getStrideCV()));
+        stv.setText(String.format("%.1f", mTrial.getStepCV()));
 
-        Trial.Level level = Trial.getLevel(mTrial.getStrideCV());
+        Trial.Level level = Trial.getLevel(mTrial.getStepCV());
         switch (level) {
             case GOOD:
                 stv.setBackgroundResource(R.drawable.round_text_green);
