@@ -16,11 +16,16 @@ public class InhibitionGameStats {
     private int false_stim_counter;
     public static final String TAG = "STATSDEDUGTAG";
 
+    private int hit_count = 0;
+    private int false_alarm_hits = 0;
+    private int sum_rt = 0;
+
     public InhibitionGameStats(List<long[]> hitStats, int true_stim_counter, int false_stim_counter) {
         this.hitStats = hitStats;
         this.true_stim_counter = true_stim_counter;
         this.false_stim_counter = false_stim_counter;
     }
+
 
     public int hitCount() {
         int hit_count = 0;
@@ -71,28 +76,46 @@ public class InhibitionGameStats {
         return ( (sum_rt != 0) ? sum_rt / hitCount() : 0 );
     }
 
-    // Median RT of correct hits
-    public long medianResponseTime() {
-        long median = 0;
-        long[] correct_rts = new long[hitCount()];
-        for (int i=0; i<hitStats.size()-1; i++){
-            if (hitStats.get(i)[0] == 1) {
-                correct_rts[i] = hitStats.get(i)[1];
-            } else {
-                i -= 1;
-            }
+    public int[] collectCorrectResponseTimes() {
 
+        int[] correct_rts = new int[hitStats.size()];
+
+        for (int i=0; i<hitStats.size(); i++) {
+            if (hitStats.get(i)[0] == 1) {
+                correct_rts[i] = (int) hitStats.get(i)[1];
+            }
         }
 
-        Arrays.sort(correct_rts);
+        int j = 0;
+        for (int i=0; i<correct_rts.length; i++) {
+            if (correct_rts[i] !=0)
+                correct_rts[j++] = correct_rts[i];
+        }
 
-        int middle = ((correct_rts.length) / 2);
-        if(correct_rts.length % 2 == 0){
-            long medianA = correct_rts[middle];
-            long medianB = correct_rts[middle-1];
-            median = (medianA + medianB) / 2;
-        } else{
-            median = correct_rts[middle + 1];
+        int[] revised_correct_rts = new int[j];
+        System.arraycopy( correct_rts, 0, revised_correct_rts, 0, j );
+
+        return revised_correct_rts;
+    }
+
+    // Median RT of correct hits
+   public long medianResponseTime() {
+        long median = 0;
+        int hit_count = hitCount();
+        if (hit_count > 0) {
+
+            int[] correct_rts = collectCorrectResponseTimes();
+            Arrays.sort(correct_rts);
+
+            int middle = ((correct_rts.length) / 2);
+            if(correct_rts.length % 2 == 0){
+                long medianA = correct_rts[middle];
+                long medianB = correct_rts[middle-1];
+                median = (medianA + medianB) / 2;
+            } else{
+                median = correct_rts[middle + 1];
+            }
+
         }
 
         return median;

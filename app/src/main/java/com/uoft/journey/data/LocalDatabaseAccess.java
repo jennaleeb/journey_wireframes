@@ -571,6 +571,7 @@ public class LocalDatabaseAccess {
             cv.put(LocalDatabaseHelper.COLUMN_GAME_OM_ERROR, game.getOmissionError());
             cv.put(LocalDatabaseHelper.COLUMN_GAME_COM_ERROR, game.getCommissionError());
             cv.put(LocalDatabaseHelper.COLUMN_GAME_MEAN_RT, game.getMeanResponseTime());
+            cv.put(LocalDatabaseHelper.COLUMN_GAME_MEDIAN_RT, game.getMedianResponseTime());
             cv.put(LocalDatabaseHelper.COLUMN_GAME_RT_SD, game.getSDResponseTime());
             cv.put(LocalDatabaseHelper.COLUMN_GAME_MEAN_RT_FALSE_ALARM, game.getMeanFalseAlarmRT());
             cv.put(LocalDatabaseHelper.COLUMN_GAME_RT_SD_FALSE_ALARM, game.getSDFalseAlarmRT());
