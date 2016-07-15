@@ -1,9 +1,8 @@
 package com.uoft.journey;
 
-import android.app.Application;
 import android.support.multidex.MultiDexApplication;
-import android.util.Log;
-import com.baasbox.android.*;
+
+import com.baasbox.android.BaasBox;
 
 
 
@@ -29,7 +28,8 @@ public class Journey extends MultiDexApplication {
             BaasBox.Builder b =
                     new BaasBox.Builder(this);
             box = b.setAuthentication(BaasBox.Config.AuthType.SESSION_TOKEN)
-                    .setApiDomain("159.203.32.221")
+//                    .setApiDomain("159.203.32.221")
+                    .setApiDomain("159.203.59.40")
                     .setAppCode("1234567890")
                     .setPort(9000)
                     .init();
